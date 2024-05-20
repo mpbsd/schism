@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+
+    <!-- Basic Page Needs ––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <meta charset="utf-8">
+
+    <title>
+      {% if payload.edition %}
+      OMEG {{ payload.edition }}
+      {% else %}
+      OMEG
+      {% endif %}
+    </title>
+
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Mobile Specific Metas –––––––––––––––––––––––––––––––––––––––––––– -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- FONT -------------–––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+
+    <!-- CSS --------------–––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <link rel="stylesheet" href="{{ url_for('.static', filename='css/normalize.css') }}">
+    <link rel="stylesheet" href="{{ url_for('.static', filename='css/skeleton.css') }}">
+
+    <!-- Favicon ----------–––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <link rel="icon" type="image/png" href="{{ url_for('.static', filename='images/favicon.png') }}">
+
+  </head>
+  <body>
+
+    <!-- Primary Page Layout –––––––––––––––––––––––––––––––––––––––––––––– -->
+
+    <div class="container" style="margin-top: 5%">
+      <div class="row">
+        <div class="two columns">
+          <a href="{{ url_for('bp_user_routes.professor_dashboard', cpfP=current_user.cpfP) }}">
+            Home
+          </a>
+        </div>
+        <div class="three columns">
+          <a href="">Regulamento</a>
+        </div>
+        <div class="two columns">
+          <a href="">Datas</a>
+        </div>
+        <div class="two columns">
+          <a href="{{ url_for('bp_auth_routes.logout') }}">
+            Logout
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="row">
+        <div class="ten columns" style="margin-top: 20%">
+          <h4>
+            Estudantes Cadastrados
+          </h4>
+
+          <table id="Estudantes">
+            <thead>
+              <tr>
+                <th scope="col">
+                  CPF
+                </th>
+                <th scope="col">
+                  Nome
+                </th>
+                <th scope="col">
+                  Aniversário
+                </th>
+                <th scope="col">
+                  E-Mail
+                </th>
+                <th scope="col">
+                  Escola
+                </th>
+                <th scope="col">
+                  Nível
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for student in students %}
+              <tr>
+                <td>
+                  {{ student.cpfS }}
+                </td>
+                <td>
+                  {{ student.name }}
+                </td>
+                <td>
+                  {{ student.bday }}
+                </td>
+                <td>
+                  {{ student.mail }}
+                </td>
+                <td>
+                  {{ student.inep }}
+                </td>
+                <td>
+                  {{ student.roll }}
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- End Document ---–––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  </body>
+</html>

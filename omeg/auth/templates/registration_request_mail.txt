@@ -1,0 +1,10 @@
+Prezado(a),
+
+Para efetuar seu cadastro, acesse:
+
+  {{ url_for('bp_auth_routes.registration', token=token, _external=True) }}
+
+Caso não tenha requisitado seu cadastro, por favor ignore este e-mail.
+
+Atenciosamente,
+Equipe OMEG

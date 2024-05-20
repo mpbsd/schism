@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+
+    <!-- Basic Page Needs ––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <meta charset="utf-8">
+
+    <title>
+      {% if payload.edition %}
+      OMEG {{ payload.edition }}
+      {% else %}
+      OMEG
+      {% endif %}
+    </title>
+
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Mobile Specific Metas –––––––––––––––––––––––––––––––––––––––––––– -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- FONT -------------–––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
+
+    <!-- CSS --------------–––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <link rel="stylesheet" href="{{ url_for('.static', filename='css/normalize.css') }}">
+    <link rel="stylesheet" href="{{ url_for('.static', filename='css/skeleton.css') }}">
+
+    <!-- Favicon ----------–––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <link rel="icon" type="image/png" href="{{ url_for('.static', filename='images/favicon.png') }}">
+
+  </head>
+  <body>
+
+    <!-- Primary Page Layout –––––––––––––––––––––––––––––––––––––––––––––– -->
+
+    <div class="container" style="margin-top: 5%">
+      <div class="row">
+        <div class="two columns">
+          <a href="{{ url_for('bp_home_routes.home') }}">
+            Home
+          </a>
+        </div>
+        <div class="three columns">
+          <a href="">Regulamento</a>
+        </div>
+        <div class="two columns">
+          <a href="">Datas</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="row">
+        <div class="ten columns" style="margin-top: 20%">
+          <h4>
+            Solicitação de Cadastro
+          </h4>
+
+          <div class="form-wrapper">
+            <form action="{{ url_for('bp_auth_routes.registration_request') }}" method="post">
+              {{ form.hidden_tag() }}
+              <fieldset class="form-field">
+                {{ form.mail.label }} {{ form.mail(size=32) }}
+                {% if form.mail.errors %}
+                <ul class="errors">
+                  {% for error in form.mail.errors %}
+                  <li class="error">
+                    <i class="fa fa-exclamation"></i>
+                    <span class="error-message">
+                      {{ error }}
+                    </span>
+                  </li>
+                  {% endfor %}
+                </ul>
+                {% endif %}
+              </fieldset>
+              <fieldset class="form-field">
+                {{ form.submit }}
+              </fieldset>
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- End Document ---–––––––––––––––––––––––––––––––––––––––––––––––––– -->
+  </body>
+</html>
