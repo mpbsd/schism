@@ -26,12 +26,12 @@ def send_password_reset_email(professor):
         sender=current_app.config["ADMINS"][0],
         recipients=[professor.mail],
         text_body=render_template(
-            "request_password_reset_msg.txt",
+            "password_reset_request_mail.txt",
             professor=professor,
             token=token,
         ),
         html_body=render_template(
-            "request_password_reset_msg.html",
+            "password_reset_request_mail.html",
             professor=professor,
             token=token,
         ),

@@ -1,5 +1,5 @@
 build:
-	flask run
+	flask run --debug
 
 black:
 	isort omeg/auth/emails.py

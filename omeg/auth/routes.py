@@ -70,7 +70,12 @@ def registration(token):
 @bp_auth_routes.route("/request_password_reset", methods=["GET", "POST"])
 def request_password_reset():
     if current_user.is_authenticated:
-        return redirect(url_for("index"))
+        return redirect(
+            url_for(
+                "bp_user_routes.professor_dashboard",
+                cpfP=current_user.cpfP
+            )
+        )
     form = reset_password_request_form()
     if form.validate_on_submit():
         professor = db.session.scalar(
@@ -81,7 +86,7 @@ def request_password_reset():
             send_password_reset_email(professor)
         return redirect(url_for("bp_auth_routes.login"))
     return render_template(
-        "password_reset.html",
+        "password_reset_request_page.html",
         payload=payload,
         title="Redefinir Senha",
         form=form,
