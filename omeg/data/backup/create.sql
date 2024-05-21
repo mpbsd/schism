@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS student(
   PRIMARY KEY(cpfnr)
 );
 
-CREATE TABLE IF NOT EXISTS edition(
+CREATE TABLE IF NOT EXISTS enrollment(
   taxnr CHAR(11) NOT NULL,
   cpfnr CHAR(11) NOT NULL,
   inep CHAR(8) NOT NULL,
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS edition(
   role INT NOT NULL,
   gift CHAR NOT NULL DEFAULT 'N',
   CONSTRAINT CHECK (role IN (1, 2, 3)),
-  CONSTRAINT CHECK (gift IN ('O', 'P', 'B', 'H', 'N')),
+  CONSTRAINT CHECK (gift IN ('Ouro', 'Prata', 'Bronze', 'Menção Honrosa', 'Nada')),
   FOREIGN KEY (taxnr) REFERENCES professor (taxnr),
   FOREIGN KEY (cpfnr) REFERENCES student (cpfnr),
   FOREIGN KEY (inep) REFERENCES school (inep),

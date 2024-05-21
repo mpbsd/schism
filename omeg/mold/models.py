@@ -28,9 +28,9 @@ class School(db.Model):
 
 class Professor(UserMixin, db.Model):
     cpfP: so.Mapped[str] = so.mapped_column(sa.String(11), primary_key=True)
-    name: so.Mapped[str] = so.mapped_column(sa.String(64))
+    name: so.Mapped[str] = so.mapped_column(sa.String(255))
     mail: so.Mapped[str] = so.mapped_column(
-        sa.String(128), index=True, unique=True
+        sa.String(255), index=True, unique=True
     )
     hash: so.Mapped[Optional[str]] = so.mapped_column(sa.String(255))
 
@@ -86,10 +86,10 @@ class Professor(UserMixin, db.Model):
 
 class Student(db.Model):
     cpfS: so.Mapped[str] = so.mapped_column(sa.String(11), primary_key=True)
-    name: so.Mapped[str] = so.mapped_column(sa.String(64))
-    bday: so.Mapped[str] = so.mapped_column(sa.String(8))
+    name: so.Mapped[str] = so.mapped_column(sa.String(255))
+    bday: so.Mapped[str] = so.mapped_column(sa.Date)
     mail: so.Mapped[str] = so.mapped_column(
-        sa.String(128), index=True, unique=True
+        sa.String(255), index=True, unique=True
     )
 
     def __repr__(self):
