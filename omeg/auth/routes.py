@@ -26,7 +26,7 @@ bp_auth_routes = Blueprint(
 
 
 @bp_auth_routes.route("/registration-request", methods=["GET", "POST"])
-def registration_request():
+def request_registration():
     if current_user.is_authenticated:
         return redirect(url_for("bp_home_routes.home"))
     form = professor_registration_request_form()
@@ -81,7 +81,7 @@ def request_password_reset():
             send_password_reset_email(professor)
         return redirect(url_for("bp_auth_routes.login"))
     return render_template(
-        "request_password_reset.html",
+        "password_reset.html",
         payload=payload,
         title="Redefinir Senha",
         form=form,
@@ -91,7 +91,12 @@ def request_password_reset():
 @bp_auth_routes.route("/password_reset/<token>", methods=["GET", "POST"])
 def password_reset(token):
     if current_user.is_authenticated:
-        return redirect(url_for("index"))
+        return redirect(
+            url_for(
+                "bp_user_routes.professor_dashboard",
+                cpfP=current_user.cpfP
+            )
+        )
     professor = Professor.verify_reset_password_token(token)
     if not professor:
         return redirect(url_for("bp_home_routes.home"))
@@ -125,7 +130,7 @@ def login():
         else:
             if professor.check_password(form.password.data) is False:
                 flash("Senha incorreta")
-                return redirect(url_for("login"))
+                return redirect(url_for("bp_auth_routes.login"))
             else:
                 login_user(professor)
                 return redirect(
