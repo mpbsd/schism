@@ -50,12 +50,12 @@ def registration(token):
     if current_user.is_authenticated:
         return redirect(url_for("bp_home_routes.home"))
     mail = Professor.verify_registration_request_token(token)
-    form = professor_registration_form()
+    form = professor_registration_form(mail=mail)
     if form.validate_on_submit():
         professor = Professor(
             cpfP=cpf_strfmt(form.cpfP.data),
             name=form.name.data,
-            mail=mail,
+            mail=form.mail.data,
         )
         professor.set_password(form.password1.data)
         db.session.add(professor)
