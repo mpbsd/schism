@@ -106,7 +106,7 @@ class Enrollment(db.Model):
     inep: so.Mapped[str] = so.mapped_column(
         sa.String(11), sa.ForeignKey(School.inep), primary_key=True
     )
-    year: so.Mapped[str] = so.mapped_column(sa.String(11), primary_key=True)
+    year: so.Mapped[str] = so.mapped_column(sa.String(4), primary_key=True)
     roll: so.Mapped[int]
     gift: so.Mapped[str] = so.mapped_column(sa.String(6), default="None")
 
