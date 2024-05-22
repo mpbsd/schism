@@ -4,12 +4,12 @@ from omeg.conf.boost import send_email
 from omeg.mold.models import Professor
 
 
-def send_registration_request_email(mail):
-    token = Professor.get_registration_request_token(mail)
+def send_registration_request_email(email):
+    token = Professor.get_registration_request_token(email)
     send_email(
         "[OMEG] Cadastro de Professor",
         sender=current_app.config["ADMINS"][0],
-        recipients=[mail],
+        recipients=[email],
         text_body=render_template(
             "registration_request_mail.txt", token=token
         ),
@@ -24,7 +24,7 @@ def send_password_reset_email(professor):
     send_email(
         "[OMEG] Redefinição de senha",
         sender=current_app.config["ADMINS"][0],
-        recipients=[professor.mail],
+        recipients=[professor.email],
         text_body=render_template(
             "password_reset_request_mail.txt",
             professor=professor,

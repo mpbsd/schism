@@ -16,36 +16,36 @@ from omeg.mold.models import Professor, School, Student
 
 
 class student_registration_form(FlaskForm):
-    cpfS = StringField("CPF", validators=[DataRequired()])
-    name = StringField("Nome", validators=[DataRequired()])
-    bday = StringField("Data de nascimento", validators=[DataRequired()])
-    mail = StringField("Email", validators=[DataRequired(), Email()])
+    cpfnr = StringField("CPF", validators=[DataRequired()])
+    fname = StringField("Nome", validators=[DataRequired()])
+    birth = StringField("Data de nascimento", validators=[DataRequired()])
+    email = StringField("Email", validators=[DataRequired(), Email()])
     roll = IntegerField("Nível", validators=[NumberRange(min=1, max=3)])
     inep = StringField("Codigo INEP", validators=[DataRequired()])
     submit = SubmitField("Cadastrar")
 
-    def validate_cpfS(self, cpfS):
+    def validate_cpfnr(self, cpfnr):
         professor = db.session.scalar(
-            sa.select(Professor).where(Professor.cpfP == cpfS.data)
+            sa.select(Professor).where(Professor.taxnr == cpfnr.data)
         )
         student = db.session.scalar(
-            sa.select(Student).where(Student.cpfS == cpfS.data)
+            sa.select(Student).where(Student.cpfnr == cpfnr.data)
         )
-        if cpf_digits_match(cpfS.data) is False:
+        if cpf_digits_match(cpfnr.data) is False:
             raise ValidationError("CPF inconsistente")
         elif professor is not None:
             raise ValidationError("CPF já existe em nosso banco de dados")
         elif student is not None:
             raise ValidationError("CPF já existe em nosso banco de dados")
 
-    def validate_mail(self, mail):
+    def validate_mail(self, email):
         student = db.session.scalar(
-            sa.select(Student).where(Student.mail == mail.data)
+            sa.select(Student).where(Student.email == email.data)
         )
         if student is not None:
             raise ValidationError("Email já cadastrado")
 
-    def validate_bday(self, bday):
+    def validate_birth(self, birth):
         ndays = {
             1: 31,
             2: 28,
@@ -65,8 +65,8 @@ class student_registration_form(FlaskForm):
         re_year = r"(20(0[4-9]|1[0-3]))"
         re_date = re.compile(re_year + re_month + re_day)
         is_real_date = False
-        if re_date.match(bday.data):
-            date = re_date.match(bday.data)
+        if re_date.match(birth.data):
+            date = re_date.match(birth.data)
             d = int(date.group(4))
             m = int(date.group(3))
             y = int(date.group(1))

@@ -61,10 +61,10 @@
             <form action="{{ url_for('bp_auth_routes.request_registration') }}" method="post">
               {{ form.hidden_tag() }}
               <fieldset class="form-field">
-                {{ form.mail.label }} {{ form.mail(size=32) }}
-                {% if form.mail.errors %}
+                {{ form.email.label }} {{ form.email(size=32) }}
+                {% if form.email.errors %}
                 <ul class="errors">
-                  {% for error in form.mail.errors %}
+                  {% for error in form.email.errors %}
                   <li class="error">
                     <i class="fa fa-exclamation"></i>
                     <span class="error-message">

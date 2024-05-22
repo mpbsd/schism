@@ -13,8 +13,8 @@ def create_app():
     login_manager.init_app(omeg)
 
     @login_manager.user_loader
-    def load_user(cpfP):
-        return Professor.query.get(cpfP)
+    def load_user(taxnr):
+        return Professor.query.get(taxnr)
 
     from omeg.conf.boost import db
 

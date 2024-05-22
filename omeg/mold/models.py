@@ -27,25 +27,25 @@ class School(db.Model):
 
 
 class Professor(UserMixin, db.Model):
-    cpfP: so.Mapped[str] = so.mapped_column(sa.String(11), primary_key=True)
-    name: so.Mapped[str] = so.mapped_column(sa.String(255))
-    mail: so.Mapped[str] = so.mapped_column(
+    taxnr: so.Mapped[str] = so.mapped_column(sa.String(11), primary_key=True)
+    fname: so.Mapped[str] = so.mapped_column(sa.String(255))
+    email: so.Mapped[str] = so.mapped_column(
         sa.String(255), index=True, unique=True
     )
-    hash: so.Mapped[Optional[str]] = so.mapped_column(sa.String(255))
+    pswrd: so.Mapped[Optional[str]] = so.mapped_column(sa.String(255))
 
     def set_password(self, password):
-        self.hash = generate_password_hash(password)
+        self.pswrd = generate_password_hash(password)
 
     def check_password(self, password):
-        return check_password_hash(self.hash, password)
+        return check_password_hash(self.pswrd, password)
 
     def get_id(self):
-        return self.cpfP
+        return self.taxnr
 
     def get_reset_password_token(self, expires_in=600):
         return jwt.encode(
-            {"reset_password": self.cpfP, "exp": time() + expires_in},
+            {"reset_password": self.taxnr, "exp": time() + expires_in},
             Config.SECRET_KEY,
             algorithm="HS256",
         )
@@ -53,18 +53,18 @@ class Professor(UserMixin, db.Model):
     @staticmethod
     def verify_reset_password_token(token):
         try:
-            cpfP = jwt.decode(token, Config.SECRET_KEY, algorithms=["HS256"])[
+            taxnr = jwt.decode(token, Config.SECRET_KEY, algorithms=["HS256"])[
                 "reset_password"
             ]
         except jwt.exceptions.InvalidTokenError as Err:
             print(Err)
             return None
-        return db.session.get(Professor, cpfP)
+        return db.session.get(Professor, taxnr)
 
     @staticmethod
-    def get_registration_request_token(mail, expires_in=600):
+    def get_registration_request_token(email, expires_in=600):
         return jwt.encode(
-            {"mail": mail, "exp": time() + expires_in},
+            {"email": email, "exp": time() + expires_in},
             Config.SECRET_KEY,
             algorithm="HS256",
         )
@@ -72,36 +72,36 @@ class Professor(UserMixin, db.Model):
     @staticmethod
     def verify_registration_request_token(token):
         try:
-            mail = jwt.decode(token, Config.SECRET_KEY, algorithms=["HS256"])[
-                "mail"
+            email = jwt.decode(token, Config.SECRET_KEY, algorithms=["HS256"])[
+                "email"
             ]
         except jwt.exceptions.InvalidTokenError as Err:
             print(Err)
             return None
-        return mail
+        return email
 
     def __repr__(self):
-        return f"Professor {self.cpfP}"
+        return f"Professor {self.taxnr}"
 
 
 class Student(db.Model):
-    cpfS: so.Mapped[str] = so.mapped_column(sa.String(11), primary_key=True)
-    name: so.Mapped[str] = so.mapped_column(sa.String(255))
-    bday: so.Mapped[str] = so.mapped_column(sa.String(8))
-    mail: so.Mapped[str] = so.mapped_column(
+    cpfnr: so.Mapped[str] = so.mapped_column(sa.String(11), primary_key=True)
+    fname: so.Mapped[str] = so.mapped_column(sa.String(255))
+    birth: so.Mapped[str] = so.mapped_column(sa.String(8))
+    email: so.Mapped[str] = so.mapped_column(
         sa.String(255), index=True, unique=True
     )
 
     def __repr__(self):
-        return f"Student {self.cpfS}"
+        return f"Student {self.cpfnr}"
 
 
 class Enrollment(db.Model):
-    cpfS: so.Mapped[str] = so.mapped_column(
-        sa.String(11), sa.ForeignKey(Student.cpfS), primary_key=True
+    cpfnr: so.Mapped[str] = so.mapped_column(
+        sa.String(11), sa.ForeignKey(Student.cpfnr), primary_key=True
     )
-    cpfP: so.Mapped[str] = so.mapped_column(
-        sa.String(11), sa.ForeignKey(Professor.cpfP), primary_key=True
+    taxnr: so.Mapped[str] = so.mapped_column(
+        sa.String(11), sa.ForeignKey(Professor.taxnr), primary_key=True
     )
     inep: so.Mapped[str] = so.mapped_column(
         sa.String(11), sa.ForeignKey(School.inep), primary_key=True
@@ -111,4 +111,4 @@ class Enrollment(db.Model):
     gift: so.Mapped[str] = so.mapped_column(sa.String(6), default="None")
 
     def __repr__(self):
-        return f"{self.cpfS}, {self.inep}, {self.year}, {self.roll}"
+        return f"{self.inep}, {self.cpfnr}, {self.year}, {self.roll}"

@@ -66,10 +66,10 @@
             <form action="{{ url_for('bp_auth_routes.registration', token=token) }}" method="post">
               {{ form.hidden_tag() }}
               <fieldset class="form-field">
-                {{ form.cpfP.label }} {{ form.cpfP(size=32) }}
-                {% if form.cpfP.errors %}
+                {{ form.taxnr.label }} {{ form.taxnr(size=32) }}
+                {% if form.taxnr.errors %}
                 <ul class="errors">
-                  {% for error in form.cpfP.errors %}
+                  {% for error in form.taxnr.errors %}
                   <li class="error">
                     <i class="fa fa-exclamation"></i>
                     <span class="error-message">{{ error }}</span>
@@ -79,10 +79,10 @@
                 {% endif %}
               </fieldset>
               <fieldset class="form-field">
-                {{ form.name.label }} {{ form.name(size=32) }}
-                {% if form.name.errors %}
+                {{ form.fname.label }} {{ form.fname(size=32) }}
+                {% if form.fname.errors %}
                 <ul class="errors">
-                  {% for error in form.name.errors %}
+                  {% for error in form.fname.errors %}
                   <li class="error">
                     <i class="fa fa-exclamation"></i>
                     <span class="error-message">{{ error }}</span>
@@ -92,10 +92,10 @@
                 {% endif %}
               </fieldset>
               <fieldset class="form-field">
-                {{ form.mail.label }} {{ form.mail(size=32) }}
-                {% if form.mail.errors %}
+                {{ form.email.label }} {{ form.email(size=32) }}
+                {% if form.email.errors %}
                 <ul class="errors">
-                  {% for error in form.mail.errors %}
+                  {% for error in form.email.errors %}
                   <li class="error">
                     <i class="fa fa-exclamation"></i>
                     <span class="error-message">{{ error }}</span>

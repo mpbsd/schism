@@ -15,12 +15,12 @@ bp_user_routes = Blueprint(
 )
 
 
-@bp_user_routes.route("/professor/<cpfP>")
+@bp_user_routes.route("/professor/<taxnr>")
 @login_required
-def professor_dashboard(cpfP):
-    if cpfP == current_user.cpfP:
+def professor_dashboard(taxnr):
+    if taxnr == current_user.taxnr:
         professor = db.first_or_404(
-            sa.select(Professor).where(Professor.cpfP == cpfP)
+            sa.select(Professor).where(Professor.taxnr == taxnr)
         )
         return render_template(
             "professor_dashboard.html",
@@ -31,10 +31,10 @@ def professor_dashboard(cpfP):
         return redirect(url_for("bp_home_routes.home"))
 
 
-@bp_user_routes.route("/professor/<cpfP>/inep")
+@bp_user_routes.route("/professor/<taxnr>/inep")
 @login_required
-def inep(cpfP):
-    if cpfP == current_user.cpfP:
+def inep(taxnr):
+    if taxnr == current_user.taxnr:
         schools = db.session.scalars(
             sa.select(School).order_by(School.city)
         ).all()
@@ -47,16 +47,16 @@ def inep(cpfP):
         return redirect(url_for("bp_home_routes.home"))
 
 
-@bp_user_routes.route("/professor/<cpfP>/extract")
+@bp_user_routes.route("/professor/<taxnr>/extract")
 @login_required
-def students_extract(cpfP):
-    if cpfP == current_user.cpfP:
+def students_extract(taxnr):
+    if taxnr == current_user.taxnr:
         extract1 = {
             inep[0]: {
                 i: db.session.query(Enrollment)
                 .where(
                     Enrollment.inep == inep[0],
-                    Enrollment.cpfP == cpfP,
+                    Enrollment.taxnr == taxnr,
                     Enrollment.year == payload["edition"],
                     Enrollment.roll == i,
                 )
@@ -65,7 +65,7 @@ def students_extract(cpfP):
             }
             for inep in db.session.query(Enrollment.inep)
             .where(
-                Enrollment.cpfP == cpfP, Enrollment.year == payload["edition"]
+                Enrollment.taxnr == taxnr, Enrollment.year == payload["edition"]
             )
             .all()
         }
@@ -94,52 +94,52 @@ def students_extract(cpfP):
         )
 
 
-@bp_user_routes.route("/professor/<cpfP>/students")
+@bp_user_routes.route("/professor/<taxnr>/students")
 @login_required
-def registered_students(cpfP):
-    if cpfP == current_user.cpfP:
+def registered_students(taxnr):
+    if taxnr == current_user.taxnr:
         students = (
             db.session.query(
-                Student.cpfS,
-                Student.name,
-                Student.bday,
-                Student.mail,
+                Student.cpfnr,
+                Student.fname,
+                Student.birth,
+                Student.email,
                 Enrollment.inep,
                 Enrollment.roll,
             )
             .where(
-                Enrollment.cpfS == Student.cpfS,
-                Enrollment.cpfP == cpfP,
+                Enrollment.cpfnr == Student.cpfnr,
+                Enrollment.taxnr == taxnr,
                 Enrollment.year == payload["edition"],
             )
             .order_by(
                 Enrollment.roll,
-                Student.name,
+                Student.fname,
             )
         )
         return render_template(
             "registered_students.html",
             payload=payload,
-            cpfP=cpfP,
+            taxnr=taxnr,
             students=students,
         )
 
 
-@bp_user_routes.route("/professor/<cpfP>/new_student", methods=["GET", "POST"])
+@bp_user_routes.route("/professor/<taxnr>/new_student", methods=["GET", "POST"])
 @login_required
-def student_registration(cpfP):
-    if cpfP == current_user.cpfP:
+def student_registration(taxnr):
+    if taxnr == current_user.taxnr:
         form = student_registration_form()
         if form.validate_on_submit():
             student = Student(
-                cpfS=cpf_strfmt(form.cpfS.data),
-                name=form.name.data,
-                bday=form.bday.data,
-                mail=form.mail.data,
+                cpfnr=cpf_strfmt(form.cpfnr.data),
+                fname=form.fname.data,
+                birth=form.birth.data,
+                email=form.email.data,
             )
             enrollment = Enrollment(
-                cpfS=cpf_strfmt(form.cpfS.data),
-                cpfP=cpfP,
+                cpfnr=cpf_strfmt(form.cpfnr.data),
+                taxnr=taxnr,
                 inep=form.inep.data,
                 year=payload["edition"],
                 roll=form.roll.data,
@@ -150,8 +150,8 @@ def student_registration(cpfP):
             db.session.commit()
             flash("Estudante cadastrado com sucesso!")
             return redirect(
-                url_for("bp_user_routes.professor_dashboard", cpfP=cpfP)
+                url_for("bp_user_routes.professor_dashboard", taxnr=taxnr)
             )
     return render_template(
-        "student_registration.html", payload=payload, cpfP=cpfP, form=form
+        "student_registration.html", payload=payload, taxnr=taxnr, form=form
     )

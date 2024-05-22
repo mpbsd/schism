@@ -34,11 +34,11 @@ def request_registration():
         flash("Por favor, cheque sua caixa de entrada.")
         professor = db.session.scalar(
             sa.select(Professor).where(
-                Professor.mail == cpf_strfmt(form.mail.data)
+                Professor.email == cpf_strfmt(form.email.data)
             )
         )
         if not professor:
-            send_registration_request_email(form.mail.data)
+            send_registration_request_email(form.email.data)
         return redirect(url_for("bp_home_routes.home"))
     return render_template(
         "registration_request_page.html", payload=payload, form=form
@@ -49,13 +49,13 @@ def request_registration():
 def registration(token):
     if current_user.is_authenticated:
         return redirect(url_for("bp_home_routes.home"))
-    mail = Professor.verify_registration_request_token(token)
-    form = professor_registration_form(mail=mail)
+    email = Professor.verify_registration_request_token(token)
+    form = professor_registration_form(email=email)
     if form.validate_on_submit():
         professor = Professor(
-            cpfP=cpf_strfmt(form.cpfP.data),
-            name=form.name.data,
-            mail=form.mail.data,
+            taxnr=cpf_strfmt(form.taxnr.data),
+            fname=form.fname.data,
+            email=form.email.data,
         )
         professor.set_password(form.password1.data)
         db.session.add(professor)
@@ -72,13 +72,13 @@ def request_password_reset():
     if current_user.is_authenticated:
         return redirect(
             url_for(
-                "bp_user_routes.professor_dashboard", cpfP=current_user.cpfP
+                "bp_user_routes.professor_dashboard", taxnr=current_user.taxnr
             )
         )
     form = reset_password_request_form()
     if form.validate_on_submit():
         professor = db.session.scalar(
-            sa.select(Professor).where(Professor.mail == form.mail.data)
+            sa.select(Professor).where(Professor.email == form.email.data)
         )
         flash("Cheque a sua caixa de e-mails.")
         if professor:
@@ -97,7 +97,7 @@ def password_reset(token):
     if current_user.is_authenticated:
         return redirect(
             url_for(
-                "bp_user_routes.professor_dashboard", cpfP=current_user.cpfP
+                "bp_user_routes.professor_dashboard", taxnr=current_user.taxnr
             )
         )
     professor = Professor.verify_reset_password_token(token)
@@ -117,14 +117,14 @@ def login():
     if current_user.is_authenticated:
         return redirect(
             url_for(
-                "bp_user_routes.professor_dashboard", cpfP=current_user.cpfP
+                "bp_user_routes.professor_dashboard", taxnr=current_user.taxnr
             )
         )
     form = login_form()
     if form.validate_on_submit():
         professor = db.session.scalar(
             sa.select(Professor).where(
-                Professor.cpfP == cpf_strfmt(form.cpfP.data)
+                Professor.taxnr == cpf_strfmt(form.taxnr.data)
             )
         )
         if professor is None:
@@ -139,7 +139,7 @@ def login():
                 return redirect(
                     url_for(
                         "bp_user_routes.professor_dashboard",
-                        cpfP=professor.cpfP,
+                        taxnr=professor.taxnr,
                     )
                 )
     return render_template("login.html", payload=payload, form=form)
