@@ -146,9 +146,10 @@ def student_registration(taxnr):
                 inep=form.inep.data,
                 year=payload["edition"],
                 roll=form.roll.data,
-                gift="None",
+                gift="N",
             )
             db.session.add(student)
+            db.session.commit()
             db.session.add(enrollment)
             db.session.commit()
             flash("Estudante cadastrado com sucesso!")

@@ -1,4 +1,3 @@
-from datetime import datetime
 from time import time
 from typing import Optional
 
@@ -13,7 +12,7 @@ from omeg.conf.setup import Config
 
 
 class School(db.Model):
-    inep: so.Mapped[str] = so.mapped_column(sa.Integer, primary_key=True)
+    inep: so.Mapped[str] = so.mapped_column(sa.String(8), primary_key=True)
     name: so.Mapped[str] = so.mapped_column(sa.String(96))
     city: so.Mapped[str] = so.mapped_column(sa.String(27))
     zone: so.Mapped[str] = so.mapped_column(sa.String(6))
@@ -105,13 +104,9 @@ class Enrollment(db.Model):
         sa.String(11), sa.ForeignKey(Professor.taxnr), primary_key=True
     )
     inep: so.Mapped[str] = so.mapped_column(
-        sa.String(11), sa.ForeignKey(School.inep), primary_key=True
+        sa.String(8), sa.ForeignKey(School.inep), primary_key=True
     )
-    year: so.Mapped[str] = so.mapped_column(
-        sa.Integer,
-        default=lambda: datetime.strftime(datetime.now(), "%Y"),
-        primary_key=True
-    )
+    year: so.Mapped[str] = so.mapped_column(sa.String(4), primary_key=True)
     # acceptable values are:
     #  roll = {
     #    1: "6 e 7 anos",
