@@ -65,7 +65,8 @@ def students_extract(taxnr):
             }
             for inep in db.session.query(Enrollment.inep)
             .where(
-                Enrollment.taxnr == taxnr, Enrollment.year == payload["edition"]
+                Enrollment.taxnr == taxnr,
+                Enrollment.year == payload["edition"],
             )
             .all()
         }
@@ -125,7 +126,9 @@ def registered_students(taxnr):
         )
 
 
-@bp_user_routes.route("/professor/<taxnr>/new_student", methods=["GET", "POST"])
+@bp_user_routes.route(
+    "/professor/<taxnr>/new_student", methods=["GET", "POST"]
+)
 @login_required
 def student_registration(taxnr):
     if taxnr == current_user.taxnr:
