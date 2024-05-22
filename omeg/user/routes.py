@@ -1,6 +1,7 @@
 import sqlalchemy as sa
 from flask import Blueprint, flash, redirect, render_template, url_for
 from flask_login import current_user, login_required
+from sqlalchemy import func
 
 from omeg.conf.boost import db
 from omeg.data.load import cpf_strfmt, payload
@@ -51,27 +52,39 @@ def inep(cpfP):
 @login_required
 def students_extract(cpfP):
     if cpfP == current_user.cpfP:
-        level_1 = db.session.query(Enrollment).where(
-            Enrollment.cpfP == cpfP,
-            Enrollment.year == payload["edition"],
-            Enrollment.roll == 1,
-        )
-        level_2 = db.session.query(Enrollment).where(
-            Enrollment.cpfP == cpfP,
-            Enrollment.year == payload["edition"],
-            Enrollment.roll == 2,
-        )
-        level_3 = db.session.query(Enrollment).where(
-            Enrollment.cpfP == cpfP,
-            Enrollment.year == payload["edition"],
-            Enrollment.roll == 3,
-        )
+        extract1 = {
+            inep[0]: {
+                i: db.session.query(Enrollment)
+                .where(
+                    Enrollment.inep == inep[0],
+                    Enrollment.cpfP == cpfP,
+                    Enrollment.year == payload["edition"],
+                    Enrollment.roll == i,
+                )
+                .count()
+                for i in [1, 2, 3]
+            }
+            for inep in db.session.query(Enrollment.inep)
+            .where(
+                Enrollment.cpfP == cpfP, Enrollment.year == payload["edition"]
+            )
+            .all()
+        }
+        extract2 = {
+            inep: sum(extract1[inep].values()) for inep in extract1.keys()
+        }
+        extract3 = {
+            i: sum(extract1[inep][i] for inep in extract1.keys())
+            for i in [1, 2, 3]
+        }
+        extract4 = sum(v for v in extract3.values())
         return render_template(
             "students_extract.html",
             payload=payload,
-            Q1=level_1.count(),
-            Q2=level_2.count(),
-            Q3=level_3.count(),
+            extract1=extract1,
+            extract2=extract2,
+            extract3=extract3,
+            extract4=extract4,
         )
 
 

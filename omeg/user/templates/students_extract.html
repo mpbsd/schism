@@ -59,42 +59,55 @@
       <div class="row">
         <div class="ten columns" style="margin-top: 20%">
           <h4>
-            Extrato
+            Quantidade de Alunos Cadastrados
           </h4>
           <table id="Estudantes">
             <thead>
               <tr>
-                <th scope="col">
-                  Nível
-                </th>
-                <th scope="col">
-                  Qtd
-                </th>
+                <td>
+                  Escola
+                </td>
+                <td>
+                  N1
+                </td>
+                <td>
+                  N2
+                </td>
+                <td>
+                  N3
+                </td>
+                <td>
+                  Total
+                </td>
               </tr>
             </thead>
             <tbody>
+              {% for inep in extract1.keys() %}
               <tr>
                 <td>
-                  1
+                  {{ inep }}
                 </td>
+                {% for i in [1, 2, 3] %}
                 <td>
-                  {{ Q1 }}
+                  {{ extract1[inep][i] }}
+                </td>
+                {% endfor %}
+                <td>
+                  {{ extract2[inep] }}
                 </td>
               </tr>
+              {% endfor %}
               <tr>
                 <td>
-                  2
+                  Total
                 </td>
+                {% for i in [1, 2, 3] %}
                 <td>
-                  {{ Q2 }}
+                  {{ extract3[i] }}
                 </td>
-              </tr>
-              <tr>
+                {% endfor %}
                 <td>
-                  3
-                </td>
-                <td>
-                  {{ Q3 }}
+                  {{ extract4 }}
                 </td>
               </tr>
             </tbody>

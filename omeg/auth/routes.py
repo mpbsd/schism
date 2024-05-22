@@ -72,8 +72,7 @@ def request_password_reset():
     if current_user.is_authenticated:
         return redirect(
             url_for(
-                "bp_user_routes.professor_dashboard",
-                cpfP=current_user.cpfP
+                "bp_user_routes.professor_dashboard", cpfP=current_user.cpfP
             )
         )
     form = reset_password_request_form()
@@ -98,8 +97,7 @@ def password_reset(token):
     if current_user.is_authenticated:
         return redirect(
             url_for(
-                "bp_user_routes.professor_dashboard",
-                cpfP=current_user.cpfP
+                "bp_user_routes.professor_dashboard", cpfP=current_user.cpfP
             )
         )
     professor = Professor.verify_reset_password_token(token)

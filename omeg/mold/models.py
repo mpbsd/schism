@@ -87,7 +87,7 @@ class Professor(UserMixin, db.Model):
 class Student(db.Model):
     cpfS: so.Mapped[str] = so.mapped_column(sa.String(11), primary_key=True)
     name: so.Mapped[str] = so.mapped_column(sa.String(255))
-    bday: so.Mapped[str] = so.mapped_column(sa.Date)
+    bday: so.Mapped[str] = so.mapped_column(sa.String(8))
     mail: so.Mapped[str] = so.mapped_column(
         sa.String(255), index=True, unique=True
     )
