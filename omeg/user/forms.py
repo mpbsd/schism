@@ -60,22 +60,29 @@ class student_registration_form(FlaskForm):
             11: 30,
             12: 31,
         }
-        re_day = r"(0[1-9]|[12][0-9]|3[01])"
-        re_month = r"(0[1-9]|1[012])"
-        re_year = r"(20(0[4-9]|1[0-3]))"
-        re_date = re.compile(re_year + re_month + re_day)
+        re_d = r"0[1-9]|[12][0-9]|3[01]"
+        re_m = r"0[1-9]|1[012]"
+        re_y = r"20[01][0-9]"
+        re_1 = re.compile(r"(%s)[/-]?(%s)[/-]?(%s)" % (re_d, re_m, re_y))
+        re_2 = re.compile(r"(%s)[/-]?(%s)[/-]?(%s)" % (re_y, re_m, re_d))
         is_real_date = False
-        if re_date.match(birth.data):
-            date = re_date.match(birth.data)
-            d = int(date.group(4))
-            m = int(date.group(3))
-            y = int(date.group(1))
+        if re_1.match(birth.data) or re_2.match(birth.data):
+            if re_1.match(birth.data):
+                D = re_1.match(birth.data)
+                d = int(D.group(1))
+                m = int(D.group(2))
+                y = int(D.group(3))
+            elif re_2.match(birth.data):
+                D = re_2.match(birth.data)
+                d = int(D.group(3))
+                m = int(D.group(2))
+                y = int(D.group(1))
             if (m == 2) and ((y % 4 == 0 and y % 100 != 0) or (y % 400 == 0)):
                 ndays[m] += 1
             if d <= ndays[m]:
                 is_real_date = True
         if is_real_date is False:
-            raise ValidationError("Data inexistente ou fora do intervalo")
+            raise ValidationError("Data inexistente")
 
     def validate_inep(self, inep):
         school = db.session.scalar(

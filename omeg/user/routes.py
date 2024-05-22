@@ -3,7 +3,7 @@ from flask import Blueprint, flash, redirect, render_template, url_for
 from flask_login import current_user, login_required
 
 from omeg.conf.boost import db
-from omeg.data.load import cpf_strfmt, payload
+from omeg.data.load import cpf_strfmt, date_strfmt, payload
 from omeg.mold.models import Enrollment, Professor, School, Student
 from omeg.user.forms import student_registration_form
 
@@ -109,14 +109,14 @@ def registered_students(taxnr):
                 Enrollment.roll,
             )
             .where(
-                Enrollment.cpfnr == Student.cpfnr,
                 Enrollment.taxnr == taxnr,
+                Enrollment.cpfnr == Student.cpfnr,
                 Enrollment.year == payload["edition"],
             )
             .order_by(
                 Enrollment.roll,
                 Student.fname,
-            )
+            ).all()
         )
         return render_template(
             "registered_students.html",
@@ -137,7 +137,7 @@ def student_registration(taxnr):
             student = Student(
                 cpfnr=cpf_strfmt(form.cpfnr.data),
                 fname=form.fname.data,
-                birth=form.birth.data,
+                birth=date_strfmt(form.birth.data),
                 email=form.email.data,
             )
             enrollment = Enrollment(

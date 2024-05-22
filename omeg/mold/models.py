@@ -1,3 +1,4 @@
+from datetime import datetime
 from time import time
 from typing import Optional
 
@@ -106,9 +107,13 @@ class Enrollment(db.Model):
     inep: so.Mapped[str] = so.mapped_column(
         sa.String(11), sa.ForeignKey(School.inep), primary_key=True
     )
-    year: so.Mapped[str] = so.mapped_column(sa.String(4), primary_key=True)
+    year: so.Mapped[str] = so.mapped_column(
+        sa.Integer,
+        default=lambda: datetime.strftime(datetime.now(), "%Y"),
+        primary_key=True
+    )
     roll: so.Mapped[int]
-    gift: so.Mapped[str] = so.mapped_column(sa.String(6), default="None")
+    gift: so.Mapped[chr] = so.mapped_column(sa.CHAR, default="N")
 
     def __repr__(self):
         return f"{self.inep}, {self.cpfnr}, {self.year}, {self.roll}"

@@ -26,3 +26,24 @@ def cpf_digits_match(cpfstr):
             if D0_is_correct and D1_is_correct:
                 B = True
     return B
+
+
+def date_strfmt(date):
+    re_d = r"0[1-9]|[12][0-9]|3[01]"
+    re_m = r"0[1-9]|1[012]"
+    re_y = r"20[01][0-9]"
+    re_1 = re.compile(r"(%s)[/-]?(%s)[/-]?(%s)" % (re_d, re_m, re_y))
+    re_2 = re.compile(r"(%s)[/-]?(%s)[/-]?(%s)" % (re_y, re_m, re_d))
+    if re_1.match(date) or re_2.match(date):
+        if re_1.match(date):
+            D = re_1.match(date)
+            d = int(D.group(1))
+            m = int(D.group(2))
+            y = int(D.group(3))
+        elif re_2.match(date):
+            D = re_2.match(date)
+            d = int(D.group(3))
+            m = int(D.group(2))
+            y = int(D.group(1))
+        Dfmt = f"{y}{m}{d}"
+    return Dfmt
