@@ -1,7 +1,6 @@
 import sqlalchemy as sa
 from flask import Blueprint, flash, redirect, render_template, url_for
 from flask_login import current_user, login_required
-from sqlalchemy import func
 
 from omeg.conf.boost import db
 from omeg.data.load import cpf_strfmt, payload
@@ -78,6 +77,12 @@ def students_extract(cpfP):
             for i in [1, 2, 3]
         }
         extract4 = sum(v for v in extract3.values())
+        extract5 = {
+            inep: db.session.query(School.name)
+            .where(School.inep == inep)
+            .one()[0]
+            for inep in extract1.keys()
+        }
         return render_template(
             "students_extract.html",
             payload=payload,
@@ -85,6 +90,7 @@ def students_extract(cpfP):
             extract2=extract2,
             extract3=extract3,
             extract4=extract4,
+            extract5=extract5,
         )
 
 
