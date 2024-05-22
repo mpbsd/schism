@@ -45,9 +45,7 @@
           <a href="">Regulamento</a>
         </div>
         <div class="two columns">
-          <a href="{{ url_for('bp_home_routes.dates') }}">
-            Datas
-          </a>
+          <a href="">Datas</a>
         </div>
         <div class="two columns">
           <a href="{{ url_for('bp_auth_routes.login') }}">
@@ -63,12 +61,82 @@
           <h4>
             Olimpíada de Matemática do Estado de Goiás
           </h4>
-          <p>
-          This home.html page is a placeholder with the CSS, font and favicon.
-          It's just waiting for you to add some content! If you need some help
-          hit up the <a href="http://www.getskeleton.com">Skeleton
-          documentation</a>.
-          </p>
+          <table id="Registration">
+            <thead>
+              <tr>
+                <td>
+                  Período de Inscrições
+                </td>
+                <td>
+                </td>
+                <td>
+                  Dias até
+                </td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  Início
+                </td>
+                <td>
+                  {{ payload["save_the_date"]["registration"]["opening"].strftime("%d/%m/%Y") }}
+                </td>
+                <td>
+                  {{ payload["days_until"]["registration"]["opening"] }}
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Término
+                </td>
+                <td>
+                  {{ payload["save_the_date"]["registration"]["closing"].strftime("%d/%m/%Y") }}
+                </td>
+                <td>
+                  {{ payload["days_until"]["registration"]["closing"] }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <table id="Exam">
+            <thead>
+              <tr>
+                <td>
+                  Provas
+                </td>
+                <td>
+                </td>
+                <td>
+                  Dias até
+                </td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  Primeira Etapa (on-line)
+                </td>
+                <td>
+                  {{ payload["save_the_date"]["step"]["1"].strftime("%d/%m/%Y") }}
+                </td>
+                <td>
+                  {{ payload["days_until"]["step"]["1"] }}
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  Segunda Etapa (presencial)
+                </td>
+                <td>
+                  {{ payload["save_the_date"]["step"]["2"].strftime("%d/%m/%Y") }}
+                </td>
+                <td>
+                  {{ payload["days_until"]["step"]["2"] }}
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -76,3 +144,4 @@
     <!-- End Document ---–––––––––––––––––––––––––––––––––––––––––––––––––– -->
   </body>
 </html>
+

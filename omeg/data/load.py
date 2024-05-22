@@ -1,7 +1,29 @@
+from datetime import date
 import re
+
 
 payload = {
     "edition": 2024,
+    "save_the_date": {
+        "registration": {
+            "opening": date.fromisoformat("20240615"),
+            "closing": date.fromisoformat("20240715"),
+        },
+        "step": {
+            "1": date.fromisoformat("20240914"),
+            "2": date.fromisoformat("20241005"),
+        },
+    },
+    "days_until": {
+        "registration": {
+            "opening": (date.fromisoformat("20240615") - date.today()).days,
+            "closing": (date.fromisoformat("20240715") - date.today()).days,
+        },
+        "step": {
+            "1": (date.fromisoformat("20240914") - date.today()).days,
+            "2": (date.fromisoformat("20241005") - date.today()).days,
+        },
+    },
 }
 
 
