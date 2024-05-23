@@ -23,8 +23,7 @@
     <link href="//fonts.googleapis.com/css?family=Raleway:400,300,600" rel="stylesheet" type="text/css">
 
     <!-- CSS --------------–––––––––––––––––––––––––––––––––––––––––––––––– -->
-    <link rel="stylesheet" href="{{ url_for('bp_auth_routes.static', filename='css/normalize.css') }}">
-    <link rel="stylesheet" href="{{ url_for('bp_auth_routes.static', filename='css/skeleton.css') }}">
+    <link rel="stylesheet" href="{{ url_for('bp_auth_routes.static', filename='css/bootstrap.min.css') }}">
 
     <!-- Favicon ----------–––––––––––––––––––––––––––––––––––––––––––––––– -->
     <link rel="icon" type="image/png" href="{{ url_for('bp_auth_routes.static', filename='images/favicon.png') }}">
@@ -34,31 +33,23 @@
 
     <!-- Primary Page Layout –––––––––––––––––––––––––––––––––––––––––––––– -->
 
-    <div class="container" style="margin-top: 5%">
-      <div class="row">
-        <div class="two columns">
-          <a href="{{ url_for('bp_home_routes.home') }}">
-            Home
-          </a>
-        </div>
-        <div class="three columns">
-          <a href="">Regulamento</a>
-        </div>
-        <div class="two columns">
-          <a href="">Datas</a>
-        </div>
-        <div class="two columns">
-          <a href="{{ url_for('bp_auth_routes.request_registration') }}">
-            Cadastro
-          </a>
-        </div>
-        <div class="three columns">
-          <a href="{{ url_for('bp_auth_routes.request_password_reset') }}">
-            Redefinir Senha
-          </a>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="{{ url_for('bp_home_routes.home') }}">OMEG</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+          <div class="navbar-nav">
+            <a class="nav-link" href="https://files.cercomp.ufg.br/weby/up/36/o/Regulamento_XXXIII_OMEG.docx.pdf?1716401185" target="_blank">Regulamento</a>
+            <a class="nav-link" href="{{ url_for('bp_home_routes.dates') }}">Datas</a>
+            <a class="nav-link" href="{{ url_for('bp_auth_routes.request_registration') }} ">Cadastro</a>
+            <a class="nav-link" href="{{ url_for('bp_auth_routes.login') }} ">Login</a>
+            <a class="nav-link" href="{{ url_for('bp_auth_routes.request_password_reset') }} ">Redefinir senha</a>
+          </div>
         </div>
       </div>
-    </div>
+    </nav>
 
     <div class="container">
       <div class="row">
