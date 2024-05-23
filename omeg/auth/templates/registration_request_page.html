@@ -66,6 +66,7 @@
     <div class="container">
       <div class="row">
         <div class="ten columns" style="margin-top: 20%">
+
           <h4>
             Solicitação de Cadastro
           </h4>
@@ -74,8 +75,15 @@
             <form action="{{ url_for('bp_auth_routes.request_registration') }}" method="post">
               {{ form.hidden_tag() }}
               <fieldset class="form-field">
-                {{ form.email.label }} {{ form.email(size=32) }}
-                {% if form.email.errors %}
+                <p>
+                  {{ form.email.label }}
+                </p>
+                <p>
+                  {{ form.email(size=32) }}
+                </p>
+                <p>
+                  {% if form.email.errors %}
+                </p>
                 <ul class="errors">
                   {% for error in form.email.errors %}
                   <li class="error">
@@ -89,7 +97,9 @@
                 {% endif %}
               </fieldset>
               <fieldset class="form-field">
-                {{ form.submit }}
+                <p>
+                  {{ form.submit }}
+                </p>
               </fieldset>
             </form>
           </div>
