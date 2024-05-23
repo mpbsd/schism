@@ -66,6 +66,7 @@
     <div class="container">
       <div class="row">
         <div class="ten columns" style="margin-top: 20%">
+
           <h4>
             Acesso à Conta
           </h4>
@@ -74,7 +75,12 @@
             <form action="{{ url_for('bp_auth_routes.login') }}" method="post">
               {{ form.hidden_tag() }}
               <fieldset class="form-field">
-                {{ form.taxnr.label }} {{ form.taxnr(size=32) }}
+                <p>
+                  {{ form.taxnr.label }}
+                </p>
+                <p>
+                  {{ form.taxnr(size=32) }}
+                </p>
                 {% if form.taxnr.errors %}
                 <ul class="errors">
                   {% for error in form.taxnr.errors %}
@@ -87,7 +93,12 @@
                 {% endif %}
               </fieldset>
               <fieldset class="form-field">
-                {{ form.password.label }} {{ form.password(size=32) }}
+                <p>
+                  {{ form.password.label }}
+                </p>
+                <p>
+                  {{ form.password(size=32) }}
+                </p>
                 {% if form.password.errors %}
                 <ul class="errors">
                   {% for error in form.password.errors %}
@@ -100,7 +111,9 @@
                 {% endif %}
               </fieldset>
               <fieldset class="form-field">
-                {{ form.submit() }}
+                <p>
+                  {{ form.submit() }}
+                </p>
               </fieldset>
             </form>
           </div>

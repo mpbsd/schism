@@ -80,7 +80,12 @@
             <form action="{{ url_for('bp_user_routes.student_registration', taxnr=current_user.taxnr) }}" method="post">
               {{ form.hidden_tag() }}
               <fieldset class="form-field">
-                {{ form.cpfnr.label }} {{ form.cpfnr(size=32) }}
+                <p>
+                  {{ form.cpfnr.label }}
+                </p>
+                <p>
+                  {{ form.cpfnr(size=32) }}
+                </p>
                 {% if form.cpfnr.errors %}
                 <ul class="errors">
                   {% for error in form.cpfnr.errors %}
@@ -95,7 +100,12 @@
                 {% endif %}
               </fieldset>
               <fieldset class="form-field">
-                {{ form.fname.label }} {{ form.fname(size=32) }}
+                <p>
+                  {{ form.fname.label }}
+                </p>
+                <p>
+                  {{ form.fname(size=32) }}
+                </p>
                 {% if form.fname.errors %}
                 <ul class="errors">
                   {% for error in form.fname.errors %}
@@ -110,7 +120,12 @@
                 {% endif %}
               </fieldset>
               <fieldset class="form-field">
-                {{ form.birth.label }} {{ form.birth(size=32) }}
+                <p>
+                  {{ form.birth.label }}
+                </p>
+                <p>
+                  {{ form.birth(size=32) }}
+                </p>
                 {% if form.birth.errors %}
                 <ul class="errors">
                   {% for error in form.birth.errors %}
@@ -125,7 +140,12 @@
                 {% endif %}
               </fieldset>
               <fieldset class="form-field">
-                {{ form.email.label }} {{ form.email(size=32) }}
+                <p>
+                  {{ form.email.label }}
+                </p>
+                <p>
+                  {{ form.email(size=32) }}
+                </p>
                 {% if form.email.errors %}
                 <ul class="errors">
                   {% for error in form.email.errors %}
@@ -140,7 +160,12 @@
                 {% endif %}
               </fieldset>
               <fieldset class="form-field">
-                {{ form.inep.label }} {{ form.inep(size=32) }}
+                <p>
+                  {{ form.inep.label }}
+                </p>
+                <p>
+                  {{ form.inep(size=32) }}
+                </p>
                 {% if form.inep.errors %}
                 <ul class="errors">
                   {% for error in form.inep.errors %}
@@ -155,7 +180,12 @@
                 {% endif %}
               </fieldset>
               <fieldset class="form-field">
-                {{ form.roll.label }} {{ form.roll(size=32) }}
+                <p>
+                  {{ form.roll.label }}
+                </p>
+                <p>
+                  {{ form.roll(size=32) }}
+                </p>
                 {% if form.roll.errors %}
                 <ul class="errors">
                   {% for error in form.roll.errors %}

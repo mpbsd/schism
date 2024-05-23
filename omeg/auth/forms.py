@@ -19,7 +19,7 @@ from omeg.mold.models import Professor, School, Student
 
 class professor_registration_request_form(FlaskForm):
     email = StringField("Email", validators=[DataRequired(), Email()])
-    submit = SubmitField("Enviar")
+    submit = SubmitField("Enviar Link")
 
 
 class professor_registration_form(FlaskForm):
