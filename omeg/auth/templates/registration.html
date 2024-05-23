@@ -63,30 +63,10 @@
       </div>
     </nav>
 
-    <div class="container" style="margin-top: 5%">
-      <div class="row">
-        <div class="two columns">
-          <a href="{{ url_for('bp_home_routes.home') }}">
-            Home
-          </a>
-        </div>
-        <div class="three columns">
-          <a href="">Regulamento</a>
-        </div>
-        <div class="two columns">
-          <a href="">Datas</a>
-        </div>
-        <div class="two columns">
-          <a href="{{ url_for('bp_auth_routes.login') }}">
-            Login
-          </a>
-        </div>
-      </div>
-    </div>
-
     <div class="container">
       <div class="row">
-        <div class="ten columns" style="margin-top: 20%">
+        <div class="ten columns" style="margin-top: 10%">
+
           <h4>
             Olimpíada de Matemática do Estado de Goiás
           </h4>
@@ -95,7 +75,12 @@
             <form action="{{ url_for('bp_auth_routes.registration', token=token) }}" method="post">
               {{ form.hidden_tag() }}
               <fieldset class="form-field">
-                {{ form.taxnr.label }} {{ form.taxnr(size=32) }}
+                <p>
+                  {{ form.taxnr.label }}
+                </p>
+                <p>
+                  {{ form.taxnr(size=32) }}
+                </p>
                 {% if form.taxnr.errors %}
                 <ul class="errors">
                   {% for error in form.taxnr.errors %}
@@ -108,7 +93,12 @@
                 {% endif %}
               </fieldset>
               <fieldset class="form-field">
-                {{ form.fname.label }} {{ form.fname(size=32) }}
+                <p>
+                  {{ form.fname.label }}
+                </p>
+                <p>
+                  {{ form.fname(size=32) }}
+                </p>
                 {% if form.fname.errors %}
                 <ul class="errors">
                   {% for error in form.fname.errors %}
@@ -121,7 +111,12 @@
                 {% endif %}
               </fieldset>
               <fieldset class="form-field">
-                {{ form.email.label }} {{ form.email(size=32) }}
+                <p>
+                  {{ form.email.label }}
+                </p>
+                <p>
+                  {{ form.email(size=32) }}
+                </p>
                 {% if form.email.errors %}
                 <ul class="errors">
                   {% for error in form.email.errors %}
@@ -134,7 +129,12 @@
                 {% endif %}
               </fieldset>
               <fieldset class="form-field">
-                {{ form.password1.label }} {{ form.password1(size=32) }}
+                <p>
+                  {{ form.password1.label }}
+                </p>
+                <p>
+                  {{ form.password1(size=32) }}
+                </p>
                 {% if form.password1.errors %}
                 <ul class="errors">
                   {% for error in form.password1.errors %}
@@ -147,7 +147,12 @@
                 {% endif %}
               </fieldset>
               <fieldset class="form-field">
-                {{ form.password2.label }} {{ form.password2(size=32) }}
+                <p>
+                  {{ form.password2.label }}
+                </p>
+                <p>
+                  {{ form.password2(size=32) }}
+                </p>
                 {% if form.password2.errors %}
                 <ul class="errors">
                   {% for error in form.password2.errors %}
