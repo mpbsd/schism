@@ -32,16 +32,15 @@ def professor_dashboard(taxnr):
 
 
 @bp_user_routes.route("/professor/<taxnr>/dates")
-def dates(taxnr):
+def save_the_date(taxnr):
     if taxnr == current_user.taxnr:
         professor = db.first_or_404(
             sa.select(Professor).where(Professor.taxnr == taxnr)
         )
         return render_template(
-            "dates.html",
+            "save_the_date.html",
             payload=payload,
             professor=professor,
-            taxnr=taxnr,
         )
 
 
