@@ -67,5 +67,5 @@ def date_strfmt(date):
             d = int(D.group(3))
             m = int(D.group(2))
             y = int(D.group(1))
-        Dfmt = f"{y}{m}{d}"
+        Dfmt = "%04d%02d%02d" % (y, m, d)
     return Dfmt
