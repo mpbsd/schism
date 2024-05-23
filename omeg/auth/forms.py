@@ -60,7 +60,7 @@ class login_form(FlaskForm):
 
 class reset_password_request_form(FlaskForm):
     email = StringField("Email", validators=[DataRequired(), Email()])
-    submit = SubmitField("Redefinir senha")
+    submit = SubmitField("Enviar Link")
 
 
 class reset_password_form(FlaskForm):
