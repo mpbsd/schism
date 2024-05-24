@@ -134,7 +134,7 @@ def student_registration(taxnr):
             db.session.commit()
             flash("Estudante cadastrado com sucesso!")
             return redirect(
-                url_for("bp_user_routes.professor_dashboard", taxnr=taxnr)
+                url_for("bp_user_routes.registered_students", taxnr=taxnr)
             )
     return render_template(
         "student_registration.html",
