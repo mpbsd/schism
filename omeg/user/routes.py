@@ -79,11 +79,13 @@ def registered_students(taxnr):
                 Student.email,
                 Enrollment.inep,
                 Enrollment.roll,
+                School.name,
             )
             .where(
                 Enrollment.taxnr == taxnr,
                 Enrollment.cpfnr == Student.cpfnr,
                 Enrollment.year == payload["edition"],
+                Enrollment.inep == School.inep,
             )
             .order_by(
                 Enrollment.roll,
