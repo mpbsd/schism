@@ -41,3 +41,6 @@ def create_app():
     omeg.register_blueprint(bp_user_routes, url_prefix="/user")
 
     return omeg
+
+
+omeg = create_app()
