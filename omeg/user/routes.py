@@ -90,7 +90,8 @@ def registered_students(taxnr):
             .order_by(
                 Enrollment.roll,
                 Student.fname,
-            ).all()
+            )
+            .all()
         )
         return render_template(
             "registered_students.html",
@@ -98,6 +99,7 @@ def registered_students(taxnr):
             professor=professor,
             taxnr=taxnr,
             students=students,
+            date_strfmt=date_strfmt,
         )
 
 
@@ -115,7 +117,7 @@ def student_registration(taxnr):
             student = Student(
                 cpfnr=cpf_strfmt(form.cpfnr.data),
                 fname=form.fname.data,
-                birth=date_strfmt(form.birth.data),
+                birth=date_strfmt(form.birth.data, "yyyymmdd"),
                 email=form.email.data,
             )
             enrollment = Enrollment(

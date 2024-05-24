@@ -1,6 +1,5 @@
-from datetime import date
 import re
-
+from datetime import date
 
 payload = {
     "edition": 2024,
@@ -50,7 +49,14 @@ def cpf_digits_match(cpfstr):
     return B
 
 
-def date_strfmt(date):
+def date_strfmt(date, style):
+    STYLE = {
+        "dd-mm-yyyy": "%02d-%02d-%04d",
+        "dd/mm/yyyy": "%02d/%02d/%04d",
+        "yyyy-mm-dd": "%04d-%02d-%02d",
+        "yyyy/mm/dd": "%04d/%02d/%02d",
+        "yyyymmdd": "%04d%02d%02d",
+    }
     re_d = r"0[1-9]|[12][0-9]|3[01]"
     re_m = r"0[1-9]|1[012]"
     re_y = r"20[01][0-9]"
@@ -67,5 +73,8 @@ def date_strfmt(date):
             d = int(D.group(3))
             m = int(D.group(2))
             y = int(D.group(1))
-        Dfmt = "%04d%02d%02d" % (y, m, d)
+        if style in ["dd-mm-yyyy", "dd/mm/yyyy"]:
+            Dfmt = STYLE[style] % (d, m, y)
+        else:
+            Dfmt = STYLE[style] % (y, m, d)
     return Dfmt
