@@ -97,14 +97,13 @@ def registered_students(taxnr):
             "registered_students.html",
             payload=payload,
             professor=professor,
-            taxnr=taxnr,
             students=students,
             date_strfmt=date_strfmt,
         )
 
 
 @bp_user_routes.route(
-    "/professor/<taxnr>/new_student", methods=["GET", "POST"]
+    "/professor/<taxnr>/student_registration", methods=["GET", "POST"]
 )
 @login_required
 def student_registration(taxnr):
@@ -144,10 +143,9 @@ def student_registration(taxnr):
                 db.session.commit()
                 flash("Estudante cadastrado com sucesso!")
                 return redirect(
-                    url_for("bp_user_routes.registered_students", taxnr=taxnr)
+                    url_for("bp_user_routes.registered_students")
                 )
             else:
-                flash("Quota atingida.")
                 extract1 = {
                     inep[0]: {
                         i: db.session.query(Enrollment)
@@ -182,6 +180,7 @@ def student_registration(taxnr):
                     .one()[0]
                     for inep in extract1.keys()
                 }
+                flash("Quota atingida.")
                 return render_template(
                     "quota_overflow.html",
                     payload=payload,
@@ -197,7 +196,6 @@ def student_registration(taxnr):
         "student_registration.html",
         payload=payload,
         professor=professor,
-        taxnr=taxnr,
         form=form,
     )
 
