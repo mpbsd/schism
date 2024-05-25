@@ -98,7 +98,9 @@ class Student(db.Model):
 
 class Enrollment(db.Model):
     cpfnr: so.Mapped[str] = so.mapped_column(
-        sa.String(11), sa.ForeignKey(Student.cpfnr), primary_key=True
+        sa.String(11),
+        sa.ForeignKey(Student.cpfnr, onupdate="CASCADE"),
+        primary_key=True,
     )
     taxnr: so.Mapped[str] = so.mapped_column(
         sa.String(11), sa.ForeignKey(Professor.taxnr), primary_key=True

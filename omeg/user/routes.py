@@ -142,9 +142,7 @@ def student_registration(taxnr):
                 db.session.add(enrollment)
                 db.session.commit()
                 flash("Estudante cadastrado com sucesso!")
-                return redirect(
-                    url_for("bp_user_routes.registered_students")
-                )
+                return redirect(url_for("bp_user_routes.registered_students"))
             else:
                 extract1 = {
                     inep[0]: {
