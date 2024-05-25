@@ -1,30 +1,6 @@
 import re
 from datetime import date
 
-payload = {
-    "edition": 2024,
-    "save_the_date": {
-        "registration": {
-            "opening": date.fromisoformat("20240615"),
-            "closing": date.fromisoformat("20240715"),
-        },
-        "step": {
-            "1": date.fromisoformat("20240914"),
-            "2": date.fromisoformat("20241005"),
-        },
-    },
-    "days_until": {
-        "registration": {
-            "opening": (date.fromisoformat("20240615") - date.today()).days,
-            "closing": (date.fromisoformat("20240715") - date.today()).days,
-        },
-        "step": {
-            "1": (date.fromisoformat("20240914") - date.today()).days,
-            "2": (date.fromisoformat("20241005") - date.today()).days,
-        },
-    },
-}
-
 
 def cpf_strfmt(cpfnr):
     re_cpf = re.compile(r"(\d{3})\.?(\d{3})\.?(\d{3})-?(\d{2})")
@@ -78,3 +54,36 @@ def date_strfmt(date, style):
         else:
             Dfmt = STYLE[style] % (y, m, d)
     return Dfmt
+
+
+def beancount(dt1, dt2):
+    if dt1 < dt2:
+        beans = f"{(dt2 - dt1).days} dias"
+    else:
+        beans = "---"
+    return beans
+
+
+payload = {
+    "edition": 2024,
+    "save_the_date": {
+        "registration": {
+            "opening": date.fromisoformat("20240615"),
+            "closing": date.fromisoformat("20240715"),
+        },
+        "step": {
+            "1": date.fromisoformat("20240914"),
+            "2": date.fromisoformat("20241005"),
+        },
+    },
+    "days_until": {
+        "registration": {
+            "opening": beancount(date.today(), date.fromisoformat("20240615")),
+            "closing": beancount(date.today(), date.fromisoformat("20240715")),
+        },
+        "step": {
+            "1": beancount(date.today(), date.fromisoformat("20240914")),
+            "2": beancount(date.today(), date.fromisoformat("20241005")),
+        },
+    },
+}
