@@ -1,6 +1,5 @@
 build:
-	gunicorn -b localhost:5000 -w 4 omeg.core:omeg
-	# flask run --debug
+	gunicorn -b localhost:8000 -w 4 omeg.core:omeg
 
 black:
 	isort omeg/auth/emails.py
