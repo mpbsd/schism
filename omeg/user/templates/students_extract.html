@@ -98,18 +98,18 @@
               </tr>
             </thead>
             <tbody>
-              {% for inep in extract1.keys() %}
+              {% for inep in extract["1"].keys() %}
               <tr>
-                <th scope="row" title="{{ extract5[inep] }}">
+                <th scope="row" title="{{ extract["5"][inep] }}">
                   {{ inep }}
                 </th>
                 {% for i in [1, 2, 3] %}
                 <td>
-                  {{ extract1[inep][i] }}
+                  {{ extract["1"][inep][i] }}
                 </td>
                 {% endfor %}
                 <td>
-                  {{ extract2[inep] }}
+                  {{ extract["2"][inep] }}
                 </td>
               </tr>
               {% endfor %}
@@ -119,11 +119,11 @@
                 </th>
                 {% for i in [1, 2, 3] %}
                 <td>
-                  {{ extract3[i] }}
+                  {{ extract["3"][i] }}
                 </td>
                 {% endfor %}
                 <td>
-                  {{ extract4 }}
+                  {{ extract["4"] }}
                 </td>
               </tr>
             </tbody>

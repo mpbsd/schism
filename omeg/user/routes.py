@@ -102,6 +102,51 @@ def registered_students(taxnr):
         )
 
 
+def students_extract_query(taxnr):
+    extract1 = {
+        inep[0]: {
+            i: db.session.query(Enrollment)
+            .where(
+                Enrollment.inep == inep[0],
+                Enrollment.taxnr == taxnr,
+                Enrollment.year == payload["edition"],
+                Enrollment.roll == i,
+            )
+            .count()
+            for i in [1, 2, 3]
+        }
+        for inep in db.session.query(Enrollment.inep)
+        .where(
+            Enrollment.taxnr == taxnr,
+            Enrollment.year == payload["edition"],
+        )
+        .all()
+    }
+    extract2 = {
+        inep: sum(extract1[inep].values())
+        for inep in extract1.keys()
+    }
+    extract3 = {
+        i: sum(extract1[inep][i] for inep in extract1.keys())
+        for i in [1, 2, 3]
+    }
+    extract4 = sum(v for v in extract3.values())
+    extract5 = {
+        inep: db.session.query(School.name)
+        .where(School.inep == inep)
+        .one()[0]
+        for inep in extract1.keys()
+    }
+    extract = {
+        "1": extract1,
+        "2": extract2,
+        "3": extract3,
+        "4": extract4,
+        "5": extract5,
+    }
+    return extract
+
+
 @bp_user_routes.route(
     "/professor/<taxnr>/student_registration", methods=["GET", "POST"]
 )
@@ -144,51 +189,14 @@ def student_registration(taxnr):
                 flash("Estudante cadastrado com sucesso!")
                 return redirect(url_for("bp_user_routes.registered_students"))
             else:
-                extract1 = {
-                    inep[0]: {
-                        i: db.session.query(Enrollment)
-                        .where(
-                            Enrollment.inep == inep[0],
-                            Enrollment.taxnr == taxnr,
-                            Enrollment.year == payload["edition"],
-                            Enrollment.roll == i,
-                        )
-                        .count()
-                        for i in [1, 2, 3]
-                    }
-                    for inep in db.session.query(Enrollment.inep)
-                    .where(
-                        Enrollment.taxnr == taxnr,
-                        Enrollment.year == payload["edition"],
-                    )
-                    .all()
-                }
-                extract2 = {
-                    inep: sum(extract1[inep].values())
-                    for inep in extract1.keys()
-                }
-                extract3 = {
-                    i: sum(extract1[inep][i] for inep in extract1.keys())
-                    for i in [1, 2, 3]
-                }
-                extract4 = sum(v for v in extract3.values())
-                extract5 = {
-                    inep: db.session.query(School.name)
-                    .where(School.inep == inep)
-                    .one()[0]
-                    for inep in extract1.keys()
-                }
+                extract = students_extract_query(professor.taxnr)
                 flash("Quota atingida.")
                 return render_template(
                     "quota_overflow.html",
                     payload=payload,
                     professor=professor,
                     roll=enrollment.roll,
-                    extract1=extract1,
-                    extract2=extract2,
-                    extract3=extract3,
-                    extract4=extract4,
-                    extract5=extract5,
+                    extract=extract,
                 )
     return render_template(
         "student_registration.html",
@@ -205,46 +213,10 @@ def students_extract(taxnr):
         professor = db.first_or_404(
             sa.select(Professor).where(Professor.taxnr == taxnr)
         )
-        extract1 = {
-            inep[0]: {
-                i: db.session.query(Enrollment)
-                .where(
-                    Enrollment.inep == inep[0],
-                    Enrollment.taxnr == taxnr,
-                    Enrollment.year == payload["edition"],
-                    Enrollment.roll == i,
-                )
-                .count()
-                for i in [1, 2, 3]
-            }
-            for inep in db.session.query(Enrollment.inep)
-            .where(
-                Enrollment.taxnr == taxnr,
-                Enrollment.year == payload["edition"],
-            )
-            .all()
-        }
-        extract2 = {
-            inep: sum(extract1[inep].values()) for inep in extract1.keys()
-        }
-        extract3 = {
-            i: sum(extract1[inep][i] for inep in extract1.keys())
-            for i in [1, 2, 3]
-        }
-        extract4 = sum(v for v in extract3.values())
-        extract5 = {
-            inep: db.session.query(School.name)
-            .where(School.inep == inep)
-            .one()[0]
-            for inep in extract1.keys()
-        }
+        extract = students_extract_query(professor.taxnr)
         return render_template(
             "students_extract.html",
             payload=payload,
             professor=professor,
-            extract1=extract1,
-            extract2=extract2,
-            extract3=extract3,
-            extract4=extract4,
-            extract5=extract5,
+            extract=extract,
         )
