@@ -69,11 +69,12 @@
     <div class="container">
       <div class="row">
         <div class="ten columns" style="margin-top: 10%">
+
           <h4>
             Cadastrar Estudante
           </h4>
 
-          <div class="form-wrapper">
+          <div class="form-wrapper" style="margin-top: 5%">
             <form action="{{ url_for('bp_user_routes.student_registration', taxnr=current_user.taxnr) }}" method="post">
               {{ form.hidden_tag() }}
               <fieldset class="form-field">

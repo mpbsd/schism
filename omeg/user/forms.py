@@ -17,11 +17,11 @@ from omeg.mold.models import Professor, School, Student
 
 class student_registration_form(FlaskForm):
     cpfnr = StringField("CPF", validators=[DataRequired()])
-    fname = StringField("Nome", validators=[DataRequired()])
+    fname = StringField("Nome completo", validators=[DataRequired()])
     birth = StringField("Data de nascimento", validators=[DataRequired()])
     email = StringField("Email", validators=[DataRequired(), Email()])
     roll = IntegerField("Nível", validators=[NumberRange(min=1, max=3)])
-    inep = StringField("Codigo INEP", validators=[DataRequired()])
+    inep = StringField("Código INEP", validators=[DataRequired()])
     need = StringField("Condições especiais")
     submit = SubmitField("Cadastrar")
 
