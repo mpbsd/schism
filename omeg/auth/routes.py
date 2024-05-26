@@ -20,7 +20,6 @@ from omeg.mold.models import Professor
 bp_auth_routes = Blueprint(
     "bp_auth_routes",
     __name__,
-    static_folder="static",
     template_folder="templates",
 )
 

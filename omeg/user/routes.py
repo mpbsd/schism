@@ -10,7 +10,6 @@ from omeg.user.forms import student_registration_form
 bp_user_routes = Blueprint(
     "bp_user_routes",
     __name__,
-    static_folder="static",
     template_folder="templates",
 )
 

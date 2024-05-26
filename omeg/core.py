@@ -30,7 +30,7 @@ def create_app():
 
     from omeg.home.routes import bp_home_routes
 
-    omeg.register_blueprint(bp_home_routes, url_prefix="/home")
+    omeg.register_blueprint(bp_home_routes, url_prefix="/")
 
     from omeg.auth.routes import bp_auth_routes
 

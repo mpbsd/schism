@@ -5,7 +5,6 @@ from omeg.data.load import payload
 bp_home_routes = Blueprint(
     "bp_home_routes",
     __name__,
-    static_folder="static",
     template_folder="templates",
 )
 
