@@ -1,8 +1,8 @@
-"""fireup database
+"""create tables
 
-Revision ID: 647d2d177eac
+Revision ID: d5406d1a9811
 Revises: 
-Create Date: 2024-05-26 15:24:13.444216
+Create Date: 2024-05-26 15:42:30.285673
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '647d2d177eac'
+revision = 'd5406d1a9811'
 down_revision = None
 branch_labels = None
 depends_on = None
