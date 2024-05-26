@@ -113,22 +113,20 @@ class Enrollment(db.Model):
         primary_key=True,
     )
     year: so.Mapped[str] = so.mapped_column(sa.String(4), primary_key=True)
-    # acceptable values are:
-    #  roll = {
-    #    1: "6 e 7 anos",
-    #    2: "8 e 9 anos",
-    #    3: "Ensino Fundamental",
-    #  }
+    # acceptable values:
+    # roll:
+    #   '1' meaning 'Sexto e/ou sétimo anos do Ensino Fundamental'
+    #   '2' meaning 'Oitavo e/ou nono anos do Ensino Fundamental'
+    #   '3' meaning 'Ensino Médio'
     roll: so.Mapped[int]
-    # acceptable values are:
-    #  gift = {
-    #    'O': 'Ouro',
-    #    'P': 'Prata',
-    #    'B': 'Bronze',
-    #    'H': 'Menção Honrosa',
-    #    'N': 'Nenhum',
-    #  }
     need: so.Mapped[str] = so.mapped_column(sa.String(255), nullable=True)
+    # acceptable values:
+    # gift:
+    #   'O' meaning 'Medalha de Ouro'
+    #   'P' meaning 'Medalha de Prata'
+    #   'B' meaning 'Medalha de Bronze'
+    #   'H' meaning 'Menção Honrosa'
+    #   'N' meaning 'Nenhum'
     gift: so.Mapped[chr] = so.mapped_column(sa.CHAR, default="N")
 
     def __repr__(self):
