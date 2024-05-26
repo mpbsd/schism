@@ -1,6 +1,9 @@
+import re
+
 import sqlalchemy as sa
 from flask import Blueprint, flash, redirect, render_template, url_for
 from flask_login import current_user, login_required
+from unidecode import unidecode
 
 from omeg.conf.boost import db
 from omeg.data.load import cpf_strfmt, date_strfmt, payload
@@ -102,6 +105,16 @@ def registered_students(taxnr):
 
 
 def students_extract_query(taxnr):
+    # extract1 = {
+    #   {
+    #     inep: {
+    #       1: qty_of_students_at_level_1,
+    #       2: qty_of_students_at_level_2,
+    #       3: qty_of_students_at_level_3
+    #     }
+    #     for each of the professor's schools
+    #   }
+    # }
     extract1 = {
         inep[0]: {
             i: db.session.query(Enrollment)
@@ -121,22 +134,35 @@ def students_extract_query(taxnr):
         )
         .all()
     }
+    # extract2 = {
+    #   inep: qty_of_students_in_total,
+    #   for each of the professor's schools
+    # }
     extract2 = {inep: sum(extract1[inep].values()) for inep in extract1.keys()}
+    # extract3 = {
+    #   i: qty_of_students_at_level_i_from_all_of_the_professors_schools,
+    #   for i in [1, 2, 3]
+    # }
     extract3 = {
         i: sum(extract1[inep][i] for inep in extract1.keys())
         for i in [1, 2, 3]
     }
+    # extract4 = qty_of_students_in_total
     extract4 = sum(v for v in extract3.values())
+    # extract5 = {
+    #   inep: school_name,
+    #   for each of the professor's schools
+    # }
     extract5 = {
         inep: db.session.query(School.name).where(School.inep == inep).one()[0]
         for inep in extract1.keys()
     }
     extract = {
-        "1": extract1,
-        "2": extract2,
-        "3": extract3,
-        "4": extract4,
-        "5": extract5,
+        1: extract1,
+        2: extract2,
+        3: extract3,
+        4: extract4,
+        5: extract5,
     }
     return extract
 
@@ -154,7 +180,7 @@ def student_registration(taxnr):
         if form.validate_on_submit():
             student = Student(
                 cpfnr=cpf_strfmt(form.cpfnr.data),
-                fname=form.fname.data,
+                fname=re.sub(r"\s+", r" ", form.fname.data),
                 birth=date_strfmt(form.birth.data, "yyyymmdd"),
                 email=form.email.data,
             )
@@ -164,7 +190,7 @@ def student_registration(taxnr):
                 inep=form.inep.data,
                 year=payload["edition"],
                 roll=form.roll.data,
-                need=form.need.data,
+                need=unidecode(form.need.data.lower()),
                 gift="N",
             )
             quota = (

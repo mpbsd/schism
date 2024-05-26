@@ -22,7 +22,7 @@ class student_registration_form(FlaskForm):
     email = StringField("Email", validators=[DataRequired(), Email()])
     roll = IntegerField("Nível", validators=[NumberRange(min=1, max=3)])
     inep = StringField("Código INEP", validators=[DataRequired()])
-    need = StringField("Condições especiais")
+    need = StringField("Condições especiais para participar das provas")
     submit = SubmitField("Cadastrar")
 
     def validate_cpfnr(self, cpfnr):
