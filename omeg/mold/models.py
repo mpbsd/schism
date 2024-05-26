@@ -103,10 +103,14 @@ class Enrollment(db.Model):
         primary_key=True,
     )
     taxnr: so.Mapped[str] = so.mapped_column(
-        sa.String(11), sa.ForeignKey(Professor.taxnr), primary_key=True
+        sa.String(11),
+        sa.ForeignKey(Professor.taxnr, onupdate="CASCADE"),
+        primary_key=True,
     )
     inep: so.Mapped[str] = so.mapped_column(
-        sa.String(8), sa.ForeignKey(School.inep), primary_key=True
+        sa.String(8),
+        sa.ForeignKey(School.inep, onupdate="CASCADE"),
+        primary_key=True,
     )
     year: so.Mapped[str] = so.mapped_column(sa.String(4), primary_key=True)
     # acceptable values are:

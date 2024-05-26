@@ -121,19 +121,14 @@ def students_extract_query(taxnr):
         )
         .all()
     }
-    extract2 = {
-        inep: sum(extract1[inep].values())
-        for inep in extract1.keys()
-    }
+    extract2 = {inep: sum(extract1[inep].values()) for inep in extract1.keys()}
     extract3 = {
         i: sum(extract1[inep][i] for inep in extract1.keys())
         for i in [1, 2, 3]
     }
     extract4 = sum(v for v in extract3.values())
     extract5 = {
-        inep: db.session.query(School.name)
-        .where(School.inep == inep)
-        .one()[0]
+        inep: db.session.query(School.name).where(School.inep == inep).one()[0]
         for inep in extract1.keys()
     }
     extract = {
@@ -182,12 +177,16 @@ def student_registration(taxnr):
                 .count()
             )
             if quota <= payload["quota"] - 1:
-                enrollment_already_exists = db.session.query(Enrollment).where(
-                    Enrollment.cpfnr == enrollment.cpfnr,
-                    Enrollment.taxnr == enrollment.taxnr,
-                    Enrollment.inep == enrollment.inep,
-                    Enrollment.year == payload["edition"],
-                ).all()
+                enrollment_already_exists = (
+                    db.session.query(Enrollment)
+                    .where(
+                        Enrollment.cpfnr == enrollment.cpfnr,
+                        Enrollment.taxnr == enrollment.taxnr,
+                        Enrollment.inep == enrollment.inep,
+                        Enrollment.year == payload["edition"],
+                    )
+                    .all()
+                )
                 if not enrollment_already_exists:
                     db.session.add(student)
                     db.session.commit()
@@ -197,7 +196,7 @@ def student_registration(taxnr):
                 return redirect(
                     url_for(
                         "bp_user_routes.registered_students",
-                        taxnr=current_user.taxnr
+                        taxnr=current_user.taxnr,
                     )
                 )
             else:
