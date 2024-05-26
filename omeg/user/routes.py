@@ -169,6 +169,7 @@ def student_registration(taxnr):
                 inep=form.inep.data,
                 year=payload["edition"],
                 roll=form.roll.data,
+                need=form.need.data,
                 gift="N",
             )
             quota = (
@@ -180,13 +181,25 @@ def student_registration(taxnr):
                 )
                 .count()
             )
-            if quota <= 9:
-                db.session.add(student)
-                db.session.commit()
-                db.session.add(enrollment)
-                db.session.commit()
-                flash("Estudante cadastrado com sucesso!")
-                return redirect(url_for("bp_user_routes.registered_students"))
+            if quota <= payload["quota"] - 1:
+                enrollment_already_exists = db.session.query(Enrollment).where(
+                    Enrollment.cpfnr == enrollment.cpfnr,
+                    Enrollment.taxnr == enrollment.taxnr,
+                    Enrollment.inep == enrollment.inep,
+                    Enrollment.year == payload["edition"],
+                ).all()
+                if not enrollment_already_exists:
+                    db.session.add(student)
+                    db.session.commit()
+                    db.session.add(enrollment)
+                    db.session.commit()
+                    flash("Estudante cadastrado com sucesso!")
+                return redirect(
+                    url_for(
+                        "bp_user_routes.registered_students",
+                        taxnr=current_user.taxnr
+                    )
+                )
             else:
                 extract = students_extract_query(professor.taxnr)
                 flash("Quota atingida.")

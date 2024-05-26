@@ -66,6 +66,7 @@ def beancount(dt1, dt2):
 
 payload = {
     "edition": 2024,
+    "quota": 10,
     "save_the_date": {
         "registration": {
             "opening": date.fromisoformat("20240615"),

@@ -124,6 +124,7 @@ class Enrollment(db.Model):
     #    'H': 'Menção Honrosa',
     #    'N': 'Nenhum',
     #  }
+    need: so.Mapped[str] = so.mapped_column(sa.String(255), nullable=True)
     gift: so.Mapped[chr] = so.mapped_column(sa.CHAR, default="N")
 
     def __repr__(self):

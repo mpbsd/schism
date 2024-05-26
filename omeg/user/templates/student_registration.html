@@ -197,6 +197,26 @@
                 {% endif %}
               </fieldset>
               <fieldset class="form-field">
+                <p>
+                  {{ form.need.label }}
+                </p>
+                <p>
+                  {{ form.need(size=32) }}
+                </p>
+                {% if form.need.errors %}
+                <ul class="errors">
+                  {% for error in form.need.errors %}
+                  <li class="error">
+                    <i class="fa fa-exclamation"></i>
+                    <span class="error-message">
+                      {{ error }}
+                    </span>
+                  </li>
+                  {% endfor %}
+                </ul>
+                {% endif %}
+              </fieldset>
+              <fieldset class="form-field">
                 {{ form.submit }}
               </fieldset>
             </form>
