@@ -79,45 +79,46 @@
         <div class="ten columns" style="margin-top: 10%">
 
           <h4>
-            Códigos INEP de Escolas Goianas
+            Estudantes Cadastrados
           </h4>
 
           <table class="table table-striped" style="margin-top: 5%">
             <thead>
               <tr>
                 <th scope="col">
-                  INEP
+                  CPF
                 </th>
                 <th scope="col">
-                  Categoria
+                  Nome
                 </th>
                 <th scope="col">
                   Escola
                 </th>
                 <th scope="col">
-                  Município
+                  Nível
                 </th>
               </tr>
             </thead>
             <tbody>
-              {% for school in schools %}
+              {% for enrollment in enrollments %}
               <tr>
-                <td title="{{ school.name }}">
-                  {{ school.inep }}
+                <td>
+                  {{ enrollment.cpfnr }}
+                </td>
+                <td title="{{ enrollment.need}}">
+                  {{ enrollment.fname }}
+                </td>
+                <td title="{{ enrollment.name }}">
+                  {{ enrollment.inep }}
                 </td>
                 <td>
-                  {{ school.tier }}
-                </td>
-                <td title="CEP={{ school.code }}, telefone={{ school.pnum }}, latitude={{ school.latd }}, longitude={{ school.lotd }}">
-                  {{ school.name }}
-                </td>
-                <td>
-                  {{ school.city }}
+                  {{ enrollment.roll }}
                 </td>
               </tr>
               {% endfor %}
             </tbody>
           </table>
+
         </div>
       </div>
     </div>
@@ -125,4 +126,3 @@
     <!-- End Document ---–––––––––––––––––––––––––––––––––––––––––––––––––– -->
   </body>
 </html>
-

@@ -66,44 +66,6 @@ def inep(taxnr):
         return redirect(url_for("bp_home_routes.home"))
 
 
-@bp_user_routes.route("/professor/<taxnr>/students")
-@login_required
-def registered_students(taxnr):
-    if taxnr == current_user.taxnr:
-        professor = db.first_or_404(
-            sa.select(Professor).where(Professor.taxnr == taxnr)
-        )
-        students = (
-            db.session.query(
-                Student.cpfnr,
-                Student.fname,
-                Student.birth,
-                Student.email,
-                Enrollment.inep,
-                Enrollment.roll,
-                School.name,
-            )
-            .where(
-                Enrollment.taxnr == taxnr,
-                Enrollment.cpfnr == Student.cpfnr,
-                Enrollment.year == payload["edition"],
-                Enrollment.inep == School.inep,
-            )
-            .order_by(
-                Enrollment.roll,
-                Student.fname,
-            )
-            .all()
-        )
-        return render_template(
-            "registered_students.html",
-            payload=payload,
-            professor=professor,
-            students=students,
-            date_strfmt=date_strfmt,
-        )
-
-
 def students_extract_query(taxnr):
     # extract1 = {
     #   {
@@ -243,16 +205,82 @@ def student_registration(taxnr):
     )
 
 
-@bp_user_routes.route("/professor/<taxnr>/extract")
+@bp_user_routes.route("/professor/<taxnr>/students")
 @login_required
-def students_extract(taxnr):
+def registered_students(taxnr):
+    if taxnr == current_user.taxnr:
+        professor = db.first_or_404(
+            sa.select(Professor).where(Professor.taxnr == taxnr)
+        )
+        students = (
+            db.session.query(
+                Student.cpfnr,
+                Student.fname,
+                Student.birth,
+                Student.email,
+            )
+            .where(
+                Enrollment.cpfnr == Student.cpfnr,
+                Enrollment.taxnr == taxnr,
+                Enrollment.year == payload["edition"],
+            )
+            .order_by(
+                Student.fname,
+            )
+            .all()
+        )
+        return render_template(
+            "registered_students.html",
+            payload=payload,
+            professor=professor,
+            students=students,
+            date_strfmt=date_strfmt,
+        )
+
+
+@bp_user_routes.route("/professor/<taxnr>/enrollments_extract")
+@login_required
+def enrollments_extract(taxnr):
+    if taxnr == current_user.taxnr:
+        professor = db.first_or_404(
+            sa.select(Professor).where(Professor.taxnr == taxnr)
+        )
+        enrollments = (
+            db.session.query(
+                Student.fname,
+                Student.cpfnr,
+                Enrollment.roll,
+                Enrollment.need,
+                School.name,
+                School.inep,
+            )
+            .where(
+                Enrollment.taxnr == taxnr,
+                Student.cpfnr == Enrollment.cpfnr,
+                School.inep == Enrollment.inep,
+                Enrollment.year == payload["edition"],
+            )
+            .order_by(Enrollment.roll)
+            .all()
+        )
+        return render_template(
+            "enrollments_extract.html",
+            payload=payload,
+            professor=professor,
+            enrollments=enrollments,
+        )
+
+
+@bp_user_routes.route("/professor/<taxnr>/numeric_extract")
+@login_required
+def numeric_extract(taxnr):
     if taxnr == current_user.taxnr:
         professor = db.first_or_404(
             sa.select(Professor).where(Professor.taxnr == taxnr)
         )
         extract = students_extract_query(professor.taxnr)
         return render_template(
-            "students_extract.html",
+            "numeric_extract.html",
             payload=payload,
             professor=professor,
             extract=extract,
