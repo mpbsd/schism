@@ -10,11 +10,7 @@ from omeg.data.load import cpf_strfmt, date_strfmt, payload
 from omeg.mold.models import Enrollment, Professor, School, Student
 from omeg.user.forms import student_registration_form
 
-bp_user_routes = Blueprint(
-    "bp_user_routes",
-    __name__,
-    template_folder="templates",
-)
+bp_user_routes = Blueprint("bp_user_routes", __name__)
 
 
 @bp_user_routes.route("/professor/<taxnr>")
@@ -25,7 +21,7 @@ def professor_dashboard(taxnr):
             sa.select(Professor).where(Professor.taxnr == taxnr)
         )
         return render_template(
-            "professor_dashboard.html",
+            "user/professor_dashboard.html",
             payload=payload,
             professor=professor,
         )
@@ -40,7 +36,7 @@ def save_the_date(taxnr):
             sa.select(Professor).where(Professor.taxnr == taxnr)
         )
         return render_template(
-            "save_the_date.html",
+            "user/save_the_date.html",
             payload=payload,
             professor=professor,
         )
@@ -57,7 +53,7 @@ def inep(taxnr):
             sa.select(School).order_by(School.city)
         ).all()
         return render_template(
-            "schools.html",
+            "user/schools.html",
             payload=payload,
             professor=professor,
             schools=schools,
@@ -191,14 +187,14 @@ def student_registration(taxnr):
                 extract = students_extract_query(professor.taxnr)
                 flash("Quota atingida.")
                 return render_template(
-                    "quota_overflow.html",
+                    "user/quota_overflow.html",
                     payload=payload,
                     professor=professor,
                     roll=enrollment.roll,
                     extract=extract,
                 )
     return render_template(
-        "student_registration.html",
+        "user/student_registration.html",
         payload=payload,
         professor=professor,
         form=form,
@@ -230,7 +226,7 @@ def registered_students(taxnr):
             .all()
         )
         return render_template(
-            "registered_students.html",
+            "user/registered_students.html",
             payload=payload,
             professor=professor,
             students=students,
@@ -264,7 +260,7 @@ def enrollments_extract(taxnr):
             .all()
         )
         return render_template(
-            "enrollments_extract.html",
+            "user/enrollments_extract.html",
             payload=payload,
             professor=professor,
             enrollments=enrollments,
@@ -280,7 +276,7 @@ def numeric_extract(taxnr):
         )
         extract = students_extract_query(professor.taxnr)
         return render_template(
-            "numeric_extract.html",
+            "user/numeric_extract.html",
             payload=payload,
             professor=professor,
             extract=extract,

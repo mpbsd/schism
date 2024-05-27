@@ -17,11 +17,7 @@ from omeg.conf.boost import db
 from omeg.data.load import cpf_strfmt, payload
 from omeg.mold.models import Professor
 
-bp_auth_routes = Blueprint(
-    "bp_auth_routes",
-    __name__,
-    template_folder="templates",
-)
+bp_auth_routes = Blueprint("bp_auth_routes", __name__)
 
 
 @bp_auth_routes.route("/registration-request", methods=["GET", "POST"])
@@ -40,7 +36,7 @@ def request_registration():
             send_registration_request_email(form.email.data)
         return redirect(url_for("bp_home_routes.home"))
     return render_template(
-        "registration_request_page.html", payload=payload, form=form
+        "auth/registration_request_page.html", payload=payload, form=form
     )
 
 
@@ -62,7 +58,7 @@ def registration(token):
         flash("Usuário cadastrado com sucesso.")
         return redirect(url_for("bp_auth_routes.login", payload=payload))
     return render_template(
-        "registration.html", payload=payload, form=form, token=token
+        "auth/registration.html", payload=payload, form=form, token=token
     )
 
 
@@ -84,7 +80,7 @@ def request_password_reset():
             send_password_reset_email(professor)
         return redirect(url_for("bp_auth_routes.login"))
     return render_template(
-        "password_reset_request_page.html",
+        "auth/password_reset_request_page.html",
         payload=payload,
         title="Redefinir Senha",
         form=form,
@@ -108,7 +104,9 @@ def password_reset(token):
         db.session.commit()
         flash("Senha redefinida com sucesso.")
         return redirect(url_for("bp_auth_routes.login"))
-    return render_template("password_reset.html", payload=payload, form=form)
+    return render_template(
+        "auth/password_reset.html", payload=payload, form=form
+    )
 
 
 @bp_auth_routes.route("/login", methods=["GET", "POST"])
@@ -141,7 +139,7 @@ def login():
                         taxnr=professor.taxnr,
                     )
                 )
-    return render_template("login.html", payload=payload, form=form)
+    return render_template("auth/login.html", payload=payload, form=form)
 
 
 @bp_auth_routes.route("/logout")
