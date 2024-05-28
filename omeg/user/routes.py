@@ -287,39 +287,39 @@ def numeric_extract(taxnr):
         )
 
 
-# @bp_user_routes.route(
-#     "/professor/<taxnr>/request_student_registration_edition"
-# )
-# @login_required
-# def request_student_registration_edition(taxnr):
-#     if taxnr == current_user.taxnr:
-#         professor = db.first_or_404(
-#             sa.select(Professor).where(Professor.taxnr == taxnr)
-#         )
-#         students = (
-#             db.session.query(
-#                 Student.cpfnr,
-#                 Student.fname,
-#                 Student.birth,
-#                 Student.email,
-#             )
-#             .where(
-#                 Enrollment.cpfnr == Student.cpfnr,
-#                 Enrollment.taxnr == taxnr,
-#                 Enrollment.year == payload["edition"],
-#             )
-#             .order_by(
-#                 Student.fname,
-#             )
-#             .all()
-#         )
-#         return render_template(
-#             "user/registration/edit/request.html",
-#             payload=payload,
-#             professor=professor,
-#             students=students,
-#             date_strfmt=date_strfmt,
-#         )
+@bp_user_routes.route(
+    "/professor/<taxnr>/request_student_registration_edition"
+)
+@login_required
+def request_student_registration_edition(taxnr):
+    if taxnr == current_user.taxnr:
+        professor = db.first_or_404(
+            sa.select(Professor).where(Professor.taxnr == taxnr)
+        )
+        students = (
+            db.session.query(
+                Student.cpfnr,
+                Student.fname,
+                Student.birth,
+                Student.email,
+            )
+            .where(
+                Enrollment.cpfnr == Student.cpfnr,
+                Enrollment.taxnr == taxnr,
+                Enrollment.year == payload["edition"],
+            )
+            .order_by(
+                Student.fname,
+            )
+            .all()
+        )
+        return render_template(
+            "user/registration/request.html",
+            payload=payload,
+            professor=professor,
+            students=students,
+            date_strfmt=date_strfmt,
+        )
 
 
 # @bp_user_routes.route(
