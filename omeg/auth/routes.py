@@ -1,3 +1,5 @@
+import re
+
 import sqlalchemy as sa
 from flask import Blueprint, flash, redirect, render_template, url_for
 from flask_login import current_user, login_required, login_user, logout_user
@@ -49,7 +51,7 @@ def registration(token):
     if form.validate_on_submit():
         professor = Professor(
             taxnr=cpf_strfmt(form.taxnr.data),
-            fname=form.fname.data,
+            fname=re.sub(r"\s+", r" ", form.fname.data),
             email=form.email.data,
         )
         professor.set_password(form.password1.data)

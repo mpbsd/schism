@@ -8,7 +8,10 @@ from unidecode import unidecode
 from omeg.conf.boost import db
 from omeg.data.load import cpf_strfmt, date_strfmt, payload
 from omeg.mold.models import Enrollment, Professor, School, Student
-from omeg.user.forms import student_registration_form
+from omeg.user.forms import (
+    edit_student_registration_form,
+    student_registration_form,
+)
 
 bp_user_routes = Blueprint("bp_user_routes", __name__)
 
@@ -180,7 +183,8 @@ def student_registration(taxnr):
                 return redirect(
                     url_for(
                         "bp_user_routes.registered_students",
-                        taxnr=current_user.taxnr,
+                        payload=payload,
+                        professor=professor,
                     )
                 )
             else:
@@ -281,3 +285,75 @@ def numeric_extract(taxnr):
             professor=professor,
             extract=extract,
         )
+
+
+# @bp_user_routes.route(
+#     "/professor/<taxnr>/request_student_registration_edition"
+# )
+# @login_required
+# def request_student_registration_edition(taxnr):
+#     if taxnr == current_user.taxnr:
+#         professor = db.first_or_404(
+#             sa.select(Professor).where(Professor.taxnr == taxnr)
+#         )
+#         students = (
+#             db.session.query(
+#                 Student.cpfnr,
+#                 Student.fname,
+#                 Student.birth,
+#                 Student.email,
+#             )
+#             .where(
+#                 Enrollment.cpfnr == Student.cpfnr,
+#                 Enrollment.taxnr == taxnr,
+#                 Enrollment.year == payload["edition"],
+#             )
+#             .order_by(
+#                 Student.fname,
+#             )
+#             .all()
+#         )
+#         return render_template(
+#             "user/registration/edit/request.html",
+#             payload=payload,
+#             professor=professor,
+#             students=students,
+#             date_strfmt=date_strfmt,
+#         )
+
+
+# @bp_user_routes.route(
+#     "/professor/<taxnr>/edit/<cpfnr>",
+#     methods=["GET", "POST"],
+# )
+# @login_required
+# def edit_student_registration(taxnr, cpfnr):
+#     if taxnr == current_user.taxnr:
+#         professor = db.first_or_404(
+#             sa.select(Professor).where(Professor.taxnr == taxnr)
+#         )
+#         student = db.session.query(Student).where(Student.cpfnr == cpfnr).one()
+#         form = edit_student_registration_form(
+#             cpfnr=student.cpfnr,
+#             fname=student.fname,
+#             birth=student.birth,
+#             email=student.email,
+#         )
+#         if form.validate_on_submit():
+#             student.verified = True
+#             db.session.commit()
+#             flash("Cadastro atualizado com sucesso!")
+#             return redirect(
+#                 url_for(
+#                     "bp_user_routes.registered_students",
+#                     payload=payload,
+#                     professor=professor,
+#                 )
+#             )
+#     return render_template(
+#         "user/registration/edit/cpfnr.html",
+#         payload=payload,
+#         professor=professor,
+#         student=student,
+#         form=form,
+#     )

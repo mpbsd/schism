@@ -1,128 +1,54 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
+{% extends "user.html" %}
 
-    <!-- Basic Page Needs ––––––––––––––––––––––––––––––––––––––––––––––––– -->
-    <meta charset="utf-8">
+{% block content %}
 
-    <title>
-      {% if payload.edition %}
-      OMEG {{ payload.edition }}
-      {% else %}
-      OMEG
-      {% endif %}
-    </title>
+<div class="container">
+  <div class="row">
+    <div class="ten columns" style="margin-top: 10%">
 
-    <meta name="description" content="">
-    <meta name="author" content="">
+      <h4>
+        Estudantes Cadastrados
+      </h4>
 
-    <!-- Mobile Specific Metas –––––––––––––––––––––––––––––––––––––––––––– -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+      <table class="table table-striped" style="margin-top: 5%">
+        <thead>
+          <tr>
+            <th scope="col">
+              CPF
+            </th>
+            <th scope="col">
+              Nome
+            </th>
+            <th scope="col">
+              Escola
+            </th>
+            <th scope="col">
+              Nível
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for enrollment in enrollments %}
+          <tr>
+            <td>
+              {{ enrollment.cpfnr }}
+            </td>
+            <td title="{{ enrollment.need}}">
+              {{ enrollment.fname }}
+            </td>
+            <td title="{{ enrollment.name }}">
+              {{ enrollment.inep }}
+            </td>
+            <td>
+              {{ enrollment.roll }}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
 
-    <!-- CSS --------------–––––––––––––––––––––––––––––––––––––––––––––––– -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
-    <script defer src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
-
-    <!-- Favicon ----------–––––––––––––––––––––––––––––––––––––––––––––––– -->
-    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.png') }}">
-
-  </head>
-  <body>
-
-    <!-- Primary Page Layout –––––––––––––––––––––––––––––––––––––––––––––– -->
-
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="{{ url_for('bp_user_routes.professor_dashboard', taxnr=current_user.taxnr) }}">Olá, {{ professor.fname }}!</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item">
-              <a class="nav-link" href="https://files.cercomp.ufg.br/weby/up/36/o/Regulamento_XXXIII_OMEG.docx.pdf?1716401185" target="_blank">Regulamento</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('bp_user_routes.save_the_date', taxnr=current_user.taxnr) }}">Datas</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('bp_user_routes.inep', taxnr=current_user.taxnr) }}" target="_blank">Cód. INEP</a>
-            </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                Estudantes
-              </a>
-              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" href="{{ url_for('bp_user_routes.student_registration', taxnr=current_user.taxnr) }}">Inscrever Estudante</a></li>
-                <li><a class="dropdown-item" href="{{ url_for('bp_user_routes.registered_students', taxnr=current_user.taxnr) }}">Estudantes Cadastrados</a></li>
-              </ul>
-            </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                OMEG 2024
-              </a>
-              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" href="{{ url_for('bp_user_routes.enrollments_extract', taxnr=current_user.taxnr) }}">Visualizar Inscrições</a></li>
-                <li><a class="dropdown-item" href="{{ url_for('bp_user_routes.numeric_extract', taxnr=current_user.taxnr) }}">Extrato Numérico</a></li>
-              </ul>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('bp_auth_routes.logout', taxnr=current_user.taxnr) }}">Logout</a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </nav>
-
-    <div class="container">
-      <div class="row">
-        <div class="ten columns" style="margin-top: 10%">
-
-          <h4>
-            Estudantes Cadastrados
-          </h4>
-
-          <table class="table table-striped" style="margin-top: 5%">
-            <thead>
-              <tr>
-                <th scope="col">
-                  CPF
-                </th>
-                <th scope="col">
-                  Nome
-                </th>
-                <th scope="col">
-                  Escola
-                </th>
-                <th scope="col">
-                  Nível
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for enrollment in enrollments %}
-              <tr>
-                <td>
-                  {{ enrollment.cpfnr }}
-                </td>
-                <td title="{{ enrollment.need}}">
-                  {{ enrollment.fname }}
-                </td>
-                <td title="{{ enrollment.name }}">
-                  {{ enrollment.inep }}
-                </td>
-                <td>
-                  {{ enrollment.roll }}
-                </td>
-              </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-
-        </div>
-      </div>
     </div>
+  </div>
+</div>
 
-    <!-- End Document ---–––––––––––––––––––––––––––––––––––––––––––––––––– -->
-  </body>
-</html>
+{% endblock %}
