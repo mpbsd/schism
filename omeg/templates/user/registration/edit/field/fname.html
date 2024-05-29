@@ -1,0 +1,46 @@
+{% extends "user.html" %}
+
+{% block content %}
+
+<div class="container">
+  <div class="row">
+    <div class="ten columns" style="margin-top: 5%">
+
+      <h4>
+        Edição de Cadastro
+      </h4>
+
+      <div class="form-wrapper" style="margin-top: 5%">
+        <form action="{{ url_for('bp_user_routes.edit_student_fname', taxnr=current_user.taxnr, cpfnr=student.cpfnr) }}" method="post">
+          {{ form.hidden_tag() }}
+          <fieldset class="form-field">
+            <p>
+            {{ form.fname.label }}
+            </p>
+            <p>
+            {{ form.fname(size=32) }}
+            </p>
+            {% if form.fname.errors %}
+            <ul class="errors">
+              {% for error in form.fname.errors %}
+              <li class="error">
+                <i class="fa fa-exclamation"></i>
+                <span class="error-message">
+                  {{ error }}
+                </span>
+              </li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+          </fieldset>
+          <fieldset class="form-field">
+            {{ form.submit(class_="btn btn-primary") }}
+          </fieldset>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}

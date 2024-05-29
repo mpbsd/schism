@@ -1,0 +1,61 @@
+{% extends "user.html" %}
+
+{% block content %}
+
+<div class="container">
+  <div class="row">
+    <div class="ten columns" style="margin-top: 10%">
+
+      <h4>
+        Estudantes Cadastrados
+      </h4>
+
+      <table class="table table-striped" style="margin-top: 5%">
+        <thead>
+          <tr>
+            <th scope="col">
+              CPF
+            </th>
+            <th scope="col">
+              Nome
+            </th>
+            <th scope="col">
+              Nascimento
+            </th>
+            <th scope="col">
+              E-Mail
+            </th>
+            <th>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for student in students %}
+          <tr>
+            <td>
+              {{ student.cpfnr }}
+            </td>
+            <td>
+              {{ student.fname }}
+            </td>
+            <td>
+              {{ date_strfmt(student.birth, "dd-mm-yyyy") }}
+            </td>
+            <td>
+              {{ student.email }}
+            </td>
+            <td>
+              <a href="{{ url_for('bp_user_routes.edit_student_registration', taxnr=current_user.taxnr, cpfnr=student.cpfnr) }}">
+                Editar
+              </a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}

@@ -94,11 +94,8 @@ class student_registration_form(FlaskForm):
             raise ValidationError("Código INEP incorreto")
 
 
-class edit_student_registration_form(FlaskForm):
+class edit_student_cpfnr_form(FlaskForm):
     cpfnr = StringField("CPF", validators=[DataRequired()])
-    fname = StringField("Nome completo", validators=[DataRequired()])
-    birth = StringField("Data de nascimento", validators=[DataRequired()])
-    email = StringField("Email", validators=[DataRequired(), Email()])
     submit = SubmitField("Confirmar")
 
     def validate_cpfnr(self, cpfnr):
@@ -113,15 +110,15 @@ class edit_student_registration_form(FlaskForm):
         elif (professor is not None) or (student is not None):
             raise ValidationError("CPF já existe em nosso banco de dados")
 
-    def validate_email(self, email):
-        professor = db.session.scalar(
-            sa.select(Professor).where(Professor.email == email.data)
-        )
-        student = db.session.scalar(
-            sa.select(Student).where(Student.email == email.data)
-        )
-        if (professor is not None) or (student is not None):
-            raise ValidationError("Email já existe em nosso banco de dados")
+
+class edit_student_fname_form(FlaskForm):
+    fname = StringField("Nome completo", validators=[DataRequired()])
+    submit = SubmitField("Confirmar")
+
+
+class edit_student_birth_form(FlaskForm):
+    birth = StringField("Data de nascimento", validators=[DataRequired()])
+    submit = SubmitField("Confirmar")
 
     def validate_birth(self, birth):
         ndays = {
@@ -161,3 +158,18 @@ class edit_student_registration_form(FlaskForm):
                 is_real_date = True
         if is_real_date is False:
             raise ValidationError("Data inexistente")
+
+
+class edit_student_email_form(FlaskForm):
+    email = StringField("Email", validators=[DataRequired(), Email()])
+    submit = SubmitField("Confirmar")
+
+    def validate_email(self, email):
+        professor = db.session.scalar(
+            sa.select(Professor).where(Professor.email == email.data)
+        )
+        student = db.session.scalar(
+            sa.select(Student).where(Student.email == email.data)
+        )
+        if (professor is not None) or (student is not None):
+            raise ValidationError("Email já existe em nosso banco de dados")

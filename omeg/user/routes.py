@@ -9,8 +9,11 @@ from omeg.conf.boost import db
 from omeg.data.load import cpf_strfmt, date_strfmt, payload
 from omeg.mold.models import Enrollment, Professor, School, Student
 from omeg.user.forms import (
-    edit_student_registration_form,
     student_registration_form,
+    edit_student_cpfnr_form,
+    edit_student_fname_form,
+    edit_student_birth_form,
+    edit_student_email_form,
 )
 
 bp_user_routes = Blueprint("bp_user_routes", __name__)
@@ -129,7 +132,8 @@ def students_extract_query(taxnr):
 
 
 @bp_user_routes.route(
-    "/professor/<taxnr>/student_registration", methods=["GET", "POST"]
+    "/professor/<taxnr>/student/registration",
+    methods=["GET", "POST"]
 )
 @login_required
 def student_registration(taxnr):
@@ -288,7 +292,7 @@ def numeric_extract(taxnr):
 
 
 @bp_user_routes.route(
-    "/professor/<taxnr>/request_student_registration_edition"
+    "/professor/<taxnr>/student/registration/edit/request"
 )
 @login_required
 def request_student_registration_edition(taxnr):
@@ -314,46 +318,179 @@ def request_student_registration_edition(taxnr):
             .all()
         )
         return render_template(
-            "user/registration/request.html",
+            "user/registration/edit/request.html",
             payload=payload,
             professor=professor,
             students=students,
             date_strfmt=date_strfmt,
         )
+    else:
+        return redirect(url_for("bp_home_routes.home"))
 
 
-# @bp_user_routes.route(
-#     "/professor/<taxnr>/edit/<cpfnr>",
-#     methods=["GET", "POST"],
-# )
-# @login_required
-# def edit_student_registration(taxnr, cpfnr):
-#     if taxnr == current_user.taxnr:
-#         professor = db.first_or_404(
-#             sa.select(Professor).where(Professor.taxnr == taxnr)
-#         )
-#         student = db.session.query(Student).where(Student.cpfnr == cpfnr).one()
-#         form = edit_student_registration_form(
-#             cpfnr=student.cpfnr,
-#             fname=student.fname,
-#             birth=student.birth,
-#             email=student.email,
-#         )
-#         if form.validate_on_submit():
-#             student.verified = True
-#             db.session.commit()
-#             flash("Cadastro atualizado com sucesso!")
-#             return redirect(
-#                 url_for(
-#                     "bp_user_routes.registered_students",
-#                     payload=payload,
-#                     professor=professor,
-#                 )
-#             )
-#     return render_template(
-#         "user/registration/edit/cpfnr.html",
-#         payload=payload,
-#         professor=professor,
-#         student=student,
-#         form=form,
-#     )
+@bp_user_routes.route(
+    "/professor/<taxnr>/edit/student/<cpfnr>",
+    methods=["GET", "POST"],
+)
+@login_required
+def edit_student_registration(taxnr, cpfnr):
+    if taxnr == current_user.taxnr:
+        professor = db.first_or_404(
+            sa.select(Professor).where(Professor.taxnr == taxnr)
+        )
+        student = db.first_or_404(
+            sa.select(Student).where(Student.cpfnr == cpfnr)
+        )
+        return render_template(
+            "user/registration/edit/student.html",
+            payload=payload,
+            professor=professor,
+            student=student,
+            date_strfmt=date_strfmt,
+        )
+    else:
+        return redirect(url_for("bp_home_routes.home"))
+
+
+@bp_user_routes.route(
+    "/professor/<taxnr>/edit/student/<cpfnr>/cpfnr",
+    methods=["GET", "POST"]
+)
+@login_required
+def edit_student_cpfnr(taxnr, cpfnr):
+    if taxnr == current_user.taxnr:
+        professor = db.first_or_404(
+            sa.select(Professor).where(Professor.taxnr == taxnr)
+        )
+        student = db.first_or_404(
+            sa.select(Student).where(Student.cpfnr == cpfnr)
+        )
+        form = edit_student_cpfnr_form(cpfnr=student.cpfnr)
+        if form.validate_on_submit():
+            student.cpfnr = cpf_strfmt(form.cpfnr.data)
+            db.session.commit()
+            return redirect(
+                url_for(
+                    "bp_user_routes.edit_student_registration",
+                    payload=payload,
+                    taxnr=professor.taxnr,
+                    cpfnr=student.cpfnr,
+                )
+            )
+        return render_template(
+            "user/registration/edit/field/cpfnr.html",
+            payload=payload,
+            professor=professor,
+            student=student,
+            form=form,
+        )
+    else:
+        return redirect(url_for("bp_home_routes.home"))
+
+
+@bp_user_routes.route(
+    "/professor/<taxnr>/edit/student/<cpfnr>/fname",
+    methods=["GET", "POST"]
+)
+@login_required
+def edit_student_fname(taxnr, cpfnr):
+    if taxnr == current_user.taxnr:
+        professor = db.first_or_404(
+            sa.select(Professor).where(Professor.taxnr == taxnr)
+        )
+        student = db.first_or_404(
+            sa.select(Student).where(Student.cpfnr == cpfnr)
+        )
+        form = edit_student_fname_form(fname=student.fname)
+        if form.validate_on_submit():
+            student.fname = re.sub(r"\s+", r" ", form.fname.data)
+            db.session.commit()
+            return redirect(
+                url_for(
+                    "bp_user_routes.edit_student_registration",
+                    payload=payload,
+                    taxnr=professor.taxnr,
+                    cpfnr=student.cpfnr,
+                )
+            )
+        return render_template(
+            "user/registration/edit/field/fname.html",
+            payload=payload,
+            professor=professor,
+            student=student,
+            form=form,
+        )
+    return redirect(url_for("bp_home_routes.home"))
+
+
+@bp_user_routes.route(
+    "/professor/<taxnr>/edit/student/<cpfnr>/birth",
+    methods=["GET", "POST"]
+)
+@login_required
+def edit_student_birth(taxnr, cpfnr):
+    if taxnr == current_user.taxnr:
+        professor = db.first_or_404(
+            sa.select(Professor).where(Professor.taxnr == taxnr)
+        )
+        student = db.first_or_404(
+            sa.select(Student).where(Student.cpfnr == cpfnr)
+        )
+        form = edit_student_birth_form(
+            birth=date_strfmt(student.birth, "dd-mm-yyyy")
+        )
+        if form.validate_on_submit():
+            student.birth = date_strfmt(form.birth.data, "yyyymmdd")
+            db.session.commit()
+            return redirect(
+                url_for(
+                    "bp_user_routes.edit_student_registration",
+                    payload=payload,
+                    taxnr=professor.taxnr,
+                    cpfnr=student.cpfnr,
+                )
+            )
+        return render_template(
+            "user/registration/edit/field/birth.html",
+            payload=payload,
+            professor=professor,
+            student=student,
+            form=form,
+        )
+    return redirect(url_for("bp_home_routes.home"))
+
+
+@bp_user_routes.route(
+    "/professor/<taxnr>/edit/student/<cpfnr>/email",
+    methods=["GET", "POST"]
+)
+@login_required
+def edit_student_email(taxnr, cpfnr):
+    if taxnr == current_user.taxnr:
+        professor = db.first_or_404(
+            sa.select(Professor).where(Professor.taxnr == taxnr)
+        )
+        student = db.first_or_404(
+            sa.select(Student).where(Student.cpfnr == cpfnr)
+        )
+        form = edit_student_email_form(email=student.email)
+        if form.validate_on_submit():
+            student.email = form.email.data
+            db.session.commit()
+            return redirect(
+                url_for(
+                    "bp_user_routes.edit_student_registration",
+                    payload=payload,
+                    taxnr=professor.taxnr,
+                    cpfnr=student.cpfnr,
+                )
+            )
+        return render_template(
+            "user/registration/edit/field/email.html",
+            payload=payload,
+            professor=professor,
+            student=student,
+            form=form,
+        )
+    else:
+        return redirect(url_for("bp_home_routes.home"))
