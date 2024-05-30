@@ -195,6 +195,7 @@ def student_registration(taxnr):
                         "bp_user_routes.registered_students",
                         payload=payload,
                         professor=professor,
+                        taxnr=taxnr,
                     )
                 )
             else:
