@@ -202,14 +202,14 @@ def student_registration(taxnr):
                 extract = students_extract_query(professor.taxnr)
                 flash("Quota atingida.")
                 return render_template(
-                    "user/quota_overflow.html",
+                    "user/registration/read/quota_overflow.html",
                     payload=payload,
                     professor=professor,
                     roll=enrollment.roll,
                     extract=extract,
                 )
         return render_template(
-            "user/student_registration.html",
+            "user/registration/create/student.html",
             payload=payload,
             professor=professor,
             form=form,
@@ -241,7 +241,7 @@ def registered_students(taxnr):
             .all()
         )
         return render_template(
-            "user/registered_students.html",
+            "user/registration/read/registered_students.html",
             payload=payload,
             professor=professor,
             students=students,
@@ -277,7 +277,7 @@ def enrollments_extract(taxnr):
             .all()
         )
         return render_template(
-            "user/enrollments_extract.html",
+            "user/enrollment/read/enrollments_extract.html",
             payload=payload,
             professor=professor,
             enrollments=enrollments,
@@ -295,7 +295,7 @@ def numeric_extract(taxnr):
         )
         extract = students_extract_query(professor.taxnr)
         return render_template(
-            "user/numeric_extract.html",
+            "user/enrollment/read/numeric_extract.html",
             payload=payload,
             professor=professor,
             extract=extract,
