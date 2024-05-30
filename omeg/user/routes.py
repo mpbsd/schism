@@ -546,6 +546,9 @@ def edit_student_enrollment(taxnr, cpfnr):
         professor = db.first_or_404(
             sa.select(Professor).where(Professor.taxnr == taxnr)
         )
+        student = db.first_or_404(
+            sa.select(Student).where(Student.cpfnr == cpfnr)
+        )
         enrollment = db.first_or_404(
             sa.select(Enrollment).where(
                 Enrollment.cpfnr == cpfnr,
@@ -553,12 +556,16 @@ def edit_student_enrollment(taxnr, cpfnr):
                 Enrollment.year == payload["edition"],
             )
         )
+        school = db.first_or_404(
+            sa.select(School).where(School.inep == enrollment.inep)
+        )
         return render_template(
             "user/enrollment/update/enrollment.html",
             payload=payload,
             professor=professor,
-            cpfnr=cpfnr,
+            student=student,
             enrollment=enrollment,
+            school=school,
         )
     else:
         return redirect(url_for("bp_home_routes.home"))
@@ -573,6 +580,9 @@ def edit_enrollment_inep(taxnr, cpfnr):
     if taxnr == current_user.taxnr:
         professor = db.first_or_404(
             sa.select(Professor).where(Professor.taxnr == taxnr)
+        )
+        student = db.first_or_404(
+            sa.select(Student).where(Student.cpfnr == cpfnr)
         )
         enrollment = db.first_or_404(
             sa.select(Enrollment).where(
@@ -591,12 +601,14 @@ def edit_enrollment_inep(taxnr, cpfnr):
                     payload=payload,
                     taxnr=taxnr,
                     cpfnr=cpfnr,
+                    student=student,
                 )
             )
         return render_template(
             "user/enrollment/update/field/inep.html",
             payload=payload,
             professor=professor,
+            student=student,
             cpfnr=cpfnr,
             enrollment=enrollment,
             form=form,
@@ -615,6 +627,9 @@ def edit_enrollment_roll(taxnr, cpfnr):
         professor = db.first_or_404(
             sa.select(Professor).where(Professor.taxnr == taxnr)
         )
+        student = db.first_or_404(
+            sa.select(Student).where(Student.cpfnr == cpfnr)
+        )
         enrollment = db.first_or_404(
             sa.select(Enrollment).where(
                 Enrollment.cpfnr == cpfnr,
@@ -632,12 +647,14 @@ def edit_enrollment_roll(taxnr, cpfnr):
                     payload=payload,
                     taxnr=taxnr,
                     cpfnr=cpfnr,
+                    student=student,
                 )
             )
         return render_template(
             "user/enrollment/update/field/roll.html",
             payload=payload,
             professor=professor,
+            student=student,
             cpfnr=cpfnr,
             enrollment=enrollment,
             form=form,
@@ -655,6 +672,9 @@ def edit_enrollment_need(taxnr, cpfnr):
     if taxnr == current_user.taxnr:
         professor = db.first_or_404(
             sa.select(Professor).where(Professor.taxnr == taxnr)
+        )
+        student = db.first_or_404(
+            sa.select(Student).where(Student.cpfnr == cpfnr)
         )
         enrollment = db.first_or_404(
             sa.select(Enrollment).where(
@@ -675,12 +695,14 @@ def edit_enrollment_need(taxnr, cpfnr):
                     payload=payload,
                     taxnr=taxnr,
                     cpfnr=cpfnr,
+                    student=student,
                 )
             )
         return render_template(
             "user/enrollment/update/field/need.html",
             payload=payload,
             professor=professor,
+            student=student,
             cpfnr=cpfnr,
             enrollment=enrollment,
             form=form,
