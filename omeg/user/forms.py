@@ -173,3 +173,25 @@ class edit_student_email_form(FlaskForm):
         )
         if (professor is not None) or (student is not None):
             raise ValidationError("Email já existe em nosso banco de dados")
+
+
+class edit_enrollment_inep_form(FlaskForm):
+    inep = StringField("Código INEP", validators=[DataRequired()])
+    submit = SubmitField("Confirmar")
+
+    def validate_inep(self, inep):
+        school = db.session.scalar(
+            sa.select(School).where(School.inep == inep.data)
+        )
+        if school is None:
+            raise ValidationError("Código INEP incorreto")
+
+
+class edit_enrollment_roll_form(FlaskForm):
+    roll = IntegerField("Nível", validators=[NumberRange(min=1, max=3)])
+    submit = SubmitField("Confirmar")
+
+
+class edit_enrollment_need_form(FlaskForm):
+    need = StringField("Condições especiais para participar das provas")
+    submit = SubmitField("Cadastrar")

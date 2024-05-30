@@ -7,40 +7,47 @@
     <div class="ten columns" style="margin-top: 10%">
 
       <h4>
-        Estudantes Cadastrados
+        Inscrições na OMEG {{ payload["edition"] }}
       </h4>
 
       <table class="table table-striped" style="margin-top: 5%">
         <thead>
           <tr>
             <th scope="col">
-              CPF
-            </th>
-            <th scope="col">
-              Nome
-            </th>
-            <th scope="col">
               Escola
             </th>
             <th scope="col">
+              CPF
+            </th>
+            <th scope="col">
               Nível
+            </th>
+            <th scope="col">
+              Requerimento
+            </th>
+            <th>
             </th>
           </tr>
         </thead>
         <tbody>
           {% for enrollment in enrollments %}
           <tr>
-            <td>
-              {{ enrollment.cpfnr }}
-            </td>
-            <td title="{{ enrollment.need }}">
-              {{ enrollment.fname }}
-            </td>
             <td title="{{ enrollment.name }}">
               {{ enrollment.inep }}
             </td>
+            <td title="{{ enrollment.fname }}">
+              {{ enrollment.cpfnr }}
+            </td>
             <td>
               {{ enrollment.roll }}
+            </td>
+            <td>
+              {{ enrollment.need }}
+            </td>
+            <td>
+              <a href="{{ url_for('bp_user_routes.edit_student_enrollment', taxnr=current_user.taxnr, cpfnr=enrollment.cpfnr) }}">
+                Editar
+              </a>
             </td>
           </tr>
           {% endfor %}

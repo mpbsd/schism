@@ -1,0 +1,61 @@
+{% extends "user.html" %}
+
+{% block content %}
+
+<div class="container">
+  <div class="row">
+    <div class="ten columns" style="margin-top: 5%">
+
+      <h4>
+        Editar Inscrição do Estudante
+      </h4>
+
+      <table class="table" style="margin-top: 5%">
+        <tbody>
+          <tr>
+            <td scope="col">
+              Escola
+            </td>
+            <td title="{{ enrollment.name }}">
+              {{ enrollment.inep }}
+            </td>
+            <td>
+              <a href="{{ url_for('bp_user_routes.edit_enrollment_inep', taxnr=current_user.taxnr, cpfnr=cpfnr) }}">
+                Editar
+              </a>
+            </td>
+          </tr>
+          <tr>
+            <td scope="col">
+              Nível
+            </td>
+            <td>
+              {{ enrollment.roll }}
+            </td>
+            <td>
+              <a href="{{ url_for('bp_user_routes.edit_enrollment_roll', taxnr=current_user.taxnr, cpfnr=cpfnr) }}">
+                Editar
+              </a>
+            </td>
+          </tr>
+          <tr>
+            <td scope="col">
+              Condições Especiais Requeridas
+            </td>
+            <td>
+              {{ enrollment.need }}
+            </td>
+            <td>
+              <a href="{{ url_for('bp_user_routes.edit_enrollment_need', taxnr=current_user.taxnr, cpfnr=cpfnr) }}">
+                Editar
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}
