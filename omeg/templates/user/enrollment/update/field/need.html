@@ -11,31 +11,27 @@
       </h4>
 
       <div class="form-wrapper" style="margin-top: 5%">
-        <form action="{{ url_for('bp_user_routes.edit_enrollment_need', taxnr=current_user.taxnr, cpfnr=cpfnr) }}" method="post">
+        <form action="{{ url_for('bp_user_routes.edit_enrollment_need', taxnr=current_user.taxnr, cpfnr=cpfnr) }}" class="row g-3 needs-validation" method="post" novalidate>
           {{ form.hidden_tag() }}
-          <fieldset class="form-field">
-            <p>
-            {{ form.need.label }}
-            </p>
-            <p>
-            {{ form.need(size=32) }}
-            </p>
+
+          <div class="col-md-4">
+            <label class="form-label">{{ form.need.label }}</label>
+            {{ form.need(class_="form-control") }}
             {% if form.need.errors %}
             <ul class="errors">
               {% for error in form.need.errors %}
               <li class="error">
-                <i class="fa fa-exclamation"></i>
-                <span class="error-message">
-                  {{ error }}
-                </span>
+                <span style="color: red;">{{ error }}</span>
               </li>
               {% endfor %}
             </ul>
             {% endif %}
-          </fieldset>
-          <fieldset class="form-field">
+          </div>
+
+          <div class="col-12">
             {{ form.submit(class_="btn btn-primary") }}
-          </fieldset>
+          </div>
+
         </form>
       </div>
 

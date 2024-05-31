@@ -11,98 +11,79 @@
       </h4>
 
       <div class="form-wrapper" style="margin-top: 5%">
-        <form action="{{ url_for('bp_auth_routes.registration', token=token) }}" method="post">
+        <form action="{{ url_for('bp_auth_routes.registration', token=token) }}" class="row g-3 needs-validation" method="post" novalidate>
           {{ form.hidden_tag() }}
-          <fieldset class="form-field">
-            <p>
-            {{ form.taxnr.label }}
-            </p>
-            <p>
-            {{ form.taxnr(size=32) }}
-            </p>
+
+          <div class="col-md-4">
+            <label class="form-label">{{ form.taxnr.label }}</label>
+            {{ form.taxnr(class_="form-control") }}
             {% if form.taxnr.errors %}
             <ul class="errors">
               {% for error in form.taxnr.errors %}
               <li class="error">
-                <i class="fa fa-exclamation"></i>
-                <span class="error-message">{{ error }}</span>
+                <span style="color: red;">{{ error }}</span>
               </li>
               {% endfor %}
             </ul>
             {% endif %}
-          </fieldset>
-          <fieldset class="form-field">
-            <p>
-            {{ form.fname.label }}
-            </p>
-            <p>
-            {{ form.fname(size=32) }}
-            </p>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label">{{ form.fname.label }}</label>
+            {{ form.fname(class_="form-control") }}
             {% if form.fname.errors %}
             <ul class="errors">
               {% for error in form.fname.errors %}
               <li class="error">
-                <i class="fa fa-exclamation"></i>
-                <span class="error-message">{{ error }}</span>
+                <span style="color: red;">{{ error }}</span>
               </li>
               {% endfor %}
             </ul>
             {% endif %}
-          </fieldset>
-          <fieldset class="form-field">
-            <p>
-            {{ form.email.label }}
-            </p>
-            <p>
-            {{ form.email(size=32) }}
-            </p>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label">{{ form.fname.label }}</label>
+            {{ form.email(class_="form-control") }}
             {% if form.email.errors %}
             <ul class="errors">
               {% for error in form.email.errors %}
               <li class="error">
-                <i class="fa fa-exclamation"></i>
-                <span class="error-message">{{ error }}</span>
+                <span style="color: red;">{{ error }}</span>
               </li>
               {% endfor %}
             </ul>
             {% endif %}
-          </fieldset>
-          <fieldset class="form-field">
-            <p>
-            {{ form.password1.label }}
-            </p>
-            <p>
-            {{ form.password1(size=32) }}
-            </p>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label">{{ form.fname.label }}</label>
+            {{ form.password1(class_="form-control") }}
             {% if form.password1.errors %}
             <ul class="errors">
               {% for error in form.password1.errors %}
               <li class="error">
-                <i class="fa fa-exclamation"></i>
-                <span class="error-message">{{ error }}</span>
+                <span style="color: red;">{{ error }}</span>
               </li>
               {% endfor %}
             </ul>
             {% endif %}
-          </fieldset>
-          <fieldset class="form-field">
-            <p>
-            {{ form.password2.label }}
-            </p>
-            <p>
-            {{ form.password2(size=32) }}
-            </p>
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label">{{ form.fname.label }}</label>
+            {{ form.password2(class_="form-control") }}
             {% if form.password2.errors %}
             <ul class="errors">
               {% for error in form.password2.errors %}
               <li class="error">
-                <i class="fa fa-exclamation"></i>
-                <span class="error-message">{{ error }}</span>
+                <span style="color: red;">{{ error }}</span>
               </li>
               {% endfor %}
             </ul>
             {% endif %}
-          </fieldset>
+          </div>
+
           <fieldset class="form-field">
             {{ form.submit(class_="btn btn-primary") }}
           </fieldset>
