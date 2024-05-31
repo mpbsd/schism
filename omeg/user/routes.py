@@ -168,8 +168,8 @@ def student_registration(taxnr):
                 .where(
                     Enrollment.taxnr == enrollment.taxnr,
                     Enrollment.inep == enrollment.inep,
+                    Enrollment.year == payload["edition"],
                     Enrollment.roll == enrollment.roll,
-                    Enrollment.gift not in ("O", "P", "B"),
                 )
                 .count()
             )
