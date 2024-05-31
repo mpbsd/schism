@@ -30,7 +30,7 @@ def professor_dashboard(taxnr):
             sa.select(Professor).where(Professor.taxnr == taxnr)
         )
         return render_template(
-            "user/professor_dashboard.html",
+            "user/dashboard.html",
             payload=payload,
             professor=professor,
         )
@@ -46,7 +46,7 @@ def save_the_date(taxnr):
             sa.select(Professor).where(Professor.taxnr == taxnr)
         )
         return render_template(
-            "user/save_the_date.html",
+            "user/utils/save_the_date.html",
             payload=payload,
             professor=professor,
         )
@@ -65,7 +65,7 @@ def inep(taxnr):
             sa.select(School).order_by(School.city)
         ).all()
         return render_template(
-            "user/schools.html",
+            "user/utils/inep.html",
             payload=payload,
             professor=professor,
             schools=schools,
