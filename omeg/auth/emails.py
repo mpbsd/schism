@@ -11,10 +11,10 @@ def send_registration_request_email(email):
         sender=current_app.config["ADMINS"][0],
         recipients=[email],
         text_body=render_template(
-            "auth/registration_request_mail.txt", token=token
+            "auth/registration/request/mail.txt", token=token
         ),
         html_body=render_template(
-            "auth/registration_request_mail.html", token=token
+            "auth/registration/request/mail.html", token=token
         ),
     )
 
@@ -26,12 +26,12 @@ def send_password_reset_email(professor):
         sender=current_app.config["ADMINS"][0],
         recipients=[professor.email],
         text_body=render_template(
-            "auth/password_reset_request_mail.txt",
+            "auth/password/request/mail.txt",
             professor=professor,
             token=token,
         ),
         html_body=render_template(
-            "auth/password_reset_request_mail.html",
+            "auth/password/request/mail.html",
             professor=professor,
             token=token,
         ),

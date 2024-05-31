@@ -38,7 +38,7 @@ def request_registration():
             send_registration_request_email(form.email.data)
         return redirect(url_for("bp_home_routes.home"))
     return render_template(
-        "auth/registration_request_page.html", payload=payload, form=form
+        "auth/registration/request/page.html", payload=payload, form=form
     )
 
 
@@ -60,7 +60,10 @@ def registration(token):
         flash("Usuário cadastrado com sucesso.")
         return redirect(url_for("bp_auth_routes.login", payload=payload))
     return render_template(
-        "auth/registration.html", payload=payload, form=form, token=token
+        "auth/registration/professor.html",
+        payload=payload,
+        form=form,
+        token=token
     )
 
 
@@ -82,7 +85,7 @@ def request_password_reset():
             send_password_reset_email(professor)
         return redirect(url_for("bp_auth_routes.login"))
     return render_template(
-        "auth/password_reset_request_page.html",
+        "auth/password/request/page.html",
         payload=payload,
         title="Redefinir Senha",
         form=form,
@@ -107,7 +110,7 @@ def password_reset(token):
         flash("Senha redefinida com sucesso.")
         return redirect(url_for("bp_auth_routes.login"))
     return render_template(
-        "auth/password_reset.html", payload=payload, form=form
+        "auth/password/reset.html", payload=payload, form=form
     )
 
 
