@@ -544,26 +544,25 @@ def edit_student_enrollment(taxnr, cpfnr):
         professor = db.first_or_404(
             sa.select(Professor).where(Professor.taxnr == taxnr)
         )
-        student = db.first_or_404(
-            sa.select(Student).where(Student.cpfnr == cpfnr)
-        )
-        enrollment = db.first_or_404(
-            sa.select(Enrollment).where(
-                Enrollment.cpfnr == cpfnr,
-                Enrollment.taxnr == taxnr,
-                Enrollment.year == payload["edition"],
-            )
-        )
-        school = db.first_or_404(
-            sa.select(School).where(School.inep == enrollment.inep)
-        )
+        enrollment = db.session.query(
+            Student.fname,
+            Enrollment.inep,
+            Enrollment.roll,
+            Enrollment.need,
+            School.name,
+        ).where(
+            Enrollment.taxnr == taxnr,
+            Enrollment.cpfnr == cpfnr,
+            Student.cpfnr == Enrollment.cpfnr,
+            School.inep == Enrollment.inep,
+            Enrollment.year == payload["edition"],
+        ).first()
         return render_template(
             "user/enrollment/update/enrollment.html",
-            payload=payload,
+            edition=payload["edition"],
             pfname=professor.fname,
-            student=student,
+            cpfnr=cpfnr,
             enrollment=enrollment,
-            school=school,
         )
     else:
         return redirect(url_for("bp_home_routes.home"))

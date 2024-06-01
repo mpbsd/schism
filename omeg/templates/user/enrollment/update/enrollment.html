@@ -7,7 +7,7 @@
     <div class="ten columns" style="margin-top: 5%">
 
       <h4>
-        Editar Inscrição de {{ student.fname }} na OMEG {{ edition }}
+        Editar Inscrição de {{ enrollment.fname }} na OMEG {{ edition }}
       </h4>
 
       <table class="table table-striped" style="margin-top: 5%">
@@ -16,11 +16,11 @@
             <th scope="col">
               Escola
             </th>
-            <td title="{{ school.name }}">
+            <td title="{{ enrollment.name }}">
               {{ enrollment.inep }}
             </td>
             <td>
-              <a href="{{ url_for('bp_user_routes.edit_enrollment_inep', taxnr=current_user.taxnr, cpfnr=student.cpfnr) }}">
+              <a href="{{ url_for('bp_user_routes.edit_enrollment_inep', taxnr=current_user.taxnr, cpfnr=cpfnr) }}">
                 Editar
               </a>
             </td>
@@ -33,7 +33,7 @@
               {{ enrollment.roll }}
             </td>
             <td>
-              <a href="{{ url_for('bp_user_routes.edit_enrollment_roll', taxnr=current_user.taxnr, cpfnr=student.cpfnr) }}">
+              <a href="{{ url_for('bp_user_routes.edit_enrollment_roll', taxnr=current_user.taxnr, cpfnr=cpfnr) }}">
                 Editar
               </a>
             </td>
@@ -46,7 +46,7 @@
               {{ enrollment.need }}
             </td>
             <td>
-              <a href="{{ url_for('bp_user_routes.edit_enrollment_need', taxnr=current_user.taxnr, cpfnr=student.cpfnr) }}">
+              <a href="{{ url_for('bp_user_routes.edit_enrollment_need', taxnr=current_user.taxnr, cpfnr=cpfnr) }}">
                 Editar
               </a>
             </td>
