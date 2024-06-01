@@ -1,7 +1,7 @@
 import re
 
 import sqlalchemy as sa
-from flask import Blueprint, flash, redirect, render_template, url_for
+from flask import Blueprint, redirect, render_template, url_for
 from flask_login import current_user, login_required
 from unidecode import unidecode
 
@@ -22,7 +22,7 @@ from omeg.user.forms import (
 bp_user_routes = Blueprint("bp_user_routes", __name__)
 
 
-@bp_user_routes.route("/professor/<taxnr>")
+@bp_user_routes.route("/professor/<taxnr>/dashboard")
 @login_required
 def professor_dashboard(taxnr):
     if taxnr == current_user.taxnr:
@@ -40,7 +40,7 @@ def professor_dashboard(taxnr):
         return redirect(url_for("bp_home_routes.home"))
 
 
-@bp_user_routes.route("/professor/<taxnr>/dates")
+@bp_user_routes.route("/professor/<taxnr>/save_the_date")
 @login_required
 def save_the_date(taxnr):
     if taxnr == current_user.taxnr:
@@ -192,7 +192,6 @@ def student_registration(taxnr):
                     db.session.commit()
                     db.session.add(enrollment)
                     db.session.commit()
-                    flash("Estudante cadastrado com sucesso!")
                 return redirect(
                     url_for(
                         "bp_user_routes.registered_students",
@@ -201,7 +200,6 @@ def student_registration(taxnr):
                 )
             else:
                 extract = students_extract_query(professor.taxnr)
-                flash("Quota atingida.")
                 return render_template(
                     "user/registration/read/quota_overflow.html",
                     edition=payload["edition"],
@@ -220,7 +218,7 @@ def student_registration(taxnr):
         return redirect(url_for("bp_home_routes.home"))
 
 
-@bp_user_routes.route("/professor/<taxnr>/students")
+@bp_user_routes.route("/professor/<taxnr>/students/overview")
 @login_required
 def registered_students(taxnr):
     if taxnr == current_user.taxnr:
@@ -253,7 +251,7 @@ def registered_students(taxnr):
         return redirect(url_for("bp_home_routes.home"))
 
 
-@bp_user_routes.route("/professor/<taxnr>/enrollments_extract")
+@bp_user_routes.route("/professor/<taxnr>/enrollments/overview")
 @login_required
 def enrollments_extract(taxnr):
     if taxnr == current_user.taxnr:
@@ -288,7 +286,7 @@ def enrollments_extract(taxnr):
         return redirect(url_for("bp_home_routes.home"))
 
 
-@bp_user_routes.route("/professor/<taxnr>/numeric_extract")
+@bp_user_routes.route("/professor/<taxnr>/enrollments/extract")
 @login_required
 def numeric_extract(taxnr):
     if taxnr == current_user.taxnr:
@@ -340,7 +338,7 @@ def request_student_registration_edition(taxnr):
 
 
 @bp_user_routes.route(
-    "/professor/<taxnr>/students/update/<cpfnr>",
+    "/professor/<taxnr>/student/<cpfnr>/registration/update",
     methods=["GET", "POST"],
 )
 @login_required
@@ -364,7 +362,8 @@ def edit_student_registration(taxnr, cpfnr):
 
 
 @bp_user_routes.route(
-    "/professor/<taxnr>/students/update/<cpfnr>/cpfnr", methods=["GET", "POST"]
+    "/professor/<taxnr>/student/<cpfnr>/registration/update/cpfnr",
+    methods=["GET", "POST"],
 )
 @login_required
 def edit_student_cpfnr(taxnr, cpfnr):
@@ -399,7 +398,8 @@ def edit_student_cpfnr(taxnr, cpfnr):
 
 
 @bp_user_routes.route(
-    "/professor/<taxnr>/students/update/<cpfnr>/fname", methods=["GET", "POST"]
+    "/professor/<taxnr>/student/<cpfnr>/registration/update/fname",
+    methods=["GET", "POST"],
 )
 @login_required
 def edit_student_fname(taxnr, cpfnr):
@@ -433,7 +433,8 @@ def edit_student_fname(taxnr, cpfnr):
 
 
 @bp_user_routes.route(
-    "/professor/<taxnr>/students/update/<cpfnr>/birth", methods=["GET", "POST"]
+    "/professor/<taxnr>/student/<cpfnr>/registration/update/birth",
+    methods=["GET", "POST"],
 )
 @login_required
 def edit_student_birth(taxnr, cpfnr):
@@ -469,7 +470,8 @@ def edit_student_birth(taxnr, cpfnr):
 
 
 @bp_user_routes.route(
-    "/professor/<taxnr>/students/update/<cpfnr>/email", methods=["GET", "POST"]
+    "/professor/<taxnr>/student/<cpfnr>/registration/update/email",
+    methods=["GET", "POST"],
 )
 @login_required
 def edit_student_email(taxnr, cpfnr):
@@ -539,7 +541,7 @@ def request_student_enrollment_edition(taxnr):
 
 
 @bp_user_routes.route(
-    "/professor/<taxnr>/enrollment/update/<cpfnr>",
+    "/professor/<taxnr>/student/<cpfnr>/enrollment/update",
     methods=["GET", "POST"],
 )
 @login_required
@@ -548,19 +550,23 @@ def edit_student_enrollment(taxnr, cpfnr):
         professor = db.first_or_404(
             sa.select(Professor).where(Professor.taxnr == taxnr)
         )
-        enrollment = db.session.query(
-            Student.fname,
-            Enrollment.inep,
-            Enrollment.roll,
-            Enrollment.need,
-            School.name,
-        ).where(
-            Enrollment.taxnr == taxnr,
-            Enrollment.cpfnr == cpfnr,
-            Enrollment.year == payload["edition"],
-            School.inep == Enrollment.inep,
-            Student.cpfnr == Enrollment.cpfnr,
-        ).first()
+        enrollment = (
+            db.session.query(
+                Student.fname,
+                Enrollment.inep,
+                Enrollment.roll,
+                Enrollment.need,
+                School.name,
+            )
+            .where(
+                Enrollment.taxnr == taxnr,
+                Enrollment.cpfnr == cpfnr,
+                Enrollment.year == payload["edition"],
+                School.inep == Enrollment.inep,
+                Student.cpfnr == Enrollment.cpfnr,
+            )
+            .first()
+        )
         return render_template(
             "user/enrollment/update/enrollment.html",
             edition=payload["edition"],
@@ -573,7 +579,7 @@ def edit_student_enrollment(taxnr, cpfnr):
 
 
 @bp_user_routes.route(
-    "/professor/<taxnr>/enrollment/update/<cpfnr>/inep",
+    "/professor/<taxnr>/student/<cpfnr>/enrollment/update/inep",
     methods=["GET", "POST"],
 )
 @login_required
@@ -582,22 +588,30 @@ def edit_enrollment_inep(taxnr, cpfnr):
         professor = db.first_or_404(
             sa.select(Professor).where(Professor.taxnr == taxnr)
         )
-        students_enrollment = db.session.query(
-            Student.fname,
-            Enrollment.inep,
-        ).where(
-            Enrollment.cpfnr == cpfnr,
-            Enrollment.taxnr == taxnr,
-            Enrollment.year == payload["edition"],
-            Student.cpfnr == Enrollment.cpfnr,
-        ).first()
-        form = edit_enrollment_inep_form(inep=students_enrollment.inep)
-        if form.validate_on_submit():
-            enrollment = db.session.query(Enrollment).where(
+        students_enrollment = (
+            db.session.query(
+                Student.fname,
+                Enrollment.inep,
+            )
+            .where(
                 Enrollment.cpfnr == cpfnr,
                 Enrollment.taxnr == taxnr,
                 Enrollment.year == payload["edition"],
-            ).first()
+                Student.cpfnr == Enrollment.cpfnr,
+            )
+            .first()
+        )
+        form = edit_enrollment_inep_form(inep=students_enrollment.inep)
+        if form.validate_on_submit():
+            enrollment = (
+                db.session.query(Enrollment)
+                .where(
+                    Enrollment.cpfnr == cpfnr,
+                    Enrollment.taxnr == taxnr,
+                    Enrollment.year == payload["edition"],
+                )
+                .first()
+            )
             enrollment.inep = form.inep.data
             db.session.commit()
             return redirect(
@@ -620,7 +634,7 @@ def edit_enrollment_inep(taxnr, cpfnr):
 
 
 @bp_user_routes.route(
-    "/professor/<taxnr>/enrollment/update/<cpfnr>/roll",
+    "/professor/<taxnr>/student/<cpfnr>/enrollment/update/roll",
     methods=["GET", "POST"],
 )
 @login_required
@@ -629,22 +643,30 @@ def edit_enrollment_roll(taxnr, cpfnr):
         professor = db.first_or_404(
             sa.select(Professor).where(Professor.taxnr == taxnr)
         )
-        students_enrollment = db.session.query(
-            Student.fname,
-            Enrollment.roll,
-        ).where(
-            Enrollment.cpfnr == cpfnr,
-            Enrollment.taxnr == taxnr,
-            Enrollment.year == payload["edition"],
-            Student.cpfnr == Enrollment.cpfnr,
-        ).first()
-        form = edit_enrollment_roll_form(roll=students_enrollment.roll)
-        if form.validate_on_submit():
-            enrollment = db.session.query(Enrollment).where(
+        students_enrollment = (
+            db.session.query(
+                Student.fname,
+                Enrollment.roll,
+            )
+            .where(
                 Enrollment.cpfnr == cpfnr,
                 Enrollment.taxnr == taxnr,
                 Enrollment.year == payload["edition"],
-            ).first()
+                Student.cpfnr == Enrollment.cpfnr,
+            )
+            .first()
+        )
+        form = edit_enrollment_roll_form(roll=students_enrollment.roll)
+        if form.validate_on_submit():
+            enrollment = (
+                db.session.query(Enrollment)
+                .where(
+                    Enrollment.cpfnr == cpfnr,
+                    Enrollment.taxnr == taxnr,
+                    Enrollment.year == payload["edition"],
+                )
+                .first()
+            )
             quota = (
                 db.session.query(Enrollment)
                 .where(
@@ -666,7 +688,7 @@ def edit_enrollment_roll(taxnr, cpfnr):
             )
         return render_template(
             "user/enrollment/update/field/roll.html",
-            payload=payload,
+            edition=payload["edition"],
             pfname=professor.fname,
             sfname=students_enrollment.fname,
             cpfnr=cpfnr,
@@ -677,7 +699,7 @@ def edit_enrollment_roll(taxnr, cpfnr):
 
 
 @bp_user_routes.route(
-    "/professor/<taxnr>/enrollment/update/<cpfnr>/need",
+    "/professor/<taxnr>/student/<cpfnr>/enrollment/update/need",
     methods=["GET", "POST"],
 )
 @login_required
@@ -686,22 +708,30 @@ def edit_enrollment_need(taxnr, cpfnr):
         professor = db.first_or_404(
             sa.select(Professor).where(Professor.taxnr == taxnr)
         )
-        students_enrollment = db.session.query(
-            Student.fname,
-            Enrollment.need,
-        ).where(
-            Enrollment.cpfnr == cpfnr,
-            Enrollment.taxnr == taxnr,
-            Enrollment.year == payload["edition"],
-            Student.cpfnr == Enrollment.cpfnr,
-        ).first()
-        form = edit_enrollment_need_form(need=students_enrollment.need)
-        if form.validate_on_submit():
-            enrollment = db.session.query(Enrollment).where(
+        students_enrollment = (
+            db.session.query(
+                Student.fname,
+                Enrollment.need,
+            )
+            .where(
                 Enrollment.cpfnr == cpfnr,
                 Enrollment.taxnr == taxnr,
                 Enrollment.year == payload["edition"],
-            ).first()
+                Student.cpfnr == Enrollment.cpfnr,
+            )
+            .first()
+        )
+        form = edit_enrollment_need_form(need=students_enrollment.need)
+        if form.validate_on_submit():
+            enrollment = (
+                db.session.query(Enrollment)
+                .where(
+                    Enrollment.cpfnr == cpfnr,
+                    Enrollment.taxnr == taxnr,
+                    Enrollment.year == payload["edition"],
+                )
+                .first()
+            )
             enrollment.need = re.sub(
                 r"\s+", r" ", unidecode(form.need.data.lower())
             )
@@ -715,7 +745,7 @@ def edit_enrollment_need(taxnr, cpfnr):
             )
         return render_template(
             "user/enrollment/update/field/need.html",
-            payload=payload,
+            edition=payload["edition"],
             pfname=professor.fname,
             sfname=students_enrollment,
             cpfnr=cpfnr,

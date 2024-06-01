@@ -7,7 +7,7 @@ bp_home_routes = Blueprint("bp_home_routes", __name__)
 
 @bp_home_routes.route("/")
 def home():
-    return render_template("home/home.html", edition=payload["edition"])
+    return render_template("home/welcome.html", edition=payload["edition"])
 
 
 @bp_home_routes.route("dates")
