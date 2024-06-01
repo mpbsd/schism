@@ -641,8 +641,18 @@ def edit_enrollment_roll(taxnr, cpfnr):
                 Enrollment.taxnr == taxnr,
                 Enrollment.year == payload["edition"],
             ).first()
-            enrollment.roll = form.roll.data
-            db.session.commit()
+            quota = (
+                db.session.query(Enrollment)
+                .where(
+                    Enrollment.inep == enrollment.inep,
+                    Enrollment.year == payload["edition"],
+                    Enrollment.roll == form.roll.data,
+                )
+                .count()
+            )
+            if quota <= payload["quota"] - 1:
+                enrollment.roll = form.roll.data
+                db.session.commit()
             return redirect(
                 url_for(
                     "bp_user_routes.edit_student_enrollment",
