@@ -517,9 +517,9 @@ def request_student_enrollment_edition(taxnr):
             )
             .where(
                 Enrollment.taxnr == taxnr,
+                Enrollment.year == payload["edition"],
                 Student.cpfnr == Enrollment.cpfnr,
                 School.inep == Enrollment.inep,
-                Enrollment.year == payload["edition"],
             )
             .order_by(Enrollment.roll)
             .all()
@@ -553,9 +553,9 @@ def edit_student_enrollment(taxnr, cpfnr):
         ).where(
             Enrollment.taxnr == taxnr,
             Enrollment.cpfnr == cpfnr,
-            Student.cpfnr == Enrollment.cpfnr,
-            School.inep == Enrollment.inep,
             Enrollment.year == payload["edition"],
+            School.inep == Enrollment.inep,
+            Student.cpfnr == Enrollment.cpfnr,
         ).first()
         return render_template(
             "user/enrollment/update/enrollment.html",
@@ -578,36 +578,37 @@ def edit_enrollment_inep(taxnr, cpfnr):
         professor = db.first_or_404(
             sa.select(Professor).where(Professor.taxnr == taxnr)
         )
-        student = db.first_or_404(
-            sa.select(Student).where(Student.cpfnr == cpfnr)
-        )
-        enrollment = db.first_or_404(
-            sa.select(Enrollment).where(
+        students_enrollment = db.session.query(
+            Student.fname,
+            Enrollment.inep,
+        ).where(
+            Enrollment.cpfnr == cpfnr,
+            Enrollment.taxnr == taxnr,
+            Enrollment.year == payload["edition"],
+            Student.cpfnr == Enrollment.cpfnr,
+        ).first()
+        form = edit_enrollment_inep_form(inep=students_enrollment.inep)
+        if form.validate_on_submit():
+            enrollment = db.session.query(Enrollment).where(
                 Enrollment.cpfnr == cpfnr,
                 Enrollment.taxnr == taxnr,
                 Enrollment.year == payload["edition"],
-            )
-        )
-        form = edit_enrollment_inep_form(inep=enrollment.inep)
-        if form.validate_on_submit():
+            ).first()
             enrollment.inep = form.inep.data
             db.session.commit()
             return redirect(
                 url_for(
                     "bp_user_routes.edit_student_enrollment",
-                    payload=payload,
                     taxnr=taxnr,
                     cpfnr=cpfnr,
-                    student=student,
                 )
             )
         return render_template(
             "user/enrollment/update/field/inep.html",
-            payload=payload,
+            edition=payload["edition"],
             pfname=professor.fname,
-            student=student,
+            sfname=students_enrollment.fname,
             cpfnr=cpfnr,
-            enrollment=enrollment,
             form=form,
         )
     else:
@@ -624,36 +625,37 @@ def edit_enrollment_roll(taxnr, cpfnr):
         professor = db.first_or_404(
             sa.select(Professor).where(Professor.taxnr == taxnr)
         )
-        student = db.first_or_404(
-            sa.select(Student).where(Student.cpfnr == cpfnr)
-        )
-        enrollment = db.first_or_404(
-            sa.select(Enrollment).where(
+        students_enrollment = db.session.query(
+            Student.fname,
+            Enrollment.roll,
+        ).where(
+            Enrollment.cpfnr == cpfnr,
+            Enrollment.taxnr == taxnr,
+            Enrollment.year == payload["edition"],
+            Student.cpfnr == Enrollment.cpfnr,
+        ).first()
+        form = edit_enrollment_roll_form(roll=students_enrollment.roll)
+        if form.validate_on_submit():
+            enrollment = db.session.query(Enrollment).where(
                 Enrollment.cpfnr == cpfnr,
                 Enrollment.taxnr == taxnr,
                 Enrollment.year == payload["edition"],
-            )
-        )
-        form = edit_enrollment_roll_form(roll=enrollment.roll)
-        if form.validate_on_submit():
+            ).first()
             enrollment.roll = form.roll.data
             db.session.commit()
             return redirect(
                 url_for(
                     "bp_user_routes.edit_student_enrollment",
-                    payload=payload,
                     taxnr=taxnr,
                     cpfnr=cpfnr,
-                    student=student,
                 )
             )
         return render_template(
             "user/enrollment/update/field/roll.html",
             payload=payload,
             pfname=professor.fname,
-            student=student,
+            sfname=students_enrollment.fname,
             cpfnr=cpfnr,
-            enrollment=enrollment,
             form=form,
         )
     else:
@@ -670,18 +672,22 @@ def edit_enrollment_need(taxnr, cpfnr):
         professor = db.first_or_404(
             sa.select(Professor).where(Professor.taxnr == taxnr)
         )
-        student = db.first_or_404(
-            sa.select(Student).where(Student.cpfnr == cpfnr)
-        )
-        enrollment = db.first_or_404(
-            sa.select(Enrollment).where(
+        students_enrollment = db.session.query(
+            Student.fname,
+            Enrollment.need,
+        ).where(
+            Enrollment.cpfnr == cpfnr,
+            Enrollment.taxnr == taxnr,
+            Enrollment.year == payload["edition"],
+            Student.cpfnr == Enrollment.cpfnr,
+        ).first()
+        form = edit_enrollment_need_form(need=students_enrollment.need)
+        if form.validate_on_submit():
+            enrollment = db.session.query(Enrollment).where(
                 Enrollment.cpfnr == cpfnr,
                 Enrollment.taxnr == taxnr,
                 Enrollment.year == payload["edition"],
-            )
-        )
-        form = edit_enrollment_need_form(need=enrollment.need)
-        if form.validate_on_submit():
+            ).first()
             enrollment.need = re.sub(
                 r"\s+", r" ", unidecode(form.need.data.lower())
             )
@@ -689,19 +695,16 @@ def edit_enrollment_need(taxnr, cpfnr):
             return redirect(
                 url_for(
                     "bp_user_routes.edit_student_enrollment",
-                    payload=payload,
                     taxnr=taxnr,
                     cpfnr=cpfnr,
-                    student=student,
                 )
             )
         return render_template(
             "user/enrollment/update/field/need.html",
             payload=payload,
             pfname=professor.fname,
-            student=student,
+            sfname=students_enrollment,
             cpfnr=cpfnr,
-            enrollment=enrollment,
             form=form,
         )
     else:
