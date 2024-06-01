@@ -10,29 +10,31 @@
         Redefinir Senha
       </h4>
 
-      <form action="" class="row g-3 needs-validation" method="post" style="margin-top: 5%" novalidate>
+      <div class="form-wrapper" style="margin-top: 5%">
+        <form action="{{ url_for('bp_auth_routes.request_password_reset') }}" class="row g-3 needs-validation" method="post" novalidate>
 
-        {{ form.hidden_tag() }}
+          {{ form.hidden_tag() }}
 
-        <div class="col-md-4">
-          <label class="form-label">{{ form.email.label }}</label>
-          {{ form.email(class_="form-control") }}
-          {% if form.email.errors %}
-          <ul class="error">
-            {% for error in form.email.errors %}
-            <li class="error">
-              <span style="color: red;">{{ error }}</span>
-            </li>
-            {% endfor %}
-          </ul>
-          {% endif %}
-        </div>
+          <div class="col-md-4">
+            <label class="form-label">{{ form.email.label }}</label>
+            {{ form.email(class_="form-control") }}
+            {% if form.email.errors %}
+            <ul class="error">
+              {% for error in form.email.errors %}
+              <li class="error">
+                <span style="color: red;">{{ error }}</span>
+              </li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+          </div>
 
-        <div class="col-12">
-          {{ form.submit(class_="btn btn-primary") }}
-        </div>
+          <div class="col-12">
+            {{ form.submit(class_="btn btn-primary") }}
+          </div>
 
-      </form>
+        </form>
+      </div>
 
     </div>
   </div>

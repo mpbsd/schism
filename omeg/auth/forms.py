@@ -64,9 +64,11 @@ class reset_password_request_form(FlaskForm):
 
 
 class reset_password_form(FlaskForm):
-    password1 = PasswordField("Nova senha", validators=[DataRequired()])
+    password1 = PasswordField(
+        "Senha", validators=[DataRequired(), Length(min=8, max=32)]
+    )
     password2 = PasswordField(
-        "Confirme a senha", validators=[DataRequired(), EqualTo("password1")]
+        "Confirmar a senha", validators=[DataRequired(), EqualTo("password1")]
     )
     submit = SubmitField("Alterar")
 
