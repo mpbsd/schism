@@ -31,7 +31,8 @@ def professor_dashboard(taxnr):
         )
         return render_template(
             "user/dashboard.html",
-            payload=payload,
+            save_the_date=payload["save_the_date"],
+            days_until=payload["days_until"],
             pfname=professor.fname,
         )
     else:
@@ -47,8 +48,9 @@ def save_the_date(taxnr):
         )
         return render_template(
             "user/utils/save_the_date.html",
-            payload=payload,
             pfname=professor.fname,
+            save_the_date=payload["save_the_date"],
+            days_until=payload["days_until"],
         )
     else:
         return redirect(url_for("bp_home_routes.home"))
@@ -202,7 +204,8 @@ def student_registration(taxnr):
                 flash("Quota atingida.")
                 return render_template(
                     "user/registration/read/quota_overflow.html",
-                    payload=payload,
+                    edition=payload["edition"],
+                    quota=payload["quota"],
                     pfname=professor.fname,
                     roll=enrollment.roll,
                     extract=extract,
@@ -277,7 +280,7 @@ def enrollments_extract(taxnr):
         )
         return render_template(
             "user/enrollment/read/enrollments_extract.html",
-            payload=payload,
+            edition=payload["edition"],
             pfname=professor.fname,
             enrollments=enrollments,
         )
@@ -295,7 +298,7 @@ def numeric_extract(taxnr):
         extract = students_extract_query(professor.taxnr)
         return render_template(
             "user/enrollment/read/numeric_extract.html",
-            payload=payload,
+            edition=payload["edition"],
             pfname=professor.fname,
             extract=extract,
         )

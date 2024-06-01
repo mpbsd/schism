@@ -26,10 +26,10 @@
               Início
             </th>
             <td>
-              {{ payload["save_the_date"]["registration"]["opening"].strftime("%d/%m/%Y") }}
+              {{ save_the_date["registration"]["opening"].strftime("%d/%m/%Y") }}
             </td>
             <td>
-              {{ payload["days_until"]["registration"]["opening"] }}
+              {{ days_until["registration"]["opening"] }}
             </td>
           </tr>
           <tr>
@@ -37,10 +37,10 @@
               Término
             </th>
             <td>
-              {{ payload["save_the_date"]["registration"]["closing"].strftime("%d/%m/%Y") }}
+              {{ save_the_date["registration"]["closing"].strftime("%d/%m/%Y") }}
             </td>
             <td>
-              {{ payload["days_until"]["registration"]["closing"] }}
+              {{ days_until["registration"]["closing"] }}
             </td>
           </tr>
         </tbody>
@@ -73,10 +73,10 @@
               Primeira Etapa (on-line)
             </th>
             <td>
-              {{ payload["save_the_date"]["step"]["1"].strftime("%d/%m/%Y") }}
+              {{ save_the_date["step"]["1"].strftime("%d/%m/%Y") }}
             </td>
             <td>
-              {{ payload["days_until"]["step"]["1"] }}
+              {{ days_until["step"]["1"] }}
             </td>
           </tr>
           <tr>
@@ -84,10 +84,10 @@
               Segunda Etapa (presencial)
             </th>
             <td>
-              {{ payload["save_the_date"]["step"]["2"].strftime("%d/%m/%Y") }}
+              {{ save_the_date["step"]["2"].strftime("%d/%m/%Y") }}
             </td>
             <td>
-              {{ payload["days_until"]["step"]["2"] }}
+              {{ days_until["step"]["2"] }}
             </td>
           </tr>
         </tbody>
