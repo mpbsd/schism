@@ -212,7 +212,7 @@ def student_registration(taxnr):
                 )
         return render_template(
             "user/registration/create/student.html",
-            payload=payload,
+            edition=payload["edition"],
             pfname=professor.fname,
             form=form,
         )
@@ -244,7 +244,7 @@ def registered_students(taxnr):
         )
         return render_template(
             "user/registration/read/registered_students.html",
-            payload=payload,
+            edition=payload["edition"],
             pfname=professor.fname,
             students=students,
             date_strfmt=date_strfmt,
@@ -330,7 +330,7 @@ def request_student_registration_edition(taxnr):
         )
         return render_template(
             "user/registration/update/request.html",
-            payload=payload,
+            edition=payload["edition"],
             pfname=professor.fname,
             students=students,
             date_strfmt=date_strfmt,
@@ -354,7 +354,7 @@ def edit_student_registration(taxnr, cpfnr):
         )
         return render_template(
             "user/registration/update/student.html",
-            payload=payload,
+            edition=payload["edition"],
             pfname=professor.fname,
             student=student,
             date_strfmt=date_strfmt,
@@ -382,14 +382,13 @@ def edit_student_cpfnr(taxnr, cpfnr):
             return redirect(
                 url_for(
                     "bp_user_routes.edit_student_registration",
-                    payload=payload,
                     taxnr=taxnr,
                     cpfnr=student.cpfnr,
                 )
             )
         return render_template(
             "user/registration/update/field/cpfnr.html",
-            payload=payload,
+            edition=payload["edition"],
             pfname=professor.fname,
             student=student,
             form=form,
@@ -417,14 +416,13 @@ def edit_student_fname(taxnr, cpfnr):
             return redirect(
                 url_for(
                     "bp_user_routes.edit_student_registration",
-                    payload=payload,
                     taxnr=taxnr,
                     cpfnr=cpfnr,
                 )
             )
         return render_template(
             "user/registration/update/field/fname.html",
-            payload=payload,
+            edition=payload["edition"],
             pfname=professor.fname,
             student=student,
             form=form,
@@ -453,14 +451,13 @@ def edit_student_birth(taxnr, cpfnr):
             return redirect(
                 url_for(
                     "bp_user_routes.edit_student_registration",
-                    payload=payload,
                     taxnr=taxnr,
                     cpfnr=cpfnr,
                 )
             )
         return render_template(
             "user/registration/update/field/birth.html",
-            payload=payload,
+            edition=payload["edition"],
             pfname=professor.fname,
             student=student,
             form=form,
@@ -487,14 +484,13 @@ def edit_student_email(taxnr, cpfnr):
             return redirect(
                 url_for(
                     "bp_user_routes.edit_student_registration",
-                    payload=payload,
                     taxnr=taxnr,
                     cpfnr=cpfnr,
                 )
             )
         return render_template(
             "user/registration/update/field/email.html",
-            payload=payload,
+            edition=payload["edition"],
             pfname=professor.fname,
             student=student,
             form=form,
