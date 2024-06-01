@@ -2,16 +2,21 @@ import re
 from datetime import date
 
 
-def cpf_strfmt(cpfnr):
-    re_cpf = re.compile(r"(\d{3})\.?(\d{3})\.?(\d{3})-?(\d{2})")
-    return re_cpf.sub(r"\1\2\3\4", cpfnr)
+class CPF:
+    def __init__(self, cpfnr: str):
+        self.cpfnr = cpfnr
 
+    def strfmt(self, fmt: str) -> str:
+        re_cpfnr = re.compile(r"(\d{3})\.?(\d{3})\.?(\d{3})-?(\d{2})")
+        cpfnrfmt = {
+            "raw": re_cpfnr.sub(r"\1\2\3\4", self.cpfnr),
+            "dot": re_cpfnr.sub(r"\1.\2.\3-\4", self.cpfnr),
+        }
+        return cpfnrfmt[fmt]
 
-def cpf_digits_match(cpfstr):
-    re_cpf = re.compile(r"(\d{3})\.?(\d{3})\.?(\d{3})-?(\d{2})")
-    B = False
-    if re_cpf.match(cpfstr):
-        CPF = re_cpf.sub(r"\1\2\3\4", cpfstr)
+    def digits_match(self) -> bool:
+        CPF = self.strfmt("raw")
+        B = False
         if CPF != "00000000000":
             D = [0, 0]
             for i in range(9):
@@ -22,7 +27,10 @@ def cpf_digits_match(cpfstr):
             D1_is_correct = ((10 * D[1]) % 11) % 10 == int(CPF[10])
             if D0_is_correct and D1_is_correct:
                 B = True
-    return B
+        return B
+
+    def __repr__(self):
+        return self.strfmt("dot")
 
 
 def date_strfmt(date, style):

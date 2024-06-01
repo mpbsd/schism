@@ -16,7 +16,7 @@ from omeg.auth.forms import (
     reset_password_request_form,
 )
 from omeg.conf.boost import db
-from omeg.data.load import cpf_strfmt, payload
+from omeg.data.load import CPF, payload
 from omeg.mold.models import Professor
 
 bp_auth_routes = Blueprint("bp_auth_routes", __name__)
@@ -37,7 +37,7 @@ def request_registration():
     if form.validate_on_submit():
         professor = db.session.scalar(
             sa.select(Professor).where(
-                Professor.email == cpf_strfmt(form.email.data)
+                Professor.email == form.email.data
             )
         )
         if not professor:
@@ -65,7 +65,7 @@ def registration(token):
     form = professor_registration_form(email=email)
     if form.validate_on_submit():
         professor = Professor(
-            taxnr=cpf_strfmt(form.taxnr.data),
+            taxnr=CPF(form.taxnr.data).strfmt("raw"),
             fname=re.sub(r"\s+", r" ", form.fname.data),
             email=form.email.data,
         )
@@ -144,7 +144,7 @@ def login():
     if form.validate_on_submit():
         professor = db.session.scalar(
             sa.select(Professor).where(
-                Professor.taxnr == cpf_strfmt(form.taxnr.data)
+                Professor.taxnr == CPF(form.taxnr.data).strfmt("raw")
             )
         )
         if professor is None:

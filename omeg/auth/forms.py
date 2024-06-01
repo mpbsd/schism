@@ -13,7 +13,7 @@ from wtforms.validators import (
 )
 
 from omeg.conf.boost import db
-from omeg.data.load import cpf_digits_match
+from omeg.data.load import CPF
 from omeg.mold.models import Professor, School, Student
 
 
@@ -38,7 +38,7 @@ class professor_registration_form(FlaskForm):
         professor = db.session.scalar(
             sa.select(Professor).where(Professor.taxnr == taxnr.data)
         )
-        if cpf_digits_match(taxnr.data) is False:
+        if CPF(taxnr.data).digits_match() is False:
             raise ValidationError("CPF inconsistente")
         elif professor is not None:
             raise ValidationError("CPF já existe em nosso banco de dados")
@@ -89,7 +89,7 @@ class student_registration_form(FlaskForm):
         student = db.session.scalar(
             sa.select(Student).where(Student.cpfnr == cpfnr.data)
         )
-        if cpf_digits_match(cpfnr.data) is False:
+        if CPF(cpfnr.data).digits_match() is False:
             raise ValidationError("CPF inconsistente")
         elif professor is not None:
             raise ValidationError("CPF já existe em nosso banco de dados")

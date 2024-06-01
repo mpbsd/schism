@@ -6,7 +6,7 @@ from flask_login import current_user, login_required
 from unidecode import unidecode
 
 from omeg.conf.boost import db
-from omeg.data.load import cpf_strfmt, date_strfmt, payload
+from omeg.data.load import CPF, date_strfmt, payload
 from omeg.mold.models import Enrollment, Professor, School, Student
 from omeg.user.forms import (
     edit_enrollment_inep_form,
@@ -152,14 +152,15 @@ def student_registration(taxnr):
         )
         form = student_registration_form()
         if form.validate_on_submit():
+            cpfnr = CPF(form.cpfnr.data).strfmt("raw")
             student = Student(
-                cpfnr=cpf_strfmt(form.cpfnr.data),
+                cpfnr=cpfnr,
                 fname=re.sub(r"\s+", r" ", form.fname.data),
                 birth=date_strfmt(form.birth.data, "yyyymmdd"),
                 email=form.email.data,
             )
             enrollment = Enrollment(
-                cpfnr=cpf_strfmt(form.cpfnr.data),
+                cpfnr=cpfnr,
                 taxnr=taxnr,
                 inep=form.inep.data,
                 year=payload["edition"],
@@ -376,7 +377,7 @@ def edit_student_cpfnr(taxnr, cpfnr):
         )
         form = edit_student_cpfnr_form(cpfnr=cpfnr)
         if form.validate_on_submit():
-            student.cpfnr = cpf_strfmt(form.cpfnr.data)
+            student.cpfnr = CPF(form.cpfnr.data).strfmt("raw")
             db.session.commit()
             return redirect(
                 url_for(
