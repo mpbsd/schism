@@ -31,6 +31,7 @@ def professor_dashboard(taxnr):
         )
         return render_template(
             "user/dashboard.html",
+            edition=payload["edition"],
             save_the_date=payload["save_the_date"],
             days_until=payload["days_until"],
             pfname=professor.fname,
@@ -48,6 +49,7 @@ def save_the_date(taxnr):
         )
         return render_template(
             "user/utils/save_the_date.html",
+            edition=payload["edition"],
             pfname=professor.fname,
             save_the_date=payload["save_the_date"],
             days_until=payload["days_until"],
@@ -68,7 +70,7 @@ def inep(taxnr):
         ).all()
         return render_template(
             "user/utils/inep.html",
-            payload=payload,
+            edition=payload["edition"],
             pfname=professor.fname,
             schools=schools,
         )
@@ -194,8 +196,6 @@ def student_registration(taxnr):
                 return redirect(
                     url_for(
                         "bp_user_routes.registered_students",
-                        payload=payload,
-                        pfname=professor.fname,
                         taxnr=taxnr,
                     )
                 )
@@ -375,7 +375,7 @@ def edit_student_cpfnr(taxnr, cpfnr):
         student = db.first_or_404(
             sa.select(Student).where(Student.cpfnr == cpfnr)
         )
-        form = edit_student_cpfnr_form(cpfnr=student.cpfnr)
+        form = edit_student_cpfnr_form(cpfnr=cpfnr)
         if form.validate_on_submit():
             student.cpfnr = cpf_strfmt(form.cpfnr.data)
             db.session.commit()
@@ -390,7 +390,8 @@ def edit_student_cpfnr(taxnr, cpfnr):
             "user/registration/update/field/cpfnr.html",
             edition=payload["edition"],
             pfname=professor.fname,
-            student=student,
+            sfname=student.fname,
+            cpfnr=cpfnr,
             form=form,
         )
     else:
@@ -424,7 +425,8 @@ def edit_student_fname(taxnr, cpfnr):
             "user/registration/update/field/fname.html",
             edition=payload["edition"],
             pfname=professor.fname,
-            student=student,
+            sfname=student.fname,
+            cpfnr=cpfnr,
             form=form,
         )
     return redirect(url_for("bp_home_routes.home"))
@@ -459,7 +461,8 @@ def edit_student_birth(taxnr, cpfnr):
             "user/registration/update/field/birth.html",
             edition=payload["edition"],
             pfname=professor.fname,
-            student=student,
+            sfname=student.fname,
+            cpfnr=cpfnr,
             form=form,
         )
     return redirect(url_for("bp_home_routes.home"))
@@ -492,7 +495,8 @@ def edit_student_email(taxnr, cpfnr):
             "user/registration/update/field/email.html",
             edition=payload["edition"],
             pfname=professor.fname,
-            student=student,
+            sfname=student.fname,
+            cpfnr=cpfnr,
             form=form,
         )
     else:
@@ -526,7 +530,7 @@ def request_student_enrollment_edition(taxnr):
         )
         return render_template(
             "user/enrollment/update/request.html",
-            payload=payload,
+            edition=payload["edition"],
             pfname=professor.fname,
             enrollments=enrollments,
         )
