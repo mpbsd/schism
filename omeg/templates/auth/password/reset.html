@@ -10,38 +10,48 @@
         Redefinição de Senha
       </h4>
 
-      <form action="" method="post" style="margin-top: 5%">
-        {{ form.hidden_tag() }}
-        <p>
-        {{ form.password.label }}
-        <br>
-        {{ form.password(size=32) }}
-        <br>
-        {% for error in form.password.errors %}
-        <span style="color: red;">
-          {{ error }}
-        </span>
-        {% endfor %}
-        </p>
-        <p>
-        {{ form.password2.label }}
-        <br>
-        {{ form.password2(size=32) }}
-        <br>
-        {% for error in form.password2.errors %}
-        <span style="color: red;">
-          {{ error }}
-        </span>
-        {% endfor %}
-        </p>
-        <p>
-        {{ form.submit(class_="btn btn-primary") }}
-        </p>
-      </form>
+      <div class="form-wrapper" style="margin-top: 5%">
+        <form action="bp_auth_routes.password_reset" class="row g-3 needs-validation" method="post" novalidate>
+
+          {{ form.hidden_tag() }}
+
+          <div class="col-md-4">
+            <label class="form-label">{{ form.password1.label }}</label>
+            {{ form.password1(class_="form-control") }}
+            {% if form.password1.errors %}
+            <ul class="errors">
+              {% for error in form.password1.errors %}
+              <li class="error">
+                <span style="color: red;">{{ error }}</span>
+              </li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+          </div>
+
+          <div class="col-md-4">
+            <label class="form-label">{{ form.password2.label }}</label>
+            {{ form.password2(class_="form-control") }}
+            {% if form.password2.errors %}
+            <ul class="errors">
+              {% for error in form.password2.errors %}
+              <li class="error">
+                <span style="color: red;">{{ error }}</span>
+              </li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+          </div>
+
+          <div class="col-12">
+            {{ form.submit(class_="btn btn-primary") }}
+          </div>
+
+        </form>
+      </div>
 
     </div>
   </div>
-</div>
 </div>
 
 {% endblock %}

@@ -166,7 +166,6 @@ def student_registration(taxnr):
             quota = (
                 db.session.query(Enrollment)
                 .where(
-                    Enrollment.taxnr == enrollment.taxnr,
                     Enrollment.inep == enrollment.inep,
                     Enrollment.year == payload["edition"],
                     Enrollment.roll == enrollment.roll,

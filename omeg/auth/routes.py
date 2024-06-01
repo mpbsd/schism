@@ -105,7 +105,7 @@ def password_reset(token):
         return redirect(url_for("bp_home_routes.home"))
     form = reset_password_form()
     if form.validate_on_submit():
-        professor.set_password(form.password.data)
+        professor.set_password(form.password1.data)
         db.session.commit()
         flash("Senha redefinida com sucesso.")
         return redirect(url_for("bp_auth_routes.login"))

@@ -43,7 +43,7 @@
           </div>
 
           <div class="col-md-4">
-            <label class="form-label">{{ form.fname.label }}</label>
+            <label class="form-label">{{ form.email.label }}</label>
             {{ form.email(class_="form-control") }}
             {% if form.email.errors %}
             <ul class="errors">
@@ -57,7 +57,7 @@
           </div>
 
           <div class="col-md-4">
-            <label class="form-label">{{ form.fname.label }}</label>
+            <label class="form-label">{{ form.password1.label }}</label>
             {{ form.password1(class_="form-control") }}
             {% if form.password1.errors %}
             <ul class="errors">
@@ -71,7 +71,7 @@
           </div>
 
           <div class="col-md-4">
-            <label class="form-label">{{ form.fname.label }}</label>
+            <label class="form-label">{{ form.password2.label }}</label>
             {{ form.password2(class_="form-control") }}
             {% if form.password2.errors %}
             <ul class="errors">
@@ -84,9 +84,10 @@
             {% endif %}
           </div>
 
-          <fieldset class="form-field">
+          <div class="col-12">
             {{ form.submit(class_="btn btn-primary") }}
-          </fieldset>
+          </div>
+
         </form>
       </div>
 
