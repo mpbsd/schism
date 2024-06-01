@@ -32,7 +32,7 @@ def professor_dashboard(taxnr):
         return render_template(
             "user/dashboard.html",
             payload=payload,
-            professor=professor,
+            pfname=professor.fname,
         )
     else:
         return redirect(url_for("bp_home_routes.home"))
@@ -48,7 +48,7 @@ def save_the_date(taxnr):
         return render_template(
             "user/utils/save_the_date.html",
             payload=payload,
-            professor=professor,
+            pfname=professor.fname,
         )
     else:
         return redirect(url_for("bp_home_routes.home"))
@@ -67,7 +67,7 @@ def inep(taxnr):
         return render_template(
             "user/utils/inep.html",
             payload=payload,
-            professor=professor,
+            pfname=professor.fname,
             schools=schools,
         )
     else:
@@ -193,7 +193,7 @@ def student_registration(taxnr):
                     url_for(
                         "bp_user_routes.registered_students",
                         payload=payload,
-                        professor=professor,
+                        pfname=professor.fname,
                         taxnr=taxnr,
                     )
                 )
@@ -203,14 +203,14 @@ def student_registration(taxnr):
                 return render_template(
                     "user/registration/read/quota_overflow.html",
                     payload=payload,
-                    professor=professor,
+                    pfname=professor.fname,
                     roll=enrollment.roll,
                     extract=extract,
                 )
         return render_template(
             "user/registration/create/student.html",
             payload=payload,
-            professor=professor,
+            pfname=professor.fname,
             form=form,
         )
     else:
@@ -242,7 +242,7 @@ def registered_students(taxnr):
         return render_template(
             "user/registration/read/registered_students.html",
             payload=payload,
-            professor=professor,
+            pfname=professor.fname,
             students=students,
             date_strfmt=date_strfmt,
         )
@@ -278,7 +278,7 @@ def enrollments_extract(taxnr):
         return render_template(
             "user/enrollment/read/enrollments_extract.html",
             payload=payload,
-            professor=professor,
+            pfname=professor.fname,
             enrollments=enrollments,
         )
     else:
@@ -296,7 +296,7 @@ def numeric_extract(taxnr):
         return render_template(
             "user/enrollment/read/numeric_extract.html",
             payload=payload,
-            professor=professor,
+            pfname=professor.fname,
             extract=extract,
         )
     else:
@@ -328,7 +328,7 @@ def request_student_registration_edition(taxnr):
         return render_template(
             "user/registration/update/request.html",
             payload=payload,
-            professor=professor,
+            pfname=professor.fname,
             students=students,
             date_strfmt=date_strfmt,
         )
@@ -352,7 +352,7 @@ def edit_student_registration(taxnr, cpfnr):
         return render_template(
             "user/registration/update/student.html",
             payload=payload,
-            professor=professor,
+            pfname=professor.fname,
             student=student,
             date_strfmt=date_strfmt,
         )
@@ -387,7 +387,7 @@ def edit_student_cpfnr(taxnr, cpfnr):
         return render_template(
             "user/registration/update/field/cpfnr.html",
             payload=payload,
-            professor=professor,
+            pfname=professor.fname,
             student=student,
             form=form,
         )
@@ -422,7 +422,7 @@ def edit_student_fname(taxnr, cpfnr):
         return render_template(
             "user/registration/update/field/fname.html",
             payload=payload,
-            professor=professor,
+            pfname=professor.fname,
             student=student,
             form=form,
         )
@@ -458,7 +458,7 @@ def edit_student_birth(taxnr, cpfnr):
         return render_template(
             "user/registration/update/field/birth.html",
             payload=payload,
-            professor=professor,
+            pfname=professor.fname,
             student=student,
             form=form,
         )
@@ -492,7 +492,7 @@ def edit_student_email(taxnr, cpfnr):
         return render_template(
             "user/registration/update/field/email.html",
             payload=payload,
-            professor=professor,
+            pfname=professor.fname,
             student=student,
             form=form,
         )
@@ -528,7 +528,7 @@ def request_student_enrollment_edition(taxnr):
         return render_template(
             "user/enrollment/update/request.html",
             payload=payload,
-            professor=professor,
+            pfname=professor.fname,
             enrollments=enrollments,
         )
     else:
@@ -561,7 +561,7 @@ def edit_student_enrollment(taxnr, cpfnr):
         return render_template(
             "user/enrollment/update/enrollment.html",
             payload=payload,
-            professor=professor,
+            pfname=professor.fname,
             student=student,
             enrollment=enrollment,
             school=school,
@@ -606,7 +606,7 @@ def edit_enrollment_inep(taxnr, cpfnr):
         return render_template(
             "user/enrollment/update/field/inep.html",
             payload=payload,
-            professor=professor,
+            pfname=professor.fname,
             student=student,
             cpfnr=cpfnr,
             enrollment=enrollment,
@@ -652,7 +652,7 @@ def edit_enrollment_roll(taxnr, cpfnr):
         return render_template(
             "user/enrollment/update/field/roll.html",
             payload=payload,
-            professor=professor,
+            pfname=professor.fname,
             student=student,
             cpfnr=cpfnr,
             enrollment=enrollment,
@@ -700,7 +700,7 @@ def edit_enrollment_need(taxnr, cpfnr):
         return render_template(
             "user/enrollment/update/field/need.html",
             payload=payload,
-            professor=professor,
+            pfname=professor.fname,
             student=student,
             cpfnr=cpfnr,
             enrollment=enrollment,
