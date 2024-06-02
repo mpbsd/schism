@@ -39,7 +39,7 @@
               {{ student.fname }}
             </td>
             <td>
-              {{ date_strfmt(student.birth, "dd-mm-yyyy") }}
+              {{ DATE(student.birth).strfmt("dd-mm-yyyy") }}
             </td>
             <td>
               {{ student.email }}

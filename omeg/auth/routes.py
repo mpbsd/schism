@@ -36,9 +36,7 @@ def request_registration():
     form = professor_registration_request_form()
     if form.validate_on_submit():
         professor = db.session.scalar(
-            sa.select(Professor).where(
-                Professor.email == form.email.data
-            )
+            sa.select(Professor).where(Professor.email == form.email.data)
         )
         if not professor:
             send_registration_request_email(form.email.data)

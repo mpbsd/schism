@@ -6,7 +6,7 @@ from flask_login import current_user, login_required
 from unidecode import unidecode
 
 from omeg.conf.boost import db
-from omeg.data.load import CPF, date_strfmt, payload
+from omeg.data.load import CPF, DATE, payload
 from omeg.mold.models import Enrollment, Professor, School, Student
 from omeg.user.forms import (
     edit_enrollment_inep_form,
@@ -156,7 +156,7 @@ def student_registration(taxnr):
             student = Student(
                 cpfnr=cpfnr,
                 fname=re.sub(r"\s+", r" ", form.fname.data),
-                birth=date_strfmt(form.birth.data, "yyyymmdd"),
+                birth=DATE(form.birth.data).isofmt(),
                 email=form.email.data,
             )
             enrollment = Enrollment(
@@ -246,7 +246,7 @@ def registered_students(taxnr):
             edition=payload["edition"],
             pfname=professor.fname,
             students=students,
-            date_strfmt=date_strfmt,
+            DATE=DATE,
         )
     else:
         return redirect(url_for("bp_home_routes.home"))
@@ -332,7 +332,7 @@ def request_student_registration_edition(taxnr):
             edition=payload["edition"],
             pfname=professor.fname,
             students=students,
-            date_strfmt=date_strfmt,
+            DATE=DATE,
         )
     else:
         return redirect(url_for("bp_home_routes.home"))
@@ -356,7 +356,7 @@ def edit_student_registration(taxnr, cpfnr):
             edition=payload["edition"],
             pfname=professor.fname,
             student=student,
-            date_strfmt=date_strfmt,
+            DATE=DATE,
         )
     else:
         return redirect(url_for("bp_home_routes.home"))
@@ -447,10 +447,10 @@ def edit_student_birth(taxnr, cpfnr):
             sa.select(Student).where(Student.cpfnr == cpfnr)
         )
         form = edit_student_birth_form(
-            birth=date_strfmt(student.birth, "dd-mm-yyyy")
+            birth=DATE(student.birth).strfmt("dd-mm-yyyy")
         )
         if form.validate_on_submit():
-            student.birth = date_strfmt(form.birth.data, "yyyymmdd")
+            student.birth = DATE(form.birth.data).isofmt()
             db.session.commit()
             return redirect(
                 url_for(

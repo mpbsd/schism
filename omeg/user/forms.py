@@ -1,5 +1,3 @@
-import re
-
 import sqlalchemy as sa
 from flask_wtf import FlaskForm
 from wtforms import IntegerField, StringField, SubmitField
@@ -11,7 +9,7 @@ from wtforms.validators import (
 )
 
 from omeg.conf.boost import db
-from omeg.data.load import CPF
+from omeg.data.load import CPF, DATE
 from omeg.mold.models import Professor, School, Student
 
 
@@ -48,42 +46,11 @@ class student_registration_form(FlaskForm):
             raise ValidationError("Email já existe em nosso banco de dados")
 
     def validate_birth(self, birth):
-        ndays = {
-            1: 31,
-            2: 28,
-            3: 31,
-            4: 30,
-            5: 31,
-            6: 30,
-            7: 31,
-            8: 31,
-            9: 30,
-            10: 31,
-            11: 30,
-            12: 31,
-        }
-        re_d = r"0[1-9]|[12][0-9]|3[01]"
-        re_m = r"0[1-9]|1[012]"
-        re_y = r"20[01][0-9]"
-        re_1 = re.compile(r"(%s)[/-]?(%s)[/-]?(%s)" % (re_d, re_m, re_y))
-        re_2 = re.compile(r"(%s)[/-]?(%s)[/-]?(%s)" % (re_y, re_m, re_d))
-        is_real_date = False
-        if re_1.match(birth.data) or re_2.match(birth.data):
-            if re_1.match(birth.data):
-                D = re_1.match(birth.data)
-                d = int(D.group(1))
-                m = int(D.group(2))
-                y = int(D.group(3))
-            elif re_2.match(birth.data):
-                D = re_2.match(birth.data)
-                d = int(D.group(3))
-                m = int(D.group(2))
-                y = int(D.group(1))
-            if (m == 2) and ((y % 4 == 0 and y % 100 != 0) or (y % 400 == 0)):
-                ndays[m] += 1
-            if d <= ndays[m]:
-                is_real_date = True
-        if is_real_date is False:
+        date = DATE(birth.data)
+        cond_1 = date.exists() is True
+        cond_2 = date.is_not_in_the_future() is True
+        cond_3 = date.year_belongs_to_selected_range() is True
+        if (cond_1 and cond_2 and cond_3) is False:
             raise ValidationError("Data incorreta")
 
     def validate_inep(self, inep):
@@ -121,43 +88,12 @@ class edit_student_birth_form(FlaskForm):
     submit = SubmitField("Confirmar")
 
     def validate_birth(self, birth):
-        ndays = {
-            1: 31,
-            2: 28,
-            3: 31,
-            4: 30,
-            5: 31,
-            6: 30,
-            7: 31,
-            8: 31,
-            9: 30,
-            10: 31,
-            11: 30,
-            12: 31,
-        }
-        re_d = r"0[1-9]|[12][0-9]|3[01]"
-        re_m = r"0[1-9]|1[012]"
-        re_y = r"20[01][0-9]"
-        re_1 = re.compile(r"(%s)[/-]?(%s)[/-]?(%s)" % (re_d, re_m, re_y))
-        re_2 = re.compile(r"(%s)[/-]?(%s)[/-]?(%s)" % (re_y, re_m, re_d))
-        is_real_date = False
-        if re_1.match(birth.data) or re_2.match(birth.data):
-            if re_1.match(birth.data):
-                D = re_1.match(birth.data)
-                d = int(D.group(1))
-                m = int(D.group(2))
-                y = int(D.group(3))
-            elif re_2.match(birth.data):
-                D = re_2.match(birth.data)
-                d = int(D.group(3))
-                m = int(D.group(2))
-                y = int(D.group(1))
-            if (m == 2) and ((y % 4 == 0 and y % 100 != 0) or (y % 400 == 0)):
-                ndays[m] += 1
-            if d <= ndays[m]:
-                is_real_date = True
-        if is_real_date is False:
-            raise ValidationError("Data inexistente")
+        date = DATE(birth.data)
+        cond_1 = date.exists() is True
+        cond_2 = date.is_not_in_the_future() is True
+        cond_3 = date.year_belongs_to_selected_range() is True
+        if (cond_1 and cond_2 and cond_3) is False:
+            raise ValidationError("Data incorreta")
 
 
 class edit_student_email_form(FlaskForm):

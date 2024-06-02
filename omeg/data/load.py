@@ -1,67 +1,138 @@
 import re
-from datetime import date
+from datetime import datetime
 
 
 class CPF:
-    def __init__(self, cpfnr: str):
+    def __init__(self, cpfnr):
         self.cpfnr = cpfnr
 
-    def strfmt(self, fmt: str) -> str:
+    def strfmt(self, fmt):
         re_cpfnr = re.compile(r"(\d{3})\.?(\d{3})\.?(\d{3})-?(\d{2})")
-        cpfnrfmt = {
+        style = {
             "raw": re_cpfnr.sub(r"\1\2\3\4", self.cpfnr),
-            "dot": re_cpfnr.sub(r"\1.\2.\3-\4", self.cpfnr),
+            "fmt": re_cpfnr.sub(r"\1.\2.\3-\4", self.cpfnr),
         }
-        return cpfnrfmt[fmt]
+        return style[fmt]
 
-    def digits_match(self) -> bool:
-        CPF = self.strfmt("raw")
+    def digits_match(self):
+        cpf = self.strfmt("raw")
         B = False
-        if CPF != "00000000000":
+        if cpf != "00000000000":
             D = [0, 0]
             for i in range(9):
-                D[0] += (10 - i) * int(CPF[i])
+                D[0] += (10 - i) * int(cpf[i])
             for i in range(10):
-                D[1] += (11 - i) * int(CPF[i])
-            D0_is_correct = ((10 * D[0]) % 11) % 10 == int(CPF[9])
-            D1_is_correct = ((10 * D[1]) % 11) % 10 == int(CPF[10])
-            if D0_is_correct and D1_is_correct:
+                D[1] += (11 - i) * int(cpf[i])
+            D0_is_OK = ((10 * D[0]) % 11) % 10 == int(cpf[9])
+            D1_is_OK = ((10 * D[1]) % 11) % 10 == int(cpf[10])
+            if D0_is_OK and D1_is_OK:
                 B = True
         return B
 
     def __repr__(self):
-        return self.strfmt("dot")
+        return self.strfmt("fmt")
 
 
-def date_strfmt(date, style):
-    STYLE = {
-        "dd-mm-yyyy": "%02d-%02d-%04d",
-        "dd/mm/yyyy": "%02d/%02d/%04d",
-        "yyyy-mm-dd": "%04d-%02d-%02d",
-        "yyyy/mm/dd": "%04d/%02d/%02d",
-        "yyyymmdd": "%04d%02d%02d",
-    }
+class DATE:
     re_d = r"0[1-9]|[12][0-9]|3[01]"
     re_m = r"0[1-9]|1[012]"
-    re_y = r"20[01][0-9]"
-    re_1 = re.compile(r"(%s)[/-]?(%s)[/-]?(%s)" % (re_d, re_m, re_y))
-    re_2 = re.compile(r"(%s)[/-]?(%s)[/-]?(%s)" % (re_y, re_m, re_d))
-    if re_1.match(date) or re_2.match(date):
-        if re_1.match(date):
-            D = re_1.match(date)
-            d = int(D.group(1))
-            m = int(D.group(2))
-            y = int(D.group(3))
-        elif re_2.match(date):
-            D = re_2.match(date)
-            d = int(D.group(3))
-            m = int(D.group(2))
-            y = int(D.group(1))
-        if style in ["dd-mm-yyyy", "dd/mm/yyyy"]:
-            Dfmt = STYLE[style] % (d, m, y)
-        else:
-            Dfmt = STYLE[style] % (y, m, d)
-    return Dfmt
+    re_y = r"[0-9]{4}"
+
+    dt_1 = re.compile(r"(%s)[/-]?(%s)[/-]?(%s)" % (re_y, re_m, re_d))
+    dt_2 = re.compile(r"(%s)[/-]?(%s)[/-]?(%s)" % (re_d, re_m, re_y))
+
+    def __init__(self, datestr):
+        self.datestr = datestr
+
+    def patterns_match(self):
+        B = False
+        if self.dt_1.match(self.datestr) or self.dt_2.match(self.datestr):
+            B = True
+        return B
+
+    def dissect(self):
+        DISSECT = None
+        if self.patterns_match() is True:
+            if self.dt_1.match(self.datestr):
+                Y = self.dt_1.match(self.datestr).group(1)
+                M = self.dt_1.match(self.datestr).group(2)
+                D = self.dt_1.match(self.datestr).group(3)
+            else:
+                Y = self.dt_2.match(self.datestr).group(3)
+                M = self.dt_2.match(self.datestr).group(2)
+                D = self.dt_2.match(self.datestr).group(1)
+            DISSECT = Y, M, D
+        return DISSECT
+
+    def exists(self):
+        B = False
+        if self.patterns_match() is True:
+            Y, M, D = self.dissect()
+            y, m, d = int(Y), int(M), int(D)
+            ndays = {
+                1: 31,
+                2: 28,
+                3: 31,
+                4: 30,
+                5: 31,
+                6: 30,
+                7: 31,
+                8: 31,
+                9: 30,
+                10: 31,
+                11: 30,
+                12: 31,
+            }
+            is_leap_year = False
+            if (y % 4 == 0 and y % 100 != 0) or (y % 400 == 0):
+                is_leap_year = True
+            if (m == 2) and (is_leap_year is True):
+                ndays[m] += 1
+            if d <= ndays[m]:
+                B = True
+        return B
+
+    def isofmt(self):
+        isoformat = None
+        if self.exists() is True:
+            Y, M, D = self.dissect()
+            isoformat = f"{Y}{M}{D}"
+        return isoformat
+
+    def dateobj(self):
+        dobj = None
+        if self.exists() is True:
+            dobj = datetime.fromisoformat(self.isofmt())
+        return dobj
+
+    def strfmt(self, fmt: str) -> str:
+        strfmt = None
+        if self.exists() is True:
+            style = {
+                "yyyy-mm-dd": "%Y-%m-%d",
+                "yyyy/mm/dd": "%Y/%m/%d",
+                "dd-mm-yyyy": "%d-%m-%Y",
+                "dd/mm/yyyy": "%d/%m/%Y",
+            }
+            strfmt = self.dateobj().strftime(style[fmt])
+        return strfmt
+
+    def is_not_in_the_future(self):
+        B = False
+        if self.exists() is True:
+            if self.dateobj() <= datetime.now():
+                B = True
+        return B
+
+    def year_belongs_to_selected_range(self):
+        B = False
+        if self.exists() is True:
+            if self.dateobj().year in range(1995, 2020):
+                B = True
+        return B
+
+    def __repr__(self) -> str:
+        return self.isofmt()
 
 
 def beancount(dt1, dt2):
@@ -77,22 +148,22 @@ payload = {
     "quota": 10,
     "save_the_date": {
         "registration": {
-            "opening": date.fromisoformat("20240615"),
-            "closing": date.fromisoformat("20240715"),
+            "opening": DATE("20240615"),
+            "closing": DATE("20240715"),
         },
         "step": {
-            "1": date.fromisoformat("20240914"),
-            "2": date.fromisoformat("20241005"),
+            "1": DATE("20240914"),
+            "2": DATE("20241005"),
         },
     },
     "days_until": {
         "registration": {
-            "opening": beancount(date.today(), date.fromisoformat("20240615")),
-            "closing": beancount(date.today(), date.fromisoformat("20240715")),
+            "opening": beancount(datetime.today(), DATE("20240615").dateobj()),
+            "closing": beancount(datetime.today(), DATE("20240715").dateobj()),
         },
         "step": {
-            "1": beancount(date.today(), date.fromisoformat("20240914")),
-            "2": beancount(date.today(), date.fromisoformat("20241005")),
+            "1": beancount(datetime.today(), DATE("20240914").dateobj()),
+            "2": beancount(datetime.today(), DATE("20241005").dateobj()),
         },
     },
 }

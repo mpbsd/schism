@@ -39,7 +39,7 @@
               Data de nascimento
             </td>
             <td>
-              {{ date_strfmt(student.birth, "dd-mm-yyyy") }}
+              {{ DATE(student.birth).strfmt("dd-mm-yyyy") }}
             </td>
             <td>
               <a href="{{ url_for('bp_user_routes.edit_student_birth', taxnr=current_user.taxnr, cpfnr=student.cpfnr) }}">Editar</a>

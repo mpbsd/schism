@@ -26,7 +26,7 @@
               Início
             </th>
             <td>
-              {{ save_the_date["registration"]["opening"].strftime("%d/%m/%Y") }}
+              {{ save_the_date["registration"]["opening"].strfmt("dd-mm-yyyy") }}
             </td>
             <td>
               {{ days_until["registration"]["opening"] }} dias
@@ -37,7 +37,7 @@
               Término
             </th>
             <td>
-              {{ save_the_date["registration"]["closing"].strftime("%d/%m/%Y") }}
+              {{ save_the_date["registration"]["closing"].strfmt("dd-mm-yyyy") }}
             </td>
             <td>
               {{ days_until["registration"]["closing"] }} dias
@@ -74,7 +74,7 @@
               Primeira Etapa (on-line)
             </th>
             <td>
-              {{ save_the_date["step"]["1"].strftime("%d/%m/%Y") }}
+              {{ save_the_date["step"]["1"].strfmt("dd-mm-yyyy") }}
             </td>
             <td>
               {{ days_until["step"]["1"] }} dias
@@ -85,7 +85,7 @@
               Segunda Etapa (presencial)
             </th>
             <td>
-              {{ save_the_date["step"]["2"].strftime("%d/%m/%Y") }}
+              {{ save_the_date["step"]["2"].strfmt("dd-mm-yyyy") }}
             </td>
             <td>
               {{ days_until["step"]["2"] }} dias
