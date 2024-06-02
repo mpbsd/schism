@@ -748,7 +748,7 @@ def edit_enrollment_need(taxnr, cpfnr):
             "user/enrollment/update/field/need.html",
             edition=payload["edition"],
             pfname=professor.fname,
-            sfname=students_enrollment,
+            sfname=students_enrollment.fname,
             cpfnr=cpfnr,
             form=form,
         )
