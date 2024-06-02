@@ -143,27 +143,40 @@ def beancount(dt1, dt2):
     return beans
 
 
+save_the_date = {
+    "registration": {
+        "opening": DATE("20240615"),
+        "closing": DATE("20240715"),
+    },
+    "step": {
+        "1": DATE("20240914"),
+        "2": DATE("20241005"),
+    },
+}
+
+
 payload = {
     "edition": 2024,
     "quota": 10,
-    "save_the_date": {
-        "registration": {
-            "opening": DATE("20240615"),
-            "closing": DATE("20240715"),
-        },
-        "step": {
-            "1": DATE("20240914"),
-            "2": DATE("20241005"),
-        },
-    },
+    "save_the_date": save_the_date,
     "days_until": {
         "registration": {
-            "opening": beancount(datetime.today(), DATE("20240615").dateobj()),
-            "closing": beancount(datetime.today(), DATE("20240715").dateobj()),
+            "opening": beancount(
+                datetime.today(),
+                save_the_date["registration"]["opening"].dateobj(),
+            ),
+            "closing": beancount(
+                datetime.today(),
+                save_the_date["registration"]["closing"].dateobj(),
+            ),
         },
         "step": {
-            "1": beancount(datetime.today(), DATE("20240914").dateobj()),
-            "2": beancount(datetime.today(), DATE("20241005").dateobj()),
+            "1": beancount(
+                datetime.today(), save_the_date["step"]["1"].dateobj()
+            ),
+            "2": beancount(
+                datetime.today(), save_the_date["step"]["2"].dateobj()
+            ),
         },
     },
 }
