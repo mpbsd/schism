@@ -52,7 +52,7 @@ class DATE:
 
     def dissect(self):
         DISSECT = None
-        if self.patterns_match() is True:
+        if self.patterns_match():
             if self.dt_1.match(self.datestr):
                 Y = self.dt_1.match(self.datestr).group(1)
                 M = self.dt_1.match(self.datestr).group(2)
@@ -66,7 +66,7 @@ class DATE:
 
     def exists(self):
         B = False
-        if self.patterns_match() is True:
+        if self.patterns_match():
             Y, M, D = self.dissect()
             y, m, d = int(Y), int(M), int(D)
             ndays = {
@@ -86,7 +86,7 @@ class DATE:
             is_leap_year = False
             if (y % 4 == 0 and y % 100 != 0) or (y % 400 == 0):
                 is_leap_year = True
-            if (m == 2) and (is_leap_year is True):
+            if is_leap_year and (m == 2):
                 ndays[m] += 1
             if d <= ndays[m]:
                 B = True
@@ -94,20 +94,20 @@ class DATE:
 
     def isofmt(self):
         isoformat = None
-        if self.exists() is True:
+        if self.exists():
             Y, M, D = self.dissect()
             isoformat = f"{Y}{M}{D}"
         return isoformat
 
     def dateobj(self):
         dobj = None
-        if self.exists() is True:
+        if self.exists():
             dobj = datetime.fromisoformat(self.isofmt())
         return dobj
 
     def strfmt(self, fmt):
         strfmt = None
-        if self.exists() is True:
+        if self.exists():
             style = {
                 "yyyy-mm-dd": "%Y-%m-%d",
                 "yyyy/mm/dd": "%Y/%m/%d",
@@ -119,14 +119,14 @@ class DATE:
 
     def is_not_in_the_future(self):
         B = False
-        if self.exists() is True:
+        if self.exists():
             if self.dateobj() <= datetime.now():
                 B = True
         return B
 
     def year_belongs_to_selected_range(self):
         B = False
-        if self.exists() is True:
+        if self.exists():
             if self.dateobj().year in range(1995, 2020):
                 B = True
         return B

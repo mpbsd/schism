@@ -30,7 +30,7 @@ class student_registration_form(FlaskForm):
         student = db.session.scalar(
             sa.select(Student).where(Student.cpfnr == cpfnr.data)
         )
-        if CPF(cpfnr.data).digits_match() is False:
+        if not CPF(cpfnr.data).digits_match():
             raise ValidationError("CPF inconsistente")
         elif (professor is not None) or (student is not None):
             raise ValidationError("CPF já existe em nosso banco de dados")
@@ -47,10 +47,10 @@ class student_registration_form(FlaskForm):
 
     def validate_birth(self, birth):
         date = DATE(birth.data)
-        cond_1 = date.exists() is True
-        cond_2 = date.is_not_in_the_future() is True
-        cond_3 = date.year_belongs_to_selected_range() is True
-        if (cond_1 and cond_2 and cond_3) is False:
+        cond_1 = date.exists()
+        cond_2 = date.is_not_in_the_future()
+        cond_3 = date.year_belongs_to_selected_range()
+        if not (cond_1 and cond_2 and cond_3):
             raise ValidationError("Data incorreta")
 
     def validate_inep(self, inep):
@@ -72,7 +72,7 @@ class edit_student_cpfnr_form(FlaskForm):
         student = db.session.scalar(
             sa.select(Student).where(Student.cpfnr == cpfnr.data)
         )
-        if CPF(cpfnr.data).digits_match() is False:
+        if not CPF(cpfnr.data).digits_match():
             raise ValidationError("CPF inconsistente")
         elif (professor is not None) or (student is not None):
             raise ValidationError("CPF já existe em nosso banco de dados")
@@ -89,10 +89,10 @@ class edit_student_birth_form(FlaskForm):
 
     def validate_birth(self, birth):
         date = DATE(birth.data)
-        cond_1 = date.exists() is True
-        cond_2 = date.is_not_in_the_future() is True
-        cond_3 = date.year_belongs_to_selected_range() is True
-        if (cond_1 and cond_2 and cond_3) is False:
+        cond_1 = date.exists()
+        cond_2 = date.is_not_in_the_future()
+        cond_3 = date.year_belongs_to_selected_range()
+        if not (cond_1 and cond_2 and cond_3):
             raise ValidationError("Data incorreta")
 
 
