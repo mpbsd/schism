@@ -105,7 +105,7 @@ class DATE:
             dobj = datetime.fromisoformat(self.isofmt())
         return dobj
 
-    def strfmt(self, fmt: str) -> str:
+    def strfmt(self, fmt):
         strfmt = None
         if self.exists() is True:
             style = {
@@ -131,7 +131,7 @@ class DATE:
                 B = True
         return B
 
-    def __repr__(self) -> str:
+    def __repr__(self):
         return self.isofmt()
 
 
