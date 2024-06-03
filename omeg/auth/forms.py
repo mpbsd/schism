@@ -23,7 +23,7 @@ class professor_registration_form(FlaskForm):
     taxnr = StringField(
         "CPF", validators=[DataRequired(), Length(min=11, max=14)]
     )
-    fname = StringField("Nome", validators=[DataRequired()])
+    fname = StringField("Nome", validators=[DataRequired(), Length(max=255)])
     email = StringField("Email", validators=[DataRequired(), Email()])
     password1 = PasswordField(
         "Senha", validators=[DataRequired(), Length(min=8, max=32)]
@@ -53,7 +53,6 @@ class professor_registration_form(FlaskForm):
 class login_form(FlaskForm):
     taxnr = StringField("CPF", validators=[DataRequired()])
     password = PasswordField("Senha", validators=[DataRequired()])
-    # remember_me = BooleanField("Permanecer conectado")
     submit = SubmitField("Acessar")
 
 

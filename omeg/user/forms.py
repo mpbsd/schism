@@ -4,6 +4,7 @@ from wtforms import IntegerField, StringField, SubmitField
 from wtforms.validators import (
     DataRequired,
     Email,
+    Length,
     NumberRange,
     ValidationError,
 )
@@ -14,13 +15,20 @@ from omeg.mold.models import Professor, School, Student
 
 
 class student_registration_form(FlaskForm):
-    cpfnr = StringField("CPF", validators=[DataRequired()])
-    fname = StringField("Nome completo", validators=[DataRequired()])
+    cpfnr = StringField(
+        "CPF", validators=[DataRequired(), Length(min=11, max=14)]
+    )
+    fname = StringField(
+        "Nome completo", validators=[DataRequired(), Length(max=255)]
+    )
     birth = StringField("Data de nascimento", validators=[DataRequired()])
     email = StringField("Email", validators=[DataRequired(), Email()])
     roll = IntegerField("Nível", validators=[NumberRange(min=1, max=3)])
     inep = StringField("Código INEP", validators=[DataRequired()])
-    need = StringField("Condições especiais para participar das provas")
+    need = StringField(
+        "Condições especiais para participar das provas",
+        validators=[Length(max=255)],
+    )
     submit = SubmitField("Cadastrar")
 
     def validate_cpfnr(self, cpfnr):
@@ -62,7 +70,9 @@ class student_registration_form(FlaskForm):
 
 
 class edit_student_cpfnr_form(FlaskForm):
-    cpfnr = StringField("CPF", validators=[DataRequired()])
+    cpfnr = StringField(
+        "CPF", validators=[DataRequired(), Length(min=11, max=14)]
+    )
     submit = SubmitField("Confirmar")
 
     def validate_cpfnr(self, cpfnr):
@@ -79,7 +89,9 @@ class edit_student_cpfnr_form(FlaskForm):
 
 
 class edit_student_fname_form(FlaskForm):
-    fname = StringField("Nome completo", validators=[DataRequired()])
+    fname = StringField(
+        "Nome completo", validators=[DataRequired(), Length(max=255)]
+    )
     submit = SubmitField("Confirmar")
 
 
@@ -129,5 +141,8 @@ class edit_enrollment_roll_form(FlaskForm):
 
 
 class edit_enrollment_need_form(FlaskForm):
-    need = StringField("Condições especiais para participar das provas")
+    need = StringField(
+        "Condições especiais para participar das provas",
+        validators=[Length(max=255)],
+    )
     submit = SubmitField("Cadastrar")
