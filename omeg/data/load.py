@@ -3,30 +3,42 @@ from datetime import datetime
 
 
 class CPF:
+    re_cpfnr = re.compile(r"(\d{3})\.?(\d{3})\.?(\d{3})-?(\d{2})")
+
     def __init__(self, cpfnr):
         self.cpfnr = cpfnr
 
+    def pattern_match(self):
+        B = False
+        if len(self.cpfnr) >= 11 and self.re_cpfnr.match(self.cpfnr):
+            B = True
+        return B
+
     def strfmt(self, fmt):
-        re_cpfnr = re.compile(r"(\d{3})\.?(\d{3})\.?(\d{3})-?(\d{2})")
+        cpf_strfmt = None
         style = {
-            "raw": re_cpfnr.sub(r"\1\2\3\4", self.cpfnr),
-            "fmt": re_cpfnr.sub(r"\1.\2.\3-\4", self.cpfnr),
+            "raw": self.re_cpfnr.sub(r"\1\2\3\4", self.cpfnr),
+            "fmt": self.re_cpfnr.sub(r"\1.\2.\3-\4", self.cpfnr),
         }
-        return style[fmt]
+        if self.pattern_match() and fmt in style.keys():
+            cpf_strfmt = style[fmt]
+        return cpf_strfmt
 
     def digits_match(self):
-        cpf = self.strfmt("raw")
         B = False
-        if cpf != "00000000000":
-            D = [0, 0]
-            for i in range(9):
-                D[0] += (10 - i) * int(cpf[i])
-            for i in range(10):
-                D[1] += (11 - i) * int(cpf[i])
-            D0_is_OK = ((10 * D[0]) % 11) % 10 == int(cpf[9])
-            D1_is_OK = ((10 * D[1]) % 11) % 10 == int(cpf[10])
-            if D0_is_OK and D1_is_OK:
-                B = True
+        if self.pattern_match():
+            cpf = self.strfmt("raw")
+            cpf_black_list = ["00000000000", "00000000191"]
+            if cpf not in cpf_black_list:
+                D = [0, 0]
+                for i in range(9):
+                    D[0] += (10 - i) * int(cpf[i])
+                for i in range(10):
+                    D[1] += (11 - i) * int(cpf[i])
+                D0_is_OK = ((10 * D[0]) % 11) % 10 == int(cpf[9])
+                D1_is_OK = ((10 * D[1]) % 11) % 10 == int(cpf[10])
+                if D0_is_OK and D1_is_OK:
+                    B = True
         return B
 
     def __repr__(self):

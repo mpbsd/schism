@@ -20,7 +20,9 @@ class professor_registration_request_form(FlaskForm):
 
 
 class professor_registration_form(FlaskForm):
-    taxnr = StringField("CPF", validators=[DataRequired()])
+    taxnr = StringField(
+        "CPF", validators=[DataRequired(), Length(min=11, max=14)]
+    )
     fname = StringField("Nome", validators=[DataRequired()])
     email = StringField("Email", validators=[DataRequired(), Email()])
     password1 = PasswordField(
