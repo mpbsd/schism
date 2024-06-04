@@ -50,8 +50,8 @@ class DATE:
     re_m = r"0[1-9]|1[012]"
     re_y = r"[0-9]{4}"
 
-    dt_1 = re.compile(r"(%s)[/-]?(%s)[/-]?(%s)" % (re_y, re_m, re_d))
-    dt_2 = re.compile(r"(%s)[/-]?(%s)[/-]?(%s)" % (re_d, re_m, re_y))
+    dt_1 = re.compile(r"\b(%s)[/-]?(%s)[/-]?(%s)\b" % (re_y, re_m, re_d))
+    dt_2 = re.compile(r"\b(%s)[/-]?(%s)[/-]?(%s)\b" % (re_d, re_m, re_y))
 
     def __init__(self, datestr):
         self.datestr = datestr

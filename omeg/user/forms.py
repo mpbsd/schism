@@ -21,7 +21,10 @@ class student_registration_form(FlaskForm):
     fname = StringField(
         "Nome completo", validators=[DataRequired(), Length(max=255)]
     )
-    birth = StringField("Data de nascimento", validators=[DataRequired()])
+    birth = StringField(
+        "Data de nascimento",
+        validators=[DataRequired(), Length(min=8, max=10)],
+    )
     email = StringField("Email", validators=[DataRequired(), Email()])
     roll = IntegerField("Nível", validators=[NumberRange(min=1, max=3)])
     inep = StringField("Código INEP", validators=[DataRequired()])
@@ -96,7 +99,10 @@ class edit_student_fname_form(FlaskForm):
 
 
 class edit_student_birth_form(FlaskForm):
-    birth = StringField("Data de nascimento", validators=[DataRequired()])
+    birth = StringField(
+        "Data de nascimento",
+        validators=[DataRequired(), Length(min=8, max=10)],
+    )
     submit = SubmitField("Confirmar")
 
     def validate_birth(self, birth):
