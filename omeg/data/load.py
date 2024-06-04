@@ -3,7 +3,7 @@ from datetime import datetime
 
 
 class CPF:
-    re_cpfnr = re.compile(r"(\d{3})\.?(\d{3})\.?(\d{3})-?(\d{2})")
+    re_cpfnr = re.compile(r"\b(\d{3})\.?(\d{3})\.?(\d{3})-?(\d{2})\b")
 
     def __init__(self, cpfnr):
         self.cpfnr = cpfnr
@@ -139,7 +139,7 @@ class DATE:
     def year_belongs_to_selected_range(self):
         B = False
         if self.exists():
-            if self.dateobj().year in range(1995, 2020):
+            if self.dateobj().year in range(1985, 2020):
                 B = True
         return B
 
