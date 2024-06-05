@@ -29,7 +29,7 @@ class professor_registration_form(FlaskForm):
         "Senha", validators=[DataRequired(), Length(min=8, max=32)]
     )
     password2 = PasswordField(
-        "Confirmar a senha", validators=[DataRequired(), EqualTo("password1")]
+        "Confirme a senha", validators=[DataRequired(), EqualTo("password1")]
     )
     submit = SubmitField("Registrar-se")
 
@@ -51,7 +51,9 @@ class professor_registration_form(FlaskForm):
 
 
 class login_form(FlaskForm):
-    taxnr = StringField("CPF", validators=[DataRequired()])
+    taxnr = StringField(
+        "CPF", validators=[DataRequired(), Length(min=11, max=14)]
+    )
     password = PasswordField("Senha", validators=[DataRequired()])
     submit = SubmitField("Acessar")
 
@@ -66,6 +68,6 @@ class reset_password_form(FlaskForm):
         "Senha", validators=[DataRequired(), Length(min=8, max=32)]
     )
     password2 = PasswordField(
-        "Confirmar a senha", validators=[DataRequired(), EqualTo("password1")]
+        "Confirme a senha", validators=[DataRequired(), EqualTo("password1")]
     )
     submit = SubmitField("Alterar")

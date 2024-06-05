@@ -10,7 +10,7 @@ class CPF:
 
     def pattern_match(self):
         B = False
-        if len(self.cpfnr) >= 11 and self.re_cpfnr.match(self.cpfnr):
+        if self.re_cpfnr.match(self.cpfnr):
             B = True
         return B
 
@@ -139,7 +139,7 @@ class DATE:
     def year_belongs_to_selected_range(self):
         B = False
         if self.exists():
-            if self.dateobj().year in range(1985, 2020):
+            if self.dateobj().year in range(1974, 2021):
                 B = True
         return B
 
