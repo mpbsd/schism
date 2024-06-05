@@ -43,7 +43,7 @@ $ sudo ufw status numbered
 
 and disable:
 
-  - SSH login as root: `PermitRootLogin no`
+  - SSH login as root:       `PermitRootLogin no`
   - Password authentication: `PasswordAuthentication no`
 
 by adding the above directives to the right of the colons to the file
@@ -51,6 +51,7 @@ by adding the above directives to the right of the colons to the file
 
 ```shell
 $ sudo vi /etc/ssh/sshd_config
+$ sudo vi /etc/ssh/sshd_config.d/50-cloud-init.conf
 ```
 
 ```shell

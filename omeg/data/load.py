@@ -28,8 +28,8 @@ class CPF:
         B = False
         if self.pattern_match():
             cpf = self.strfmt("raw")
-            cpf_black_list = ["00000000000", "00000000191"]
-            if cpf not in cpf_black_list:
+            black_list = ["00000000000"]
+            if cpf not in black_list:
                 D = [0, 0]
                 for i in range(9):
                     D[0] += (10 - i) * int(cpf[i])
