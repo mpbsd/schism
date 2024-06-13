@@ -52,9 +52,27 @@ class professor_registration_form(FlaskForm):
 
 class login_form(FlaskForm):
     taxnr = StringField(
-        "CPF", validators=[DataRequired(), Length(min=11, max=14)]
+        "CPF",
+        validators=[
+            DataRequired(
+                message="Campo obrigatório",
+            ),
+            Length(
+                min=11,
+                max=14,
+                message="CPF é composto por 11 dígitos e pode conter ou não "
+                        "os caracteres . (ponto) e - (traço)",
+            )
+        ],
     )
-    password = PasswordField("Senha", validators=[DataRequired()])
+    password = PasswordField(
+        "Senha",
+        validators=[
+            DataRequired(
+                message="Campo obrigatório",
+            )
+        ]
+    )
     submit = SubmitField("Acessar")
 
 
