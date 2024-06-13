@@ -16,21 +16,57 @@ from omeg.mold.models import Professor, School, Student
 
 class student_registration_form(FlaskForm):
     cpfnr = StringField(
-        "CPF", validators=[DataRequired(), Length(min=11, max=14)]
+        "CPF",
+        validators=[
+            DataRequired(message="Campo obrigatório"),
+            Length(
+                min=11,
+                max=14,
+                message="CPF é composto por 11 dígitos e pode conter ou não "
+                "os caracteres . (ponto) e - (traço)",
+            ),
+        ],
     )
     fname = StringField(
-        "Nome completo", validators=[DataRequired(), Length(max=255)]
+        "Nome completo",
+        validators=[
+            DataRequired(message="Campo obrigatório"),
+            Length(
+                min=5, max=255, message="Informe o nome completo do estudante"
+            ),
+        ],
     )
     birth = StringField(
         "Data de nascimento",
-        validators=[DataRequired(), Length(min=8, max=10)],
+        validators=[
+            DataRequired(message="Campo obrigatório"),
+            Length(
+                min=8,
+                max=10,
+                message="Sao 8 digitos. Pode-se usar "
+                "/ (barra) e/ou - (traço) como separador entre os campos",
+            ),
+        ],
     )
-    email = StringField("Email", validators=[DataRequired(), Email()])
-    roll = IntegerField("Nível", validators=[NumberRange(min=1, max=3)])
-    inep = StringField("Código INEP", validators=[DataRequired()])
+    email = StringField(
+        "Email",
+        validators=[
+            DataRequired(message="Campo obrigatório"),
+            Email(message="Email inválido"),
+        ],
+    )
+    roll = IntegerField(
+        "Nível",
+        validators=[
+            NumberRange(min=1, max=3, message="Deve ser igual a 1, 2 ou 3")
+        ],
+    )
+    inep = StringField(
+        "Código INEP", validators=[DataRequired(message="Campo obrigatório")]
+    )
     need = StringField(
         "Condições especiais para participar das provas",
-        validators=[Length(max=255)],
+        validators=[Length(max=255, message="255 caracteres no máximo")],
     )
     submit = SubmitField("Cadastrar")
 
@@ -74,7 +110,16 @@ class student_registration_form(FlaskForm):
 
 class edit_student_cpfnr_form(FlaskForm):
     cpfnr = StringField(
-        "CPF", validators=[DataRequired(), Length(min=11, max=14)]
+        "CPF",
+        validators=[
+            DataRequired(message="Campo obrigatório"),
+            Length(
+                min=11,
+                max=14,
+                message="CPF é composto por 11 dígitos e pode conter ou não "
+                "os caracteres . (ponto) e - (traço)",
+            ),
+        ],
     )
     submit = SubmitField("Confirmar")
 
@@ -93,7 +138,13 @@ class edit_student_cpfnr_form(FlaskForm):
 
 class edit_student_fname_form(FlaskForm):
     fname = StringField(
-        "Nome completo", validators=[DataRequired(), Length(max=255)]
+        "Nome completo",
+        validators=[
+            DataRequired(message="Campo obrigatório"),
+            Length(
+                min=5, max=255, message="Informe o nome completo do estudante"
+            ),
+        ],
     )
     submit = SubmitField("Confirmar")
 
@@ -101,7 +152,15 @@ class edit_student_fname_form(FlaskForm):
 class edit_student_birth_form(FlaskForm):
     birth = StringField(
         "Data de nascimento",
-        validators=[DataRequired(), Length(min=8, max=10)],
+        validators=[
+            DataRequired(message="Campo obrigatório"),
+            Length(
+                min=8,
+                max=10,
+                message="Sao 8 digitos. Pode-se usar "
+                "/ (barra) e/ou - (traço) como separador entre os campos",
+            ),
+        ],
     )
     submit = SubmitField("Confirmar")
 
@@ -115,7 +174,13 @@ class edit_student_birth_form(FlaskForm):
 
 
 class edit_student_email_form(FlaskForm):
-    email = StringField("Email", validators=[DataRequired(), Email()])
+    email = StringField(
+        "Email",
+        validators=[
+            DataRequired(message="Campo obrigatório"),
+            Email(message="Email inválido"),
+        ],
+    )
     submit = SubmitField("Confirmar")
 
     def validate_email(self, email):
@@ -130,7 +195,9 @@ class edit_student_email_form(FlaskForm):
 
 
 class edit_enrollment_inep_form(FlaskForm):
-    inep = StringField("Código INEP", validators=[DataRequired()])
+    inep = StringField(
+        "Código INEP", validators=[DataRequired(message="Campo obrigatório")]
+    )
     submit = SubmitField("Confirmar")
 
     def validate_inep(self, inep):
@@ -142,13 +209,18 @@ class edit_enrollment_inep_form(FlaskForm):
 
 
 class edit_enrollment_roll_form(FlaskForm):
-    roll = IntegerField("Nível", validators=[NumberRange(min=1, max=3)])
+    roll = IntegerField(
+        "Nível",
+        validators=[
+            NumberRange(min=1, max=3, message="Deve ser igual a 1, 2 ou 3")
+        ],
+    )
     submit = SubmitField("Confirmar")
 
 
 class edit_enrollment_need_form(FlaskForm):
     need = StringField(
         "Condições especiais para participar das provas",
-        validators=[Length(max=255)],
+        validators=[Length(max=255, message="255 caracteres no máximo")],
     )
     submit = SubmitField("Cadastrar")

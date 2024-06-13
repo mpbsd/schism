@@ -613,6 +613,10 @@ def edit_enrollment_inep(taxnr, cpfnr):
                 )
                 .first()
             )
+            # encontrei um bug: eh preciso checar a cota antes de ajustar o
+            # codigo inep. O professor poderia atingir a cota por uma escola,
+            # inscrever novos alunos em outra escola e, depois, transferi-los
+            # para a primeira com o intuito de burlar a cota.
             enrollment.inep = form.inep.data
             db.session.commit()
             return redirect(
