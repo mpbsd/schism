@@ -32,7 +32,9 @@ class student_registration_form(FlaskForm):
         validators=[
             DataRequired(message="Campo obrigatório"),
             Length(
-                min=5, max=255, message="Informe o nome completo do estudante"
+                min=5,
+                max=255,
+                message="Informe o nome completo do estudante",
             ),
         ],
     )
@@ -43,8 +45,8 @@ class student_registration_form(FlaskForm):
             Length(
                 min=8,
                 max=10,
-                message="Sao 8 digitos. Pode-se usar "
-                "/ (barra) e/ou - (traço) como separador entre os campos",
+                message="São 8 dígitos. Pode-se usar / (barra) e/ou - (traço) "
+                "como separador entre os campos",
             ),
         ],
     )
@@ -66,7 +68,7 @@ class student_registration_form(FlaskForm):
     )
     need = StringField(
         "Condições especiais para participar das provas",
-        validators=[Length(max=255, message="255 caracteres no máximo")],
+        validators=[Length(max=255, message="Máximo de 255 caracteres")],
     )
     submit = SubmitField("Cadastrar")
 
@@ -142,7 +144,9 @@ class edit_student_fname_form(FlaskForm):
         validators=[
             DataRequired(message="Campo obrigatório"),
             Length(
-                min=5, max=255, message="Informe o nome completo do estudante"
+                min=5,
+                max=255,
+                message="Informe o nome completo do estudante",
             ),
         ],
     )
@@ -157,8 +161,8 @@ class edit_student_birth_form(FlaskForm):
             Length(
                 min=8,
                 max=10,
-                message="Sao 8 digitos. Pode-se usar "
-                "/ (barra) e/ou - (traço) como separador entre os campos",
+                message="Sao 8 digitos. Pode-se usar / (barra) e/ou - (traço) "
+                "como separador entre os campos",
             ),
         ],
     )
@@ -221,6 +225,6 @@ class edit_enrollment_roll_form(FlaskForm):
 class edit_enrollment_need_form(FlaskForm):
     need = StringField(
         "Condições especiais para participar das provas",
-        validators=[Length(max=255, message="255 caracteres no máximo")],
+        validators=[Length(max=255, message="máximo de 255 caracteres")],
     )
     submit = SubmitField("Cadastrar")

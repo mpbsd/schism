@@ -43,7 +43,9 @@ class professor_registration_form(FlaskForm):
         validators=[
             DataRequired(message="Campo obrigatório"),
             Length(
-                min=5, max=255, message="Informe o nome completo do professsor"
+                min=5,
+                max=255,
+                message="Informe o nome completo do professsor",
             ),
         ],
     )
@@ -69,7 +71,7 @@ class professor_registration_form(FlaskForm):
         "Confirme a senha",
         validators=[
             DataRequired(message="Campo obrigatório"),
-            EqualTo("password1", message="As senhas devem ser iguais"),
+            EqualTo("password1", message="As senhas devem coincidir"),
         ],
     )
     submit = SubmitField("Registrar-se")
@@ -95,9 +97,7 @@ class login_form(FlaskForm):
     taxnr = StringField(
         "CPF",
         validators=[
-            DataRequired(
-                message="Campo obrigatório",
-            ),
+            DataRequired(message="Campo obrigatório"),
             Length(
                 min=11,
                 max=14,
@@ -109,9 +109,7 @@ class login_form(FlaskForm):
     password = PasswordField(
         "Senha",
         validators=[
-            DataRequired(
-                message="Campo obrigatório",
-            )
+            DataRequired(message="Campo obrigatório"),
         ],
     )
     submit = SubmitField("Acessar")
@@ -144,7 +142,7 @@ class reset_password_form(FlaskForm):
         "Confirme a senha",
         validators=[
             DataRequired(message="Campo obrigatório"),
-            EqualTo("password1", message="As senhas devem ser iguais"),
+            EqualTo("password1", message="As senhas devem coincidir"),
         ],
     )
     submit = SubmitField("Alterar")
