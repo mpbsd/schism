@@ -15,21 +15,62 @@ from omeg.mold.models import Professor
 
 
 class professor_registration_request_form(FlaskForm):
-    email = StringField("Email", validators=[DataRequired(), Email()])
+    email = StringField(
+        "Email",
+        validators=[
+            DataRequired(message="Campo obrigatório"),
+            Email(message="Email inválido"),
+        ],
+    )
     submit = SubmitField("Enviar Link")
 
 
 class professor_registration_form(FlaskForm):
     taxnr = StringField(
-        "CPF", validators=[DataRequired(), Length(min=11, max=14)]
+        "CPF",
+        validators=[
+            DataRequired(message="Campo obrigatório"),
+            Length(
+                min=11,
+                max=14,
+                message="CPF é composto por 11 dígitos e pode conter ou não "
+                "os caracteres . (ponto) e - (traço)",
+            ),
+        ],
     )
-    fname = StringField("Nome", validators=[DataRequired(), Length(max=255)])
-    email = StringField("Email", validators=[DataRequired(), Email()])
+    fname = StringField(
+        "Nome",
+        validators=[
+            DataRequired(message="Campo obrigatório"),
+            Length(
+                min=5, max=255, message="Informe o nome completo do professsor"
+            ),
+        ],
+    )
+    email = StringField(
+        "Email",
+        validators=[
+            DataRequired(message="Campo obrigatório"),
+            Email(message="Email inválido"),
+        ],
+    )
     password1 = PasswordField(
-        "Senha", validators=[DataRequired(), Length(min=8, max=32)]
+        "Senha",
+        validators=[
+            DataRequired(message="Campo obrigatório"),
+            Length(
+                min=8,
+                max=32,
+                message="A senha deve ter entre 8 e 32 caracteres",
+            ),
+        ],
     )
     password2 = PasswordField(
-        "Confirme a senha", validators=[DataRequired(), EqualTo("password1")]
+        "Confirme a senha",
+        validators=[
+            DataRequired(message="Campo obrigatório"),
+            EqualTo("password1", message="As senhas devem ser iguais"),
+        ],
     )
     submit = SubmitField("Registrar-se")
 
@@ -61,8 +102,8 @@ class login_form(FlaskForm):
                 min=11,
                 max=14,
                 message="CPF é composto por 11 dígitos e pode conter ou não "
-                        "os caracteres . (ponto) e - (traço)",
-            )
+                "os caracteres . (ponto) e - (traço)",
+            ),
         ],
     )
     password = PasswordField(
@@ -71,21 +112,39 @@ class login_form(FlaskForm):
             DataRequired(
                 message="Campo obrigatório",
             )
-        ]
+        ],
     )
     submit = SubmitField("Acessar")
 
 
 class reset_password_request_form(FlaskForm):
-    email = StringField("Email", validators=[DataRequired(), Email()])
+    email = StringField(
+        "Email",
+        validators=[
+            DataRequired(message="Campo obrigatório"),
+            Email(message="Email inválido"),
+        ],
+    )
     submit = SubmitField("Enviar Link")
 
 
 class reset_password_form(FlaskForm):
     password1 = PasswordField(
-        "Senha", validators=[DataRequired(), Length(min=8, max=32)]
+        "Senha",
+        validators=[
+            DataRequired(message="Campo obrigatório"),
+            Length(
+                min=8,
+                max=32,
+                message="A senha deve ter entre 8 e 32 caracteres",
+            ),
+        ],
     )
     password2 = PasswordField(
-        "Confirme a senha", validators=[DataRequired(), EqualTo("password1")]
+        "Confirme a senha",
+        validators=[
+            DataRequired(message="Campo obrigatório"),
+            EqualTo("password1", message="As senhas devem ser iguais"),
+        ],
     )
     submit = SubmitField("Alterar")
