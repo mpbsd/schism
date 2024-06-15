@@ -593,6 +593,7 @@ def edit_enrollment_inep(taxnr, cpfnr):
             db.session.query(
                 Student.fname,
                 Enrollment.inep,
+                Enrollment.roll,
             )
             .where(
                 Enrollment.cpfnr == cpfnr,
@@ -613,12 +614,18 @@ def edit_enrollment_inep(taxnr, cpfnr):
                 )
                 .first()
             )
-            # encontrei um bug: eh preciso checar a cota antes de ajustar o
-            # codigo inep. O professor poderia atingir a cota por uma escola,
-            # inscrever novos alunos em outra escola e, depois, transferi-los
-            # para a primeira com o intuito de burlar a cota.
-            enrollment.inep = form.inep.data
-            db.session.commit()
+            quota = (
+                db.session.query(Enrollment)
+                .where(
+                    Enrollment.inep == form.inep.data,
+                    Enrollment.year == payload["edition"],
+                    Enrollment.roll == students_enrollment.roll,
+                )
+                .count()
+            )
+            if quota <= payload["quota"] - 1:
+                enrollment.inep = form.inep.data
+                db.session.commit()
             return redirect(
                 url_for(
                     "bp_user_routes.edit_student_enrollment",
