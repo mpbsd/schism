@@ -780,7 +780,8 @@ def show_enrollments_lastyear(taxnr):
                 School.name,
                 Student.fname,
                 Enrollment.roll,
-            ).where(
+            )
+            .where(
                 School.inep == Enrollment.inep,
                 Student.cpfnr == Enrollment.cpfnr,
                 Enrollment.year == payload["edition"] - 1,
