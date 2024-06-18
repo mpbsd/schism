@@ -765,3 +765,34 @@ def edit_enrollment_need(taxnr, cpfnr):
         )
     else:
         return redirect(url_for("bp_home_routes.home"))
+
+
+@bp_user_routes.route("/professor/<taxnr>/enrollments/lastyear")
+@login_required
+def show_enrollments_lastyear(taxnr):
+    if taxnr == current_user.taxnr:
+        professor = db.first_or_404(
+            sa.select(Professor).where(Professor.taxnr == taxnr)
+        )
+        enrollments = (
+            db.session.query(
+                Enrollment.inep,
+                School.name,
+                Student.fname,
+                Enrollment.roll,
+            ).where(
+                School.inep == Enrollment.inep,
+                Student.cpfnr == Enrollment.cpfnr,
+                Enrollment.year == payload["edition"] - 1,
+            )
+            .order_by(Student.fname)
+            .all()
+        )
+        return render_template(
+            "user/enrollment/read/lastyear.html",
+            edition=payload["edition"],
+            pfname=professor.fname,
+            enrollments=enrollments,
+        )
+    else:
+        return redirect(url_for("bp_home_routes.home"))
