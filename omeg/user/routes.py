@@ -774,56 +774,85 @@ def show_enrollments_lastyear(taxnr):
         professor = db.first_or_404(
             sa.select(Professor).where(Professor.taxnr == taxnr)
         )
-        # there are 7 grades: 6, 7, 8 and 9; also 1, 2 and 3.
-        enrollments_from_the_last_seven_years = {
-            cpfnr: {
-                "fname": fname,
-                "roll": roll,
-                "year": year,
-                "inep": inep,
-                "school_name": school_name,
-            }
-            for (
-                cpfnr,
-                fname,
-                roll,
-                year,
-                inep,
-                school_name,
-            ) in db.session.query(
+        # There are 7 school years competing
+        # EF: 6, 7, 8 and 9
+        # EM: 1, 2, and 3
+        enrollments_from_the_last_seven_years = (
+            db.session.query(
                 Student.cpfnr,
                 Student.fname,
+                School.inep,
+                School.name,
                 Enrollment.roll,
                 Enrollment.year,
-                Enrollment.inep,
-                School.name,
             )
             .where(
                 School.inep == Enrollment.inep,
                 Student.cpfnr == Enrollment.cpfnr,
                 Enrollment.year >= payload["edition"] - 7,
             )
-            .order_by(Student.fname)
             .all()
-        }
+        )
         enrollments_from_this_year = [
-            cpfnr
-            for (cpfnr,) in db.session.query(Enrollment.cpfnr)
+            enrollment.cpfnr
+            for enrollment in db.session.query(Enrollment.cpfnr)
             .where(
                 Enrollment.year == payload["edition"],
             )
             .all()
         ]
-        enrollments = {
-            k: v
-            for k, v in enrollments_from_the_last_seven_years.items()
-            if k not in enrollments_from_this_year
-        }
+        enrollments = sorted(
+            [
+                enrollment
+                for enrollment in enrollments_from_the_last_seven_years
+                if enrollment.cpfnr not in enrollments_from_this_year
+            ],
+            key=lambda x: x.fname,
+        )
         return render_template(
             "user/enrollment/read/lastyear.html",
             edition=payload["edition"],
             pfname=professor.fname,
             enrollments=enrollments,
+        )
+    else:
+        return redirect(url_for("bp_home_routes.home"))
+
+
+@bp_user_routes.route(
+    "/professor/<taxnr>/enrollments/previous/<cpfnr>/<inep>/<year>"
+)
+@login_required
+def new_enrollment_based_off_of_a_previous_one(taxnr, cpfnr, inep, year):
+    if taxnr == current_user.taxnr:
+        professor = db.first_or_404(
+            sa.select(Professor).where(Professor.taxnr == taxnr)
+        )
+        enrollment = (
+            db.session.query(
+                Enrollment.cpfnr,
+                Enrollment.taxnr,
+                Enrollment.inep,
+                Enrollment.year,
+                Enrollment.roll,
+                Enrollment.need,
+                Student.fname,
+                School.name,
+            )
+            .where(
+                Student.cpfnr == Enrollment.cpfnr,
+                School.inep == Enrollment.inep,
+                Enrollment.cpfnr == cpfnr,
+                Enrollment.inep == inep,
+                Enrollment.year == year,
+            )
+            .one()
+        )
+        return render_template(
+            "user/enrollment/create/confirm_the_data.html",
+            edition=payload["edition"],
+            pfname=professor.fname,
+            enrollment=enrollment,
         )
     else:
         return redirect(url_for("bp_home_routes.home"))

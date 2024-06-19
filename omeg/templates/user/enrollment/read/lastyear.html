@@ -17,10 +17,10 @@
               Nome completo
             </th>
             <th scope="col">
-              Cód. INEP
+              Nível
             </th>
             <th scope="col">
-              Nível
+              Cód. INEP
             </th>
             <th>
               Ano
@@ -30,22 +30,24 @@
           </tr>
         </thead>
         <tbody>
-          {% for cpfnr in enrollments.keys() %}
+          {% for enrollment in enrollments %}
           <tr>
             <td>
-              {{ enrollments[cpfnr]["fname"] }}
-            </td>
-            <td title="{{ enrollments[cpfnr]["school_name"] }}">
-              {{ enrollments[cpfnr]["inep"] }}
+              {{ enrollment.fname }}
             </td>
             <td>
-              {{ enrollments[cpfnr]["roll"] }}
+              {{ enrollment.roll }}
+            </td>
+            <td title="{{ enrollment.name }}">
+              {{ enrollment.inep }}
             </td>
             <td>
-              {{ enrollments[cpfnr]["year"] }}
+              {{ enrollment.year }}
             </td>
             <td>
-              <a href="">Inscrever</a>
+              <a href="{{ url_for('bp_user_routes.new_enrollment_based_off_of_a_previous_one', taxnr=current_user.taxnr, cpfnr=enrollment.cpfnr, inep=enrollment.inep, year=enrollment.year) }}">
+                Inscrever
+              </a>
             </td>
           </tr>
           {% endfor %}
