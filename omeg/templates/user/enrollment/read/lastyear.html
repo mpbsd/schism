@@ -7,34 +7,45 @@
     <div class="ten columns" style="margin-top: 10%">
 
       <h4>
-        Participantes da OMEG {{ edition - 1 }}
+        Participantes de Edições Anteriores da OMEG
       </h4>
 
       <table class="table table-striped" style="margin-top: 5%">
         <thead>
           <tr>
             <th scope="col">
-              INEP
+              Nome completo
             </th>
             <th scope="col">
-              Nome completo
+              Cód. INEP
             </th>
             <th scope="col">
               Nível
             </th>
+            <th>
+              Ano
+            </th>
+            <th>
+            </th>
           </tr>
         </thead>
         <tbody>
-          {% for enrollment in enrollments %}
+          {% for cpfnr in enrollments.keys() %}
           <tr>
-            <td title="{{ enrollment.name }}">
-              {{ enrollment.inep }}
+            <td>
+              {{ enrollments[cpfnr]["fname"] }}
+            </td>
+            <td title="{{ enrollments[cpfnr]["school_name"] }}">
+              {{ enrollments[cpfnr]["inep"] }}
             </td>
             <td>
-              {{ enrollment.fname }}
+              {{ enrollments[cpfnr]["roll"] }}
             </td>
             <td>
-              {{ enrollment.roll }}
+              {{ enrollments[cpfnr]["year"] }}
+            </td>
+            <td>
+              <a href="">Inscrever</a>
             </td>
           </tr>
           {% endfor %}

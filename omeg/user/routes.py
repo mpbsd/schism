@@ -774,21 +774,51 @@ def show_enrollments_lastyear(taxnr):
         professor = db.first_or_404(
             sa.select(Professor).where(Professor.taxnr == taxnr)
         )
-        enrollments = (
-            db.session.query(
-                Enrollment.inep,
-                School.name,
+        # there are 7 grades: 6, 7, 8 and 9; also 1, 2 and 3.
+        enrollments_from_the_last_seven_years = {
+            cpfnr: {
+                "fname": fname,
+                "roll": roll,
+                "year": year,
+                "inep": inep,
+                "school_name": school_name,
+            }
+            for (
+                cpfnr,
+                fname,
+                roll,
+                year,
+                inep,
+                school_name,
+            ) in db.session.query(
+                Student.cpfnr,
                 Student.fname,
                 Enrollment.roll,
+                Enrollment.year,
+                Enrollment.inep,
+                School.name,
             )
             .where(
                 School.inep == Enrollment.inep,
                 Student.cpfnr == Enrollment.cpfnr,
-                Enrollment.year == payload["edition"] - 1,
+                Enrollment.year >= payload["edition"] - 7,
             )
             .order_by(Student.fname)
             .all()
-        )
+        }
+        enrollments_from_this_year = [
+            cpfnr
+            for (cpfnr,) in db.session.query(Enrollment.cpfnr)
+            .where(
+                Enrollment.year == payload["edition"],
+            )
+            .all()
+        ]
+        enrollments = {
+            k: v
+            for k, v in enrollments_from_the_last_seven_years.items()
+            if k not in enrollments_from_this_year
+        }
         return render_template(
             "user/enrollment/read/lastyear.html",
             edition=payload["edition"],

@@ -1,0 +1,64 @@
+{% extends "user.html" %}
+
+{% block content %}
+
+<div class="container">
+  <div class="row">
+    <div class="ten columns" style="margin-top: 5%">
+
+      <h4>
+        Inscrever {{ enrollment.fname }} na OMEG {{ edition }}
+      </h4>
+
+      <table class="table table-striped" style="margin-top: 5%">
+        <tbody>
+          <tr>
+            <th scope="col">
+              Cód. INEP
+            </th>
+            <th scope="col">
+              Escola
+            </th>
+            <td title="{{ enrollment.name }}">
+              {{ enrollment.inep }}
+            </td>
+            <td>
+              <a href="{{ url_for('bp_user_routes.edit_enrollment_inep', taxnr=current_user.taxnr, cpfnr=cpfnr) }}">
+                Editar
+              </a>
+            </td>
+          </tr>
+          <tr>
+            <th scope="col">
+              Nível
+            </th>
+            <td>
+              {{ enrollment.roll }}
+            </td>
+            <td>
+              <a href="{{ url_for('bp_user_routes.edit_enrollment_roll', taxnr=current_user.taxnr, cpfnr=cpfnr) }}">
+                Editar
+              </a>
+            </td>
+          </tr>
+          <tr>
+            <th scope="col">
+              Condições Especiais Requeridas
+            </th>
+            <td>
+              {{ enrollment.need }}
+            </td>
+            <td>
+              <a href="{{ url_for('bp_user_routes.edit_enrollment_need', taxnr=current_user.taxnr, cpfnr=cpfnr) }}">
+                Editar
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}
