@@ -31,7 +31,7 @@
           {% for enrollment in enrollments %}
           <tr>
             <td>
-              {{ enrollment.cpfnr }}
+              {{ CPF(enrollment.cpfnr).strfmt("fmt") }}
             </td>
             <td title="{{ enrollment.need }}">
               {{ enrollment.fname }}

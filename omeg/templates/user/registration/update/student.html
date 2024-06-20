@@ -17,7 +17,7 @@
               CPF
             </td>
             <td>
-              {{ student.cpfnr }}
+              {{ CPF(student.cpfnr).strfmt("fmt") }}
             </td>
             <td>
               <a href="{{ url_for('bp_user_routes.edit_student_cpfnr', taxnr=current_user.taxnr, cpfnr=student.cpfnr) }}">Editar</a>

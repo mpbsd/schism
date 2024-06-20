@@ -7,11 +7,51 @@
     <div class="ten columns" style="margin-top: 5%">
 
       <h4>
-        Inscrever {{ enrollment.fname }} na OMEG {{ edition }}
+        Inscrição de Estudante na OMEG {{ edition }}
       </h4>
 
       <table class="table table-striped" style="margin-top: 5%">
         <tbody>
+          <tr>
+            <th scope="col">
+              Nome completo
+            </th>
+            <td>
+              {{ enrollment.fname }}
+            </td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th scope="col">
+              Data de nascimento
+            </th>
+            <td>
+              {{ DATE(enrollment.birth).strfmt("dd-mm-yyyy") }}
+            </td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th scope="col">
+              CPF
+            </th>
+            <td>
+              {{ CPF(enrollment.cpfnr).strfmt("fmt") }}
+            </td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th scope="col">
+              Email
+            </th>
+            <td>
+              {{ enrollment.email }}
+            </td>
+            <td>
+            </td>
+          </tr>
           <tr>
             <th scope="col">
               Escola

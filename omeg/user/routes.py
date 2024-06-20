@@ -177,6 +177,8 @@ def student_registration(taxnr):
                 )
                 .count()
             )
+            # if the quota is less than or equal to or the cpfnr belongs to a
+            # certain list, pass.
             if quota <= payload["quota"] - 1:
                 enrollment_already_exists = (
                     db.session.query(Enrollment)
@@ -246,6 +248,7 @@ def registered_students(taxnr):
             edition=payload["edition"],
             pfname=professor.fname,
             students=students,
+            CPF=CPF,
             DATE=DATE,
         )
     else:
@@ -282,6 +285,7 @@ def enrollments_extract(taxnr):
             edition=payload["edition"],
             pfname=professor.fname,
             enrollments=enrollments,
+            CPF=CPF,
         )
     else:
         return redirect(url_for("bp_home_routes.home"))
@@ -332,6 +336,7 @@ def request_student_registration_edition(taxnr):
             edition=payload["edition"],
             pfname=professor.fname,
             students=students,
+            CPF=CPF,
             DATE=DATE,
         )
     else:
@@ -356,6 +361,7 @@ def edit_student_registration(taxnr, cpfnr):
             edition=payload["edition"],
             pfname=professor.fname,
             student=student,
+            CPF=CPF,
             DATE=DATE,
         )
     else:
@@ -536,6 +542,7 @@ def request_student_enrollment_edition(taxnr):
             edition=payload["edition"],
             pfname=professor.fname,
             enrollments=enrollments,
+            CPF=CPF,
         )
     else:
         return redirect(url_for("bp_home_routes.home"))
@@ -810,7 +817,7 @@ def show_enrollments_lastyear(taxnr):
             key=lambda x: x.fname,
         )
         return render_template(
-            "user/enrollment/read/lastyear.html",
+            "user/enrollment/read/past_seven_years.html",
             edition=payload["edition"],
             pfname=professor.fname,
             enrollments=enrollments,
@@ -837,6 +844,8 @@ def new_enrollment_based_off_of_a_previous_one(taxnr, cpfnr, inep, year):
                 Enrollment.roll,
                 Enrollment.need,
                 Student.fname,
+                Student.birth,
+                Student.email,
                 School.name,
             )
             .where(
@@ -846,13 +855,15 @@ def new_enrollment_based_off_of_a_previous_one(taxnr, cpfnr, inep, year):
                 Enrollment.inep == inep,
                 Enrollment.year == year,
             )
-            .one()
+            .first()
         )
         return render_template(
-            "user/enrollment/create/confirm_the_data.html",
+            "user/enrollment/create/confirm.html",
             edition=payload["edition"],
             pfname=professor.fname,
             enrollment=enrollment,
+            CPF=CPF,
+            DATE=DATE,
         )
     else:
         return redirect(url_for("bp_home_routes.home"))

@@ -31,7 +31,7 @@
           {% for student in students %}
           <tr>
             <td>
-              {{ student.cpfnr }}
+              {{ CPF(student.cpfnr).strfmt("fmt") }}
             </td>
             <td>
               {{ student.fname }}

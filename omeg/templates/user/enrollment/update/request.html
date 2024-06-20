@@ -36,7 +36,7 @@
               {{ enrollment.inep }}
             </td>
             <td title="{{ enrollment.fname }}">
-              {{ enrollment.cpfnr }}
+              {{ CPF(enrollment.cpfnr).strfmt("fmt") }}
             </td>
             <td>
               {{ enrollment.roll }}
