@@ -842,6 +842,7 @@ def new_enrollment_from_previous_one(
         return render_template(
             "user/enrollment/create/confirm.html",
             edition=payload["edition"],
+            taxnr=taxnr,
             pfname=professor.fname,
             cpfnr=cpfnr,
             fname=fname,
@@ -853,6 +854,7 @@ def new_enrollment_from_previous_one(
             roll=roll,
             CPF=CPF,
             DATE=DATE,
+            send_email=send_enrollment_confirmation_email,
         )
     else:
         return redirect(url_for("bp_home_routes.home"))
@@ -923,14 +925,14 @@ def edit_roll_for_new_enrollment(
         if form.validate_on_submit():
             return redirect(
                 url_for(
-                    "user/enrollment/create/confirm.html",
+                    "bp_user_routes.new_enrollment_from_previous_one",
                     taxnr=taxnr,
                     cpfnr=cpfnr,
                     fname=fname,
                     birth=birth,
                     email=email,
-                    name=name,
                     inep=inep,
+                    name=name,
                     year=year,
                     roll=form.roll.data,
                 )

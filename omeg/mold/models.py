@@ -130,10 +130,9 @@ class Enrollment(db.Model):
     gift: so.Mapped[chr] = so.mapped_column(sa.CHAR, default="N")
 
     @staticmethod
-    def request_confirmation_for_enrollment(
+    def get_enrollment_request_token(
         taxnr,
         pfname,
-        pemail,
         cpfnr,
         sfname,
         birth,
@@ -147,7 +146,6 @@ class Enrollment(db.Model):
             {
                 "taxnr": taxnr,
                 "pfname": pfname,
-                "pemail": pemail,
                 "cpfnr": cpfnr,
                 "sfname": sfname,
                 "birth": birth,
@@ -170,7 +168,6 @@ class Enrollment(db.Model):
             message = {
                 "taxnr": decoded["taxnr"],
                 "pfname": decoded["pfname"],
-                "pemail": decoded["pemail"],
                 "cpfnr": decoded["cpfnr"],
                 "sfname": decoded["sfname"],
                 "birth": decoded["birth"],
