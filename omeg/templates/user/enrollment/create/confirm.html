@@ -14,10 +14,20 @@
         <tbody>
           <tr>
             <th scope="col">
+              CPF
+            </th>
+            <td>
+              {{ CPF(cpfnr).strfmt("fmt") }}
+            </td>
+            <td>
+            </td>
+          </tr>
+          <tr>
+            <th scope="col">
               Nome completo
             </th>
             <td>
-              {{ enrollment.fname }}
+              {{ fname }}
             </td>
             <td>
             </td>
@@ -27,17 +37,7 @@
               Data de nascimento
             </th>
             <td>
-              {{ DATE(enrollment.birth).strfmt("dd-mm-yyyy") }}
-            </td>
-            <td>
-            </td>
-          </tr>
-          <tr>
-            <th scope="col">
-              CPF
-            </th>
-            <td>
-              {{ CPF(enrollment.cpfnr).strfmt("fmt") }}
+              {{ DATE(birth).strfmt("dd-mm-yyyy") }}
             </td>
             <td>
             </td>
@@ -47,20 +47,20 @@
               Email
             </th>
             <td>
-              {{ enrollment.email }}
+              {{ email }}
             </td>
             <td>
             </td>
           </tr>
           <tr>
             <th scope="col">
-              Escola
+              Cód. INEP
             </th>
-            <td title="{{ enrollment.name }}">
-              {{ enrollment.inep }}
+            <td title="{{ name }}">
+              {{ inep }}
             </td>
             <td>
-              <a href="">
+              <a href="{{ url_for('bp_user_routes.edit_inep_for_new_enrollment', taxnr=current_user.taxnr, cpfnr=cpfnr, fname=fname, birth=birth, email=email, inep=inep, name=name, year=year, roll=roll) }}">
                 Editar
               </a>
             </td>
@@ -70,10 +70,10 @@
               Nível
             </th>
             <td>
-              {{ enrollment.roll }}
+              {{ roll }}
             </td>
             <td>
-              <a href="">
+              <a href="{{ url_for('bp_user_routes.edit_roll_for_new_enrollment', taxnr=current_user.taxnr, cpfnr=cpfnr, fname=fname, birth=birth, email=email, inep=inep, name=name, year=year, roll=roll) }}">
                 Editar
               </a>
             </td>
@@ -83,7 +83,7 @@
               Condições especiais requeridas
             </th>
             <td>
-              {{ enrollment.need }}
+              {{ need }}
             </td>
             <td>
               <a href="">
@@ -93,6 +93,22 @@
           </tr>
         </tbody>
       </table>
+
+      <p>
+        Enviaremos um email para {{ email }} para notificar o
+        estudante de sua inscrição na OMEG {{ edition }}.
+      </p>
+
+      <p>
+        O estudante precisa aprovar a sua inscrição na OMEG {{ edition }}. Isto
+        é muito importante, pois apenas as inscrições que tenham sido aprovadas
+        pelos estudantes serão efetivadas. 
+      </p>
+
+      <p>
+        O processo é simples e as instruções de como aprovar a inscrição se
+        encontram no email enviado.
+      </p>
 
     </div>
   </div>

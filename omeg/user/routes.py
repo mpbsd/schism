@@ -774,24 +774,24 @@ def edit_enrollment_need(taxnr, cpfnr):
         return redirect(url_for("bp_home_routes.home"))
 
 
-@bp_user_routes.route("/professor/<taxnr>/enrollments/lastyear")
+@bp_user_routes.route("/professor/<taxnr>/enrollments/past-seven-years")
 @login_required
-def show_enrollments_lastyear(taxnr):
+def show_enrollments_the_past_seven_years(taxnr):
     if taxnr == current_user.taxnr:
         professor = db.first_or_404(
             sa.select(Professor).where(Professor.taxnr == taxnr)
         )
-        # There are 7 school years competing
-        # EF: 6, 7, 8 and 9
-        # EM: 1, 2, and 3
         enrollments_from_the_last_seven_years = (
             db.session.query(
                 Student.cpfnr,
                 Student.fname,
+                Student.birth,
+                Student.email,
                 School.inep,
                 School.name,
-                Enrollment.roll,
                 Enrollment.year,
+                Enrollment.roll,
+                Enrollment.need,
             )
             .where(
                 School.inep == Enrollment.inep,
@@ -827,43 +827,117 @@ def show_enrollments_lastyear(taxnr):
 
 
 @bp_user_routes.route(
-    "/professor/<taxnr>/enrollments/previous/<cpfnr>/<inep>/<year>"
+    "/professor/<taxnr>/enrollments/new-from-previous"
+    "/<cpfnr>/<fname>/<birth>/<email>/<inep>/<name>/<year>/<roll>"
 )
 @login_required
-def new_enrollment_based_off_of_a_previous_one(taxnr, cpfnr, inep, year):
+def new_enrollment_from_previous_one(
+    taxnr, cpfnr, fname, birth, email, inep, name, year, roll
+):
     if taxnr == current_user.taxnr:
         professor = db.first_or_404(
             sa.select(Professor).where(Professor.taxnr == taxnr)
-        )
-        enrollment = (
-            db.session.query(
-                Enrollment.cpfnr,
-                Enrollment.taxnr,
-                Enrollment.inep,
-                Enrollment.year,
-                Enrollment.roll,
-                Enrollment.need,
-                Student.fname,
-                Student.birth,
-                Student.email,
-                School.name,
-            )
-            .where(
-                Student.cpfnr == Enrollment.cpfnr,
-                School.inep == Enrollment.inep,
-                Enrollment.cpfnr == cpfnr,
-                Enrollment.inep == inep,
-                Enrollment.year == year,
-            )
-            .first()
         )
         return render_template(
             "user/enrollment/create/confirm.html",
             edition=payload["edition"],
             pfname=professor.fname,
-            enrollment=enrollment,
+            cpfnr=cpfnr,
+            fname=fname,
+            birth=birth,
+            email=email,
+            inep=inep,
+            name=name,
+            year=year,
+            roll=roll,
             CPF=CPF,
             DATE=DATE,
+        )
+    else:
+        return redirect(url_for("bp_home_routes.home"))
+
+
+@bp_user_routes.route(
+    "/professor/<taxnr>/enrollments/new-from-previous"
+    "/<cpfnr>/<fname>/<birth>/<email>/<inep>/<name>/<year>/<roll>"
+    "edit-inep",
+    methods=["GET", "POST"],
+)
+@login_required
+def edit_inep_for_new_enrollment(
+    taxnr, cpfnr, fname, birth, email, inep, name, year, roll
+):
+    if taxnr == current_user.taxnr:
+        professor = db.first_or_404(
+            sa.select(Professor).where(Professor.taxnr == taxnr)
+        )
+        form = edit_enrollment_inep_form(inep=inep)
+        if form.validate_on_submit():
+            return render_template(
+                "user/enrollment/create/confirm.html",
+                edition=payload["edition"],
+                pfname=professor.fname,
+                cpfnr=cpfnr,
+                fname=fname,
+                birth=birth,
+                email=email,
+                name=name,
+                inep=form.inep.data,
+                year=year,
+                roll=roll,
+                CPF=CPF,
+                DATE=DATE,
+            )
+        return render_template(
+            "user/enrollment/update/field/inep.html",
+            edition=payload["edition"],
+            pfname=professor.fname,
+            sfname=fname,
+            cpfnr=cpfnr,
+            form=form,
+        )
+    else:
+        return redirect(url_for("bp_home_routes.home"))
+
+
+@bp_user_routes.route(
+    "/professor/<taxnr>/enrollments/new-from-previous"
+    "/<cpfnr>/<fname>/<birth>/<email>/<inep>/<name>/<year>/<roll>"
+    "edit-roll",
+    methods=["GET", "POST"],
+)
+@login_required
+def edit_roll_for_new_enrollment(
+    taxnr, cpfnr, fname, birth, email, inep, name, year, roll
+):
+    if taxnr == current_user.taxnr:
+        professor = db.first_or_404(
+            sa.select(Professor).where(Professor.taxnr == taxnr)
+        )
+        form = edit_enrollment_roll_form(roll=roll)
+        if form.validate_on_submit():
+            return render_template(
+                "user/enrollment/create/confirm.html",
+                edition=payload["edition"],
+                pfname=professor.fname,
+                cpfnr=cpfnr,
+                fname=fname,
+                birth=birth,
+                email=email,
+                name=name,
+                inep=inep,
+                year=year,
+                roll=form.roll.data,
+                CPF=CPF,
+                DATE=DATE,
+            )
+        return render_template(
+            "user/enrollment/update/field/roll.html",
+            edition=payload["edition"],
+            pfname=professor.fname,
+            sfname=fname,
+            cpfnr=cpfnr,
+            form=form,
         )
     else:
         return redirect(url_for("bp_home_routes.home"))
