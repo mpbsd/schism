@@ -5,6 +5,7 @@ from flask import Blueprint, redirect, render_template, url_for
 from flask_login import current_user, login_required
 from unidecode import unidecode
 
+from omeg.auth.emails import send_enrollment_confirmation_email
 from omeg.conf.boost import db
 from omeg.data.load import CPF, DATE, payload
 from omeg.mold.models import Enrollment, Professor, School, Student
@@ -860,7 +861,7 @@ def new_enrollment_from_previous_one(
 @bp_user_routes.route(
     "/professor/<taxnr>/enrollments/new-from-previous"
     "/<cpfnr>/<fname>/<birth>/<email>/<inep>/<name>/<year>/<roll>"
-    "edit-inep",
+    "/edit-inep",
     methods=["GET", "POST"],
 )
 @login_required
@@ -873,20 +874,24 @@ def edit_inep_for_new_enrollment(
         )
         form = edit_enrollment_inep_form(inep=inep)
         if form.validate_on_submit():
-            return render_template(
-                "user/enrollment/create/confirm.html",
-                edition=payload["edition"],
-                pfname=professor.fname,
-                cpfnr=cpfnr,
-                fname=fname,
-                birth=birth,
-                email=email,
-                name=name,
-                inep=form.inep.data,
-                year=year,
-                roll=roll,
-                CPF=CPF,
-                DATE=DATE,
+            school_name = (
+                db.session.query(School.name)
+                .where(School.inep == form.inep.data)
+                .first()
+            )
+            return redirect(
+                url_for(
+                    "bp_user_routes.new_enrollment_from_previous_one",
+                    taxnr=taxnr,
+                    cpfnr=cpfnr,
+                    fname=fname,
+                    birth=birth,
+                    email=email,
+                    inep=form.inep.data,
+                    name=school_name[0],
+                    year=year,
+                    roll=roll,
+                )
             )
         return render_template(
             "user/enrollment/update/field/inep.html",
@@ -903,7 +908,7 @@ def edit_inep_for_new_enrollment(
 @bp_user_routes.route(
     "/professor/<taxnr>/enrollments/new-from-previous"
     "/<cpfnr>/<fname>/<birth>/<email>/<inep>/<name>/<year>/<roll>"
-    "edit-roll",
+    "/edit-roll",
     methods=["GET", "POST"],
 )
 @login_required
@@ -916,20 +921,19 @@ def edit_roll_for_new_enrollment(
         )
         form = edit_enrollment_roll_form(roll=roll)
         if form.validate_on_submit():
-            return render_template(
-                "user/enrollment/create/confirm.html",
-                edition=payload["edition"],
-                pfname=professor.fname,
-                cpfnr=cpfnr,
-                fname=fname,
-                birth=birth,
-                email=email,
-                name=name,
-                inep=inep,
-                year=year,
-                roll=form.roll.data,
-                CPF=CPF,
-                DATE=DATE,
+            return redirect(
+                url_for(
+                    "user/enrollment/create/confirm.html",
+                    taxnr=taxnr,
+                    cpfnr=cpfnr,
+                    fname=fname,
+                    birth=birth,
+                    email=email,
+                    name=name,
+                    inep=inep,
+                    year=year,
+                    roll=form.roll.data,
+                )
             )
         return render_template(
             "user/enrollment/update/field/roll.html",

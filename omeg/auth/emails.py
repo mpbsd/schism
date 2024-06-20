@@ -1,7 +1,7 @@
 from flask import current_app, render_template
 
 from omeg.conf.boost import send_email
-from omeg.mold.models import Professor
+from omeg.mold.models import Enrollment, Professor
 
 
 def send_registration_request_email(email):
@@ -33,6 +33,45 @@ def send_password_reset_email(professor):
         html_body=render_template(
             "auth/password/request/mail.html",
             professor=professor,
+            token=token,
+        ),
+    )
+
+
+def send_enrollment_confirmation_email(
+    taxnr,
+    pfname,
+    pemail,
+    cpfnr,
+    sfname,
+    birth,
+    semail,
+    inep,
+    name,
+    roll,
+):
+    token = Enrollment.get_registration_request_token(
+        taxnr,
+        pfname,
+        pemail,
+        cpfnr,
+        sfname,
+        birth,
+        semail,
+        inep,
+        name,
+        roll,
+    )
+    send_email(
+        "[OMEG] Inscrição na Olimpíada de Matemática do Estado de Goiás",
+        sender=current_app.config["ADMINS"][0],
+        recipients=[semail],
+        text_body=render_template(
+            "user/enrollment/confirmation/mail.txt",
+            token=token,
+        ),
+        html_body=render_template(
+            "user/enrollment/confirmation/mail.html",
             token=token,
         ),
     )

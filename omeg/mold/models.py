@@ -122,12 +122,67 @@ class Enrollment(db.Model):
     need: so.Mapped[str] = so.mapped_column(sa.String(255), nullable=True)
     # acceptable values:
     # gift:
-    #   'O' meaning 'Medalha de Ouro'
-    #   'P' meaning 'Medalha de Prata'
-    #   'B' meaning 'Medalha de Bronze'
-    #   'H' meaning 'Menção Honrosa'
+    #   'O' meaning 'Ouro'
+    #   'P' meaning 'Prata'
+    #   'B' meaning 'Bronze'
+    #   'H' meaning 'Honra'
     #   'N' meaning 'Nenhum'
     gift: so.Mapped[chr] = so.mapped_column(sa.CHAR, default="N")
+
+    @staticmethod
+    def request_confirmation_for_enrollment(
+        taxnr,
+        pfname,
+        pemail,
+        cpfnr,
+        sfname,
+        birth,
+        semail,
+        inep,
+        name,
+        roll,
+        expires_in=600,
+    ):
+        return jwt.encode(
+            {
+                "taxnr": taxnr,
+                "pfname": pfname,
+                "pemail": pemail,
+                "cpfnr": cpfnr,
+                "sfname": sfname,
+                "birth": birth,
+                "semail": semail,
+                "inep": inep,
+                "name": name,
+                "roll": roll,
+                "exp": time() + expires_in,
+            },
+            Config.SECRET_KEY,
+            algorithm="HS256",
+        )
+
+    @staticmethod
+    def verify_confirmation_for_enrollment(token):
+        try:
+            decoded = jwt.decode(
+                token, Config.SECRET_KEY, algorithms=["HS256"]
+            )
+            message = {
+                "taxnr": decoded["taxnr"],
+                "pfname": decoded["pfname"],
+                "pemail": decoded["pemail"],
+                "cpfnr": decoded["cpfnr"],
+                "sfname": decoded["sfname"],
+                "birth": decoded["birth"],
+                "semail": decoded["semail"],
+                "inep": decoded["inep"],
+                "name": decoded["name"],
+                "roll": decoded["roll"],
+            }
+        except jwt.exceptions.InvalidTokenError as Err:
+            print(Err)
+            return None
+        return message
 
     def __repr__(self):
         return f"{self.inep}, {self.cpfnr}, {self.year}, {self.roll}"

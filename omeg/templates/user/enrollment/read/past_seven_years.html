@@ -45,7 +45,7 @@
               {{ enrollment.year }}
             </td>
             <td>
-              <a href="{{ url_for('bp_user_routes.new_enrollment_from_previous_one', taxnr=current_user.taxnr, cpfnr=enrollment.cpfnr, fname=enrollment.fname, birth=enrollment.birth, email=enrollment.email, inep=enrollment.inep, name=enrollment.name, year=enrollment.year, roll=enrollment.roll, need=enrollment.need) }}">
+              <a href="{{ url_for('bp_user_routes.new_enrollment_from_previous_one', taxnr=current_user.taxnr, cpfnr=enrollment.cpfnr, fname=enrollment.fname, birth=enrollment.birth, email=enrollment.email, inep=enrollment.inep, name=enrollment.name, year=enrollment.year, roll=enrollment.roll) }}">
                 Inscrever
               </a>
             </td>
