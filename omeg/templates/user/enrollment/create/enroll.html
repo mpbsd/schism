@@ -68,11 +68,22 @@
         {{ edition }} e que todos os dados acima estão corretos?
       </p>
 
-      <p>
-        <a class="btn btn-primary" href="">
-          Confirmar
-        </a>
-      </p>
+      <div class="form-wrapper">
+        <form class="row g-3 needs-validation" method="post" novalidate>
+
+          {{ form.hidden_tag() }}
+
+          <div class="col-md-4">
+            <label class="form-label">{{ form.confirmation.label }}</label>
+            {{ form.confirmation(class_="form-control") }}
+          </div>
+
+          <div class="col-12">
+            {{ form.submit(class_="btn btn-primary") }}
+          </div>
+
+        </form>
+      </div>
 
     </div>
   </div>

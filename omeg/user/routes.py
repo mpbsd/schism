@@ -18,6 +18,7 @@ from omeg.user.forms import (
     edit_student_email_form,
     edit_student_fname_form,
     new_enrollment_from_a_previous_one_form,
+    confirm_new_enrollment_from_a_previous_one_form,
     student_registration_form,
 )
 
@@ -978,41 +979,45 @@ def enroll_student(token):
                 "bp_user_routes.professor_dashboard", taxnr=current_user.taxnr
             )
         )
-    enrollment = Enrollment.verify_enrollment_request_token(token)
-    if enrollment:
-        taxnr = enrollment["taxnr"]
-        cpfnr = enrollment["cpfnr"]
-        fname = enrollment["sfname"]
-        birth = enrollment["birth"]
-        email = enrollment["semail"]
-        inep = enrollment["inep"]
-        name = enrollment["name"]
-        year = payload["edition"]
-        roll = enrollment["roll"]
-        print(taxnr, cpfnr, inep, year, roll)
-        # e = Enrollment(
-        #     taxnr=enrollment["taxnr"],
-        #     cpfnr=enrollment["cpfnr"],
-        #     inep=enrollment["inep"],
-        #     year=payload["edition"],
-        #     roll=enrollment["roll"],
-        # )
-        # # check quota or even better!
-        # # dont even send the email if it doesn't fill in the quota already
-        # db.session.add(e)
-        # db.session.commit()
     else:
-        return redirect(url_for("bp_home_routes.home"))
-    return render_template(
-        "user/enrollment/create/enroll.html",
-        edition=payload["edition"],
-        cpfnr=cpfnr,
-        fname=fname,
-        birth=birth,
-        email=email,
-        inep=inep,
-        name=name,
-        roll=roll,
-        CPF=CPF,
-        DATE=DATE,
-    )
+        decoded = Enrollment.verify_enrollment_request_token(token)
+        form = confirm_new_enrollment_from_a_previous_one_form(
+            confirmation="Sim"
+        )
+        if decoded:
+            taxnr = decoded["taxnr"]
+            cpfnr = decoded["cpfnr"]
+            fname = decoded["sfname"]
+            birth = decoded["birth"]
+            email = decoded["semail"]
+            inep = decoded["inep"]
+            name = decoded["name"]
+            roll = decoded["roll"]
+            enrollment = Enrollment(
+                taxnr=taxnr,
+                cpfnr=cpfnr,
+                inep=inep,
+                year=payload["edition"],
+                roll=roll,
+            )
+            if form.validate_on_submit():
+                db.session.add(enrollment)
+                db.session.commit()
+                return render_template(
+                    "user/enrollment/create/congrats.html",
+                    edition=payload["edition"],
+                )
+        return render_template(
+            "user/enrollment/create/enroll.html",
+            edition=payload["edition"],
+            cpfnr=cpfnr,
+            fname=fname,
+            birth=birth,
+            email=email,
+            inep=inep,
+            name=name,
+            roll=roll,
+            CPF=CPF,
+            DATE=DATE,
+            form=form,
+        )
