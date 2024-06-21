@@ -228,3 +228,16 @@ class edit_enrollment_need_form(FlaskForm):
         validators=[Length(max=255, message="máximo de 255 caracteres")],
     )
     submit = SubmitField("Cadastrar")
+
+
+class new_enrollment_from_a_previous_one_form(FlaskForm):
+    confirmation = StringField(
+        "Enviar o email de confirmação para estudante?",
+        validators=[DataRequired("Campo obrigatório")],
+    )
+    submit = SubmitField("Enviar Email")
+
+    def validate_confirmation(self, confirmation):
+        answer = confirmation.data.lower()
+        if answer != "sim":
+            raise ValidationError("Responda 'Sim' e clique em 'Enviar Email'")

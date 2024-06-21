@@ -104,11 +104,22 @@
         especial para realizar as provas.
       </p>
 
-      <p>
-        <a class="btn btn-primary" href="{{ send_email(taxnr=taxnr, pfname=pfname, cpfnr=cpfnr, sfname=fname, birth=birth, semail=email, inep=inep, name=name, roll=roll) }}">
-          Enviar Email
-        </a>
-      </p>
+      <div class="form-wrapper" style="margin-top: 5%">
+        <form class="row g-3 needs-validation" method="post" novalidate>
+
+          {{ form.hidden_tag() }}
+
+          <div class="col-md-4">
+            <label class="form-label">{{ form.confirmation.label }}</label>
+            {{ form.confirmation(class_="form-control") }}
+          </div>
+
+          <div class="col-12">
+            {{ form.submit(class_="btn btn-primary") }}
+          </div>
+
+      </form>
+    </div>
 
     </div>
   </div>
