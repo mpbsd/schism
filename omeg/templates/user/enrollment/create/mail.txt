@@ -23,8 +23,11 @@ Por favor, responda (para si mesmo) às perguntas seguintes:
    Email, Escola e Nível da prova devem estar corretos. Se quaisquer destes
    dados estiverem incorretos, responda não para esta pergunta.
 
-Se a resposta para as perguntas 1) e 2) acima foram sim, clique aqui e, então,
-siga as instruções na tela para se inscrever na OMEG.
+Se a resposta para as perguntas 1) e 2) acima foram sim, clique no link a seguir:
+
+  {{ url_for('bp_user_routes.enroll_student', token=token, _external=True) }}
+
+e, então, siga as instruções na tela para se inscrever na OMEG.
 
 Se a resposta para quaisquer das perguntas acima for não, basta ignorar este
 email.

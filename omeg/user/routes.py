@@ -5,7 +5,7 @@ from flask import Blueprint, redirect, render_template, url_for
 from flask_login import current_user, login_required
 from unidecode import unidecode
 
-from omeg.auth.emails import send_enrollment_confirmation_email
+from omeg.user.emails import send_enrollment_confirmation_email
 from omeg.conf.boost import db
 from omeg.data.load import CPF, DATE, payload
 from omeg.mold.models import Enrollment, Professor, School, Student
@@ -947,3 +947,52 @@ def edit_roll_for_new_enrollment(
         )
     else:
         return redirect(url_for("bp_home_routes.home"))
+
+
+@bp_user_routes.route("/student/enroll/<token>", methods=["GET", "POST"])
+def enroll_student(token):
+    if current_user.is_authenticated:
+        return redirect(
+            url_for(
+                "bp_user_routes.professor_dashboard",
+                taxnr=current_user.taxnr
+            )
+        )
+    enrollment = Enrollment.verify_enrollment_request_token(token)
+    if enrollment:
+        taxnr = enrollment["taxnr"]
+        cpfnr = enrollment["cpfnr"]
+        fname = enrollment["sfname"]
+        birth = enrollment["birth"]
+        email = enrollment["semail"]
+        inep = enrollment["inep"]
+        name = enrollment["name"]
+        year = payload["edition"]
+        roll = enrollment["roll"]
+        print(taxnr, cpfnr, inep, year, roll)
+        # e = Enrollment(
+        #     taxnr=enrollment["taxnr"],
+        #     cpfnr=enrollment["cpfnr"],
+        #     inep=enrollment["inep"],
+        #     year=payload["edition"],
+        #     roll=enrollment["roll"],
+        # )
+        # # check quota or even better!
+        # # dont even send the email if it doesn't fill in the quota already
+        # db.session.add(e)
+        # db.session.commit()
+    else:
+        return redirect(url_for("bp_home_routes.home"))
+    return render_template(
+        "user/enrollment/create/enroll.html",
+        edition=payload["edition"],
+        cpfnr=cpfnr,
+        fname=fname,
+        birth=birth,
+        email=email,
+        inep=inep,
+        name=name,
+        roll=roll,
+        CPF=CPF,
+        DATE=DATE,
+    )

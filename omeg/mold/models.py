@@ -160,7 +160,7 @@ class Enrollment(db.Model):
         )
 
     @staticmethod
-    def verify_confirmation_for_enrollment(token):
+    def verify_enrollment_request_token(token):
         try:
             decoded = jwt.decode(
                 token, Config.SECRET_KEY, algorithms=["HS256"]
