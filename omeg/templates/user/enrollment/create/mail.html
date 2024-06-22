@@ -16,13 +16,13 @@
     </p>
     <p>
     <li>
-      CPF: {{ cpfnr }}
+      CPF: {{ CPF(cpfnr).strfmt("fmt") }}
     </li>
     <li>
       Nome completo: {{ sfname }}
     </li>
     <li>
-      Data de nascimento: {{ birth }}
+      Data de nascimento: {{ DATE(birth).strfmt("dd-mm-yyyy") }}
     </li>
     <li>
       Email: {{ semail }}
@@ -50,9 +50,12 @@
     </ul>
     </p>
     <p>
-    Se a resposta para as perguntas 1) e 2) acima foram ambas iguais a sim,
-    clique aqui e, então, siga as instruções na tela para se inscrever na
-    OMEG.
+    Se a resposta para as perguntas 1) e 2) foram ambas iguais a sim, clique
+    no link a seguir:
+
+    {{ url_for('bp_user_routes.enroll_student', token=token, _external=True) }}
+
+    e, então, siga as instruções na tela para se inscrever na OMEG.
     </p>
     <p>
     Se a resposta para quaisquer das perguntas acima for não, basta ignorar

@@ -230,9 +230,25 @@ class edit_enrollment_need_form(FlaskForm):
     submit = SubmitField("Cadastrar")
 
 
+class find_enrollment_by_cpfnr(FlaskForm):
+    cpfnr = StringField(
+        "CPF do estudante",
+        validators=[
+            DataRequired(message="Campo obrigatório"),
+            Length(
+                min=11,
+                max=14,
+                message="CPF é composto por 11 dígitos e pode conter ou não "
+                "os caracteres . (ponto) e - (traço)",
+            ),
+        ],
+    )
+    submit = SubmitField("Buscar")
+
+
 class new_enrollment_from_a_previous_one_form(FlaskForm):
     confirmation = StringField(
-        "Enviar o email de confirmação para estudante?",
+        "Enviar email de confirmação para o estudante?",
         validators=[DataRequired("Campo obrigatório")],
     )
     submit = SubmitField("Enviar Email")
