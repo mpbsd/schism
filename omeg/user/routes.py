@@ -169,14 +169,37 @@ def student_registration(taxnr):
                 need=re.sub(r"\s+", r" ", unidecode(form.need.data.lower())),
                 gift="N",
             )
-            quota = (
-                db.session.query(Enrollment)
+            cpfnr_medalists_last_edition = [
+                cpfnr
+                for (cpfnr,) in db.session.query(Enrollment.cpfnr)
+                .where(
+                    Enrollment.gift.op("REGEXP")("[OoPpBb]"),
+                    Enrollment.year == payload["edition"] - 1,
+                )
+                .all()
+            ]
+            medalists_currently_enrolled = [
+                cpfnr
+                for (cpfnr,) in db.session.query(Enrollment.cpfnr)
                 .where(
                     Enrollment.inep == enrollment.inep,
                     Enrollment.year == payload["edition"],
-                    Enrollment.roll == enrollment.roll,
                 )
-                .count()
+                .all()
+                if cpfnr in cpfnr_medalists_last_edition
+            ]
+            quota = len(
+                [
+                    cpfnr
+                    for (cpfnr,) in db.session.query(Enrollment.cpfnr)
+                    .where(
+                        Enrollment.inep == enrollment.inep,
+                        Enrollment.year == payload["edition"],
+                        Enrollment.roll == enrollment.roll,
+                    )
+                    .all()
+                    if cpfnr not in medalists_currently_enrolled
+                ]
             )
             # if the quota is less than or equal to or the cpfnr belongs to a
             # certain list, pass.
