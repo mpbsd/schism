@@ -1,4 +1,4 @@
-{% extends "user.html" %}
+{% extends "home.html" %}
 
 {% block content %}
 
@@ -7,7 +7,7 @@
     <div class="ten columns" style="margin-top: 5%">
 
       <h4>
-        Inscrição de Estudante na OMEG {{ edition }}
+        Inscrição na OMEG {{ edition }}
       </h4>
 
       <table class="table table-striped" style="margin-top: 5%">
@@ -19,8 +19,6 @@
             <td>
               {{ CPF(cpfnr).strfmt("fmt") }}
             </td>
-            <td>
-            </td>
           </tr>
           <tr>
             <th scope="col">
@@ -28,8 +26,6 @@
             </th>
             <td>
               {{ fname }}
-            </td>
-            <td>
             </td>
           </tr>
           <tr>
@@ -39,8 +35,6 @@
             <td>
               {{ DATE(birth).strfmt("dd-mm-yyyy") }}
             </td>
-            <td>
-            </td>
           </tr>
           <tr>
             <th scope="col">
@@ -48,8 +42,6 @@
             </th>
             <td>
               {{ email }}
-            </td>
-            <td>
             </td>
           </tr>
           <tr>
@@ -59,11 +51,6 @@
             <td title="{{ name }}">
               {{ inep }}
             </td>
-            <td>
-              <a href="{{ url_for('bp_user_routes.edit_inep_for_new_enrollment', taxnr=current_user.taxnr, cpfnr=cpfnr, fname=fname, birth=birth, email=email, inep=inep, name=name, year=year, roll=roll) }}">
-                Editar
-              </a>
-            </td>
           </tr>
           <tr>
             <th scope="col">
@@ -72,36 +59,13 @@
             <td>
               {{ roll }}
             </td>
-            <td>
-              <a href="{{ url_for('bp_user_routes.edit_roll_for_new_enrollment', taxnr=current_user.taxnr, cpfnr=cpfnr, fname=fname, birth=birth, email=email, inep=inep, name=name, year=year, roll=roll) }}">
-                Editar
-              </a>
-            </td>
           </tr>
         </tbody>
       </table>
 
       <p>
-        Enviaremos um email para {{ email }} a fim de notificar o estudante de
-        sua inscrição na OMEG {{ edition }}.
-      </p>
-
-      <p>
-        O estudante precisa aprovar a sua inscrição na OMEG {{ edition }}. Isto
-        é muito importante, pois apenas as inscrições que tenham sido aprovadas
-        pelos estudantes serão efetivadas. 
-      </p>
-
-      <p>
-        O processo é simples e as instruções de como aprovar a inscrição se
-        encontram no email enviado.
-      </p>
-
-      <p>
-        Professor, assim que o aluno confirmar a sua inscrição na OMEG você
-        poderá visualizá-la através do menu Visualizar Inscrições. Neste ponto,
-        será possível informar-nos se o estudante necessita de alguma condição
-        especial para realizar as provas.
+        Prezado estudante, você confirma que deseja participar da OMEG
+        {{ edition }} e que todos os dados acima estão corretos?
       </p>
 
       <div class="form-wrapper">

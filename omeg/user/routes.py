@@ -5,10 +5,10 @@ from flask import Blueprint, redirect, render_template, url_for
 from flask_login import current_user, login_required
 from unidecode import unidecode
 
-from omeg.auth.emails import send_enrollment_confirmation_email
 from omeg.conf.boost import db
 from omeg.data.load import CPF, DATE, payload
 from omeg.mold.models import Enrollment, Professor, School, Student
+from omeg.user.emails import send_enrollment_confirmation_email
 from omeg.user.forms import (
     edit_enrollment_inep_form,
     edit_enrollment_need_form,
@@ -17,6 +17,8 @@ from omeg.user.forms import (
     edit_student_cpfnr_form,
     edit_student_email_form,
     edit_student_fname_form,
+    new_enrollment_from_a_previous_one_form,
+    confirm_new_enrollment_from_a_previous_one_form,
     student_registration_form,
 )
 
@@ -852,7 +854,8 @@ def show_enrollments_the_past_seven_years(taxnr):
 
 @bp_user_routes.route(
     "/professor/<taxnr>/enrollments/new-from-previous"
-    "/<cpfnr>/<fname>/<birth>/<email>/<inep>/<name>/<year>/<roll>"
+    "/<cpfnr>/<fname>/<birth>/<email>/<inep>/<name>/<year>/<roll>",
+    methods=["GET", "POST"],
 )
 @login_required
 def new_enrollment_from_previous_one(
@@ -862,6 +865,25 @@ def new_enrollment_from_previous_one(
         professor = db.first_or_404(
             sa.select(Professor).where(Professor.taxnr == taxnr)
         )
+        form = new_enrollment_from_a_previous_one_form(confirmation="Sim")
+        if form.validate_on_submit():
+            send_enrollment_confirmation_email(
+                taxnr=taxnr,
+                pfname=professor.fname,
+                cpfnr=cpfnr,
+                sfname=fname,
+                birth=birth,
+                semail=email,
+                inep=inep,
+                name=name,
+                roll=roll,
+            )
+            return redirect(
+                url_for(
+                    "bp_user_routes.registered_students",
+                    taxnr=taxnr,
+                )
+            )
         return render_template(
             "user/enrollment/create/confirm.html",
             edition=payload["edition"],
@@ -877,7 +899,7 @@ def new_enrollment_from_previous_one(
             roll=roll,
             CPF=CPF,
             DATE=DATE,
-            send_email=send_enrollment_confirmation_email,
+            form=form,
         )
     else:
         return redirect(url_for("bp_home_routes.home"))
@@ -970,3 +992,55 @@ def edit_roll_for_new_enrollment(
         )
     else:
         return redirect(url_for("bp_home_routes.home"))
+
+
+@bp_user_routes.route("/student/enroll/<token>", methods=["GET", "POST"])
+def enroll_student(token):
+    if current_user.is_authenticated:
+        return redirect(
+            url_for(
+                "bp_user_routes.professor_dashboard", taxnr=current_user.taxnr
+            )
+        )
+    else:
+        decoded = Enrollment.verify_enrollment_request_token(token)
+        form = confirm_new_enrollment_from_a_previous_one_form(
+            confirmation="Sim"
+        )
+        if decoded:
+            taxnr = decoded["taxnr"]
+            cpfnr = decoded["cpfnr"]
+            fname = decoded["sfname"]
+            birth = decoded["birth"]
+            email = decoded["semail"]
+            inep = decoded["inep"]
+            name = decoded["name"]
+            roll = decoded["roll"]
+            enrollment = Enrollment(
+                taxnr=taxnr,
+                cpfnr=cpfnr,
+                inep=inep,
+                year=payload["edition"],
+                roll=roll,
+            )
+            if form.validate_on_submit():
+                db.session.add(enrollment)
+                db.session.commit()
+                return render_template(
+                    "user/enrollment/create/congrats.html",
+                    edition=payload["edition"],
+                )
+        return render_template(
+            "user/enrollment/create/enroll.html",
+            edition=payload["edition"],
+            cpfnr=cpfnr,
+            fname=fname,
+            birth=birth,
+            email=email,
+            inep=inep,
+            name=name,
+            roll=roll,
+            CPF=CPF,
+            DATE=DATE,
+            form=form,
+        )

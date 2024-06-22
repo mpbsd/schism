@@ -11,6 +11,7 @@ black:
 	isort omeg/data/load.py
 	isort omeg/home/routes.py
 	isort omeg/mold/models.py
+	isort omeg/user/emails.py
 	isort omeg/user/forms.py
 	isort omeg/user/routes.py
 	black -l 79 omeg/auth/emails.py
@@ -22,6 +23,7 @@ black:
 	black -l 79 omeg/data/load.py
 	black -l 79 omeg/home/routes.py
 	black -l 79 omeg/mold/models.py
+	black -l 79 omeg/user/emails.py
 	black -l 79 omeg/user/forms.py
 	black -l 79 omeg/user/routes.py
 
