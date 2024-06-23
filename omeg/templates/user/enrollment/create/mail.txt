@@ -15,7 +15,7 @@ Os dados a nós fornecidos no momento da solicitação foram os seguintes:
   - Escola: {{ name }}
   - Nível: {{ roll }}
 
-Por favor, responda (para si mesmo) às perguntas seguintes:
+Por favor, responda às perguntas seguintes:
 
 1) Você deseja se inscrever na OMEG? Nós esperamos que sim ;)
 2) Os dados que temos sobre você estão corretos? Precisamos que todos os dados
