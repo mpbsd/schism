@@ -264,7 +264,7 @@ class confirm_new_enrollment_from_a_previous_one_form(FlaskForm):
         "Deseja se inscrever na OMEG utilizando os dados acima?",
         validators=[DataRequired("Campo obrigatório")],
     )
-    submit = SubmitField("Enviar Email")
+    submit = SubmitField("Confirmar")
 
     def validate_confirmation(self, confirmation):
         answer = confirmation.data.lower()

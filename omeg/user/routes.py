@@ -812,30 +812,33 @@ def find_enrollment_by_student_cpfnr(taxnr):
         if form.validate_on_submit():
             enrollment = (
                 db.session.query(
-                    Enrollment.cpfnr,
-                    Enrollment.taxnr,
-                    Enrollment.inep,
-                    Enrollment.year,
-                    Enrollment.roll,
-                    Enrollment.need,
-                    Enrollment.gift,
-                    Professor.fname,
-                    School.name,
+                    Student.cpfnr,
                     Student.fname,
                     Student.birth,
                     Student.email,
+                    School.inep,
+                    School.name,
+                    Enrollment.year,
+                    Enrollment.roll,
                 )
                 .where(
                     Student.cpfnr == Enrollment.cpfnr,
                     School.inep == Enrollment.inep,
-                    Professor.taxnr == Enrollment.taxnr,
-                    Enrollment.cpfnr == form.cpfnr.data,
+                    Enrollment.cpfnr == CPF(form.cpfnr.data).strfmt("raw"),
                     Enrollment.year >= payload["edition"] - 7,
                 )
-                .order_by(Enrollment.year)
+                .order_by(Enrollment.year.desc())
                 .first()
             )
-            if enrollment:
+            currently_enrolled = [
+                cpfnr
+                for (cpfnr,) in db.session.query(Enrollment.cpfnr)
+                .where(Enrollment.year == payload["edition"])
+                .all()
+            ]
+            cond1 = enrollment is not None
+            cond2 = enrollment.cpfnr not in currently_enrolled
+            if cond1 and cond2:
                 form = new_enrollment_from_a_previous_one_form(
                     confirmation="Sim"
                 )
@@ -893,6 +896,15 @@ def new_enrollment_from_previous_one(
                 )
                 .all()
             ]
+            medalists_last_edition = [
+                cpfnr
+                for (cpfnr,) in db.session.query(Enrollment.cpfnr)
+                .where(
+                    Enrollment.gift.op("REGEXP")("[OoPpBb]"),
+                    Enrollment.year == payload["edition"] - 1,
+                )
+                .all()
+            ]
             quota = len(
                 [
                     cpfnr
@@ -905,20 +917,10 @@ def new_enrollment_from_previous_one(
                     .all()
                 ]
             )
-            medalists_last_edition = [
-                cpfnr
-                for (cpfnr,) in db.session.query(Enrollment.cpfnr)
-                .where(
-                    Enrollment.gift.op("REGEXP")("[OoPpBb]"),
-                    Enrollment.year == payload["edition"] - 1,
-                )
-                .all()
-            ]
             cond1 = cpfnr not in currently_enrolled
-            cond2 = (quota <= payload["quota"] - 1) or (
-                cpfnr in medalists_last_edition
-            )
-            if cond1 or cond2:
+            cond2 = cpfnr in medalists_last_edition
+            cond3 = quota <= payload["quota"] - 1
+            if cond1 and (cond2 or cond3):
                 send_enrollment_confirmation_email(
                     taxnr=taxnr,
                     pfname=professor.fname,
@@ -973,8 +975,8 @@ def edit_inep_for_new_enrollment(
         )
         form = edit_enrollment_inep_form(inep=inep)
         if form.validate_on_submit():
-            school_name = (
-                db.session.query(School.name)
+            school = (
+                db.session.query(School)
                 .where(School.inep == form.inep.data)
                 .first()
             )
@@ -987,7 +989,7 @@ def edit_inep_for_new_enrollment(
                     birth=birth,
                     email=email,
                     inep=form.inep.data,
-                    name=school_name[0],
+                    name=school.name,
                     year=year,
                     roll=roll,
                 )
