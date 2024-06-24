@@ -810,58 +810,76 @@ def find_enrollment_by_student_cpfnr(taxnr):
         )
         form = find_enrollment_by_cpfnr()
         if form.validate_on_submit():
-            enrollment = (
+            student = (
                 db.session.query(
-                    Student.cpfnr,
-                    Student.fname,
-                    Student.birth,
-                    Student.email,
-                    School.inep,
-                    School.name,
-                    Enrollment.year,
-                    Enrollment.roll,
-                )
-                .where(
-                    Student.cpfnr == Enrollment.cpfnr,
-                    School.inep == Enrollment.inep,
-                    Enrollment.cpfnr == CPF(form.cpfnr.data).strfmt("raw"),
-                    Enrollment.year >= payload["edition"] - 7,
-                )
-                .order_by(Enrollment.year.desc())
-                .first()
+                    Student
+                ).where(
+                    Student.cpfnr == CPF(form.cpfnr.data).strfmt("raw"),
+                ).first()
             )
-            currently_enrolled = [
-                cpfnr
-                for (cpfnr,) in db.session.query(Enrollment.cpfnr)
-                .where(Enrollment.year == payload["edition"])
-                .all()
-            ]
-            cond1 = enrollment is not None
-            cond2 = enrollment.cpfnr not in currently_enrolled
-            if cond1 and cond2:
-                form = new_enrollment_from_a_previous_one_form(
-                    confirmation="Sim"
+            if student is not None:
+                enrollment = (
+                    db.session.query(
+                        Student.cpfnr,
+                        Student.fname,
+                        Student.birth,
+                        Student.email,
+                        School.inep,
+                        School.name,
+                        Enrollment.year,
+                        Enrollment.roll,
+                    )
+                    .where(
+                        Student.cpfnr == Enrollment.cpfnr,
+                        School.inep == Enrollment.inep,
+                        Enrollment.cpfnr == student.cpfnr,
+                        Enrollment.year >= payload["edition"] - 7,
+                    )
+                    .order_by(Enrollment.year.desc())
+                    .first()
                 )
-                return render_template(
-                    "user/enrollment/create/confirm.html",
-                    edition=payload["edition"],
-                    taxnr=taxnr,
-                    pfname=professor.fname,
-                    cpfnr=enrollment.cpfnr,
-                    fname=enrollment.fname,
-                    birth=enrollment.birth,
-                    email=enrollment.email,
-                    inep=enrollment.inep,
-                    name=enrollment.name,
-                    year=enrollment.year,
-                    roll=enrollment.roll,
-                    CPF=CPF,
-                    DATE=DATE,
-                    form=form,
-                )
+                currently_enrolled = [
+                    enrollment.cpfnr
+                    for enrollment in db.session.query(Enrollment.cpfnr)
+                    .where(Enrollment.year == payload["edition"])
+                    .all()
+                ]
+                cond1 = enrollment is not None
+                cond2 = enrollment.cpfnr not in currently_enrolled
+                if cond1 and cond2:
+                    form = new_enrollment_from_a_previous_one_form(
+                        confirmation="Sim"
+                    )
+                    return render_template(
+                        "user/enrollment/create/confirm.html",
+                        edition=payload["edition"],
+                        taxnr=taxnr,
+                        pfname=professor.fname,
+                        cpfnr=enrollment.cpfnr,
+                        fname=enrollment.fname,
+                        birth=enrollment.birth,
+                        email=enrollment.email,
+                        inep=enrollment.inep,
+                        name=enrollment.name,
+                        year=enrollment.year,
+                        roll=enrollment.roll,
+                        CPF=CPF,
+                        DATE=DATE,
+                        form=form,
+                    )
+                else:
+                    return redirect(
+                        url_for(
+                            "bp_user_routes.professor_dashboard",
+                            taxnr=taxnr
+                        )
+                    )
             else:
                 return redirect(
-                    url_for("bp_user_routes.professor_dashboard", taxnr=taxnr)
+                    url_for(
+                        "bp_user_routes.enrollments_extract",
+                        taxnr=taxnr,
+                    )
                 )
         return render_template(
             "user/enrollment/read/past_seven_years.html",
@@ -896,7 +914,7 @@ def new_enrollment_from_previous_one(
                 )
                 .all()
             ]
-            medalists_last_edition = [
+            medalists = [
                 cpfnr
                 for (cpfnr,) in db.session.query(Enrollment.cpfnr)
                 .where(
@@ -918,7 +936,7 @@ def new_enrollment_from_previous_one(
                 ]
             )
             cond1 = cpfnr not in currently_enrolled
-            cond2 = cpfnr in medalists_last_edition
+            cond2 = cpfnr in medalists
             cond3 = quota <= payload["quota"] - 1
             if cond1 and (cond2 or cond3):
                 send_enrollment_confirmation_email(
