@@ -906,17 +906,17 @@ def new_enrollment_from_previous_one(
         )
         form = new_enrollment_from_a_previous_one_form(confirmation="Sim")
         if form.validate_on_submit():
-            currently_enrolled = [
-                cpfnr
-                for (cpfnr,) in db.session.query(Enrollment.cpfnr)
+            enrolled = [
+                enrollment.cpfnr
+                for enrollment in db.session.query(Enrollment)
                 .where(
                     Enrollment.year == payload["edition"],
                 )
                 .all()
             ]
             medalists = [
-                cpfnr
-                for (cpfnr,) in db.session.query(Enrollment.cpfnr)
+                enrollment.cpfnr
+                for enrollment in db.session.query(Enrollment)
                 .where(
                     Enrollment.gift.op("REGEXP")("[OoPpBb]"),
                     Enrollment.year == payload["edition"] - 1,
@@ -925,17 +925,21 @@ def new_enrollment_from_previous_one(
             ]
             quota = len(
                 [
-                    cpfnr
-                    for (cpfnr,) in db.session.query(Enrollment.cpfnr)
+                    enrollment.cpfnr
+                    for enrollment in db.session.query(Enrollment)
                     .where(
                         Enrollment.inep == inep,
-                        Enrollment.year == year,
+                        Enrollment.year == payload["edition"],
                         Enrollment.roll == roll,
                     )
                     .all()
+                    if enrollment.cpfnr not in medalists
                 ]
             )
-            cond1 = cpfnr not in currently_enrolled
+            print(enrolled)
+            print(medalists)
+            print(quota)
+            cond1 = cpfnr not in enrolled
             cond2 = cpfnr in medalists
             cond3 = quota <= payload["quota"] - 1
             if cond1 and (cond2 or cond3):
