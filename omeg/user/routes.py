@@ -819,7 +819,7 @@ def find_enrollment_by_student_cpfnr(taxnr):
                 return redirect(
                     url_for("bp_user_routes.student_registration", taxnr=taxnr)
                 )
-            else:
+            if student is not None:
                 currently_enrolled = (
                     db.session.query(Enrollment)
                     .where(
@@ -843,9 +843,8 @@ def find_enrollment_by_student_cpfnr(taxnr):
                         .where(
                             Student.cpfnr == Enrollment.cpfnr,
                             School.inep == Enrollment.inep,
-                            Enrollment.cpfnr == (
-                                CPF(form.cpfnr.data).strfmt("raw")
-                            ),
+                            Enrollment.cpfnr
+                            == (CPF(form.cpfnr.data).strfmt("raw")),
                             Enrollment.year >= payload["edition"] - 7,
                             Enrollment.year <= payload["edition"] - 1,
                         )
