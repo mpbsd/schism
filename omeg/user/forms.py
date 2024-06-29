@@ -254,8 +254,7 @@ class new_enrollment_from_a_previous_one_form(FlaskForm):
     submit = SubmitField("Enviar Email")
 
     def validate_confirmation(self, confirmation):
-        answer = confirmation.data.lower()
-        if answer != "sim":
+        if confirmation.data.lower() != "sim":
             raise ValidationError("Responda 'Sim' e clique em 'Enviar Email'")
 
 
@@ -267,6 +266,5 @@ class confirm_new_enrollment_from_a_previous_one_form(FlaskForm):
     submit = SubmitField("Confirmar")
 
     def validate_confirmation(self, confirmation):
-        answer = confirmation.data.lower()
-        if answer != "sim":
+        if confirmation.data.lower() != "sim":
             raise ValidationError("Responda 'Sim' e clique em 'Inscrever'")
